@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 96px;
+  }
+  body {
+    @apply bg-bone text-graphite font-sans antialiased;
+    margin: 0;
+  }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
+@layer utilities {
+  .eyebrow {
+    font-family: '"Inter Tight"', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .mono-tag {
+    font-family: '"JetBrains Mono"', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+}

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F2EDE4" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" hreflang="es-AR" href="https://psiquiatrix.com/" />
+
+    <title>PsiquiatriX | Psiquiatría online en Argentina con mirada humana</title>
+    <meta
+      name="description"
+      content="Atención psiquiátrica online para adultos en Argentina. Criterio clínico, mirada humana y seguimiento real. Solicitá contacto con PsiquiatriX."
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PsiquiatriX" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:title" content="PsiquiatriX | Psiquiatría online en Argentina con mirada humana" />
+    <meta property="og:description" content="Atención psiquiátrica online para adultos en Argentina. Criterio clínico, mirada humana y seguimiento real." />
+    <meta property="og:url" content="https://psiquiatrix.com/" />
+    <meta property="og:image" content="https://psiquiatrix.com/og-psiquiatrix.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PsiquiatriX | Psiquiatría online en Argentina con mirada humana" />
+    <meta name="twitter:description" content="Atención psiquiátrica online para adultos en Argentina. Criterio clínico, mirada humana y seguimiento real." />
+    <meta name="twitter:image" content="https://psiquiatrix.com/og-psiquiatrix.jpg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;450;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!--
+      Stubs estáticos para Netlify Forms.
+      El bot de Netlify lee este HTML al desplegar para registrar los formularios
+      y sus campos. Las versiones interactivas viven en los componentes React;
+      el envío se hace por fetch POST a "/" con application/x-www-form-urlencoded.
+    -->
+    <form
+      name="contacto-pacientes"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      hidden
+    >
+      <input type="hidden" name="form-name" value="contacto-pacientes" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="nombre" />
+      <input type="tel" name="telefono" />
+      <input type="text" name="destinatario" />
+    </form>
+
+    <form
+      name="contacto-psicologos"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      hidden
+    >
+      <input type="hidden" name="form-name" value="contacto-psicologos" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="nombre" />
+      <input type="text" name="profesion" />
+      <input type="tel" name="telefono" />
+      <input type="email" name="mail" />
+      <input type="text" name="conocimiento" />
+      <input type="text" name="intencion" />
+      <textarea name="mensaje"></textarea>
+    </form>
+
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
