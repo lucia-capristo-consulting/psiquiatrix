@@ -2,13 +2,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../motion';
 import { submitNetlifyForm } from '../lib/netlifyForm';
+import { waUrl, WA_MESSAGES } from '../config/contact';
 
 const FORM_NAME = 'contacto-pacientes';
 
-const WA_NUMBER = '5491100000000';
-const WA_MSG =
-  'Hola, quisiera recibir información sobre una primera consulta en Psiquiatrix.';
-const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MSG)}`;
+const waLink = waUrl(WA_MESSAGES.paciente);
 
 function WhatsappGlyph({ size = 22 }) {
   return (
@@ -85,7 +83,7 @@ export default function CTA() {
           </p>
 
           <a
-            href={waUrl}
+            href={waLink}
             target="_blank"
             rel="noopener noreferrer"
             className="group mt-8 inline-flex w-fit items-center gap-3 pl-2.5 pr-4 py-2.5 bg-parchment border border-linen rounded-full no-underline transition-all duration-300 hover:border-accent/50"

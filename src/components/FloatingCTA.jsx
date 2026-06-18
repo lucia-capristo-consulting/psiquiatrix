@@ -1,13 +1,6 @@
 import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
-
-const WA_NUMBER = '5491100000000';
-
-const WA_MESSAGE_PACIENTE =
-  'Hola, quisiera recibir información sobre una primera consulta en Psiquiatrix. Me gustaría saber si su atención se adapta a mi situación y cómo coordinar los próximos pasos.';
-
-const WA_MESSAGE_PSICO =
-  'Hola, soy psicólogo/a y quería consultar sobre derivaciones a Psiquiatrix. Me gustaría conocer más sobre cómo trabajan y coordinar una primera conversación profesional.';
+import { waUrl, WA_MESSAGES } from '../config/contact';
 
 function WhatsappGlyph({ size = 30 }) {
   return (
@@ -27,11 +20,11 @@ export default function FloatingCTA() {
   const { pathname } = useLocation();
   const isPsico = pathname.startsWith('/psicologos');
 
-  const message = isPsico ? WA_MESSAGE_PSICO : WA_MESSAGE_PACIENTE;
+  const message = isPsico ? WA_MESSAGES.psico : WA_MESSAGES.pacienteFlotante;
   const ariaLabel = isPsico
     ? 'Conversar sobre derivaciones por WhatsApp'
     : 'Coordinar primera consulta por WhatsApp';
-  const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
+  const url = waUrl(message);
 
   return (
     <motion.a
