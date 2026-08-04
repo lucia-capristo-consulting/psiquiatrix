@@ -68,6 +68,6 @@ Utilidades custom en `src/index.css`: `.eyebrow` (caps espaciadas) y `.mono-tag`
 
 ## Notas operativas
 
-- **SPA fallback en Netlify**: no hay `netlify.toml` ni `public/_redirects`. Si un visitante carga `/psicologos` directamente o refresca, Netlify devuelve 404 a menos que configures la redirección `/* /index.html 200`. Agregar `public/_redirects` con esa línea o un `netlify.toml` con `[[redirects]]` cuando se confirme el problema en producción.
+- **SPA fallback en Netlify**: resuelto con `public/_redirects` (`/* /index.html 200`). Vite lo copia a `dist/` en el build y Netlify lo aplica, de modo que cargar `/psicologos` directamente o refrescar devuelve el `index.html` de la SPA en vez de 404. No borrar este archivo.
 - **Branch de deploy**: `main`. Push a `main` → rebuild automático en Netlify.
 - **No commitear `.claude/`** — está en `.gitignore`, es estado local de Claude Code.
