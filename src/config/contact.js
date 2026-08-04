@@ -3,7 +3,7 @@
 
 // Número de WhatsApp en formato internacional, SOLO dígitos (sin "+", sin espacios).
 // Ej: +54 11 5420010  ->  '54115420010'
-export const WA_NUMBER = '5454200104';
+export const WA_NUMBER = '541154200104';
 
 // Mensajes prellenados de WhatsApp. Editá el texto acá según necesidad.
 export const WA_MESSAGES = {
