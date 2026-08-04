@@ -95,9 +95,8 @@ export default function Hero() {
           transition={sectionTransition}
           className="mt-9 max-w-[560px] text-[17px] leading-[1.55] text-graphite font-normal"
         >
-          Atención psiquiátrica online pensada para sostener tratamientos en el
-          tiempo, con criterio clínico, seguimiento personalizado y una mirada
-          integral de cada paciente.
+          Atención psiquiátrica online para tratamientos con criterio clínico,
+          seguimiento personalizado y una mirada integral de cada paciente.
         </motion.p>
 
         <motion.div

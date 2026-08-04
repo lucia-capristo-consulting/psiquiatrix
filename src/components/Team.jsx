@@ -99,9 +99,9 @@ export default function Team() {
               clínica y trabajo en equipo.
             </p>
             <p className="m-0">
-              Cada profesional cuenta con autonomía en su práctica y con el
-              respaldo de una estructura de supervisión, ateneos y
-              acompañamiento profesional continuo.
+              Cada profesional cuenta con autonomía en su práctica y forma
+              parte de una red de trabajo basada en el intercambio clínico, los
+              ateneos y el acompañamiento profesional continuo.
             </p>
             <p className="m-0">
               Cuando el tratamiento lo requiere, articulamos con otros

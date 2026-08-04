@@ -3,9 +3,9 @@ import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
 
 const items = [
   'Coordinación de turno cuidada',
-  'Devolución profesional al derivador',
+  'Comunicación clínica clara',
   'La psiquiatría acompaña, no compite',
-  'Ateneos y supervisión compartida',
+  'Criterio institucional compartido',
 ];
 
 function Check() {

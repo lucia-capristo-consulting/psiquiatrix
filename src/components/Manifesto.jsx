@@ -52,7 +52,7 @@ export default function Manifesto() {
           <p className="text-[16px] leading-[1.65] text-graphite mt-7 max-w-[560px]">
             Somos una clínica digital con criterio institucional. Cada tratamiento se
             <br />
-            acompaña con experiencia clínica, supervisión profesional y
+            acompaña con experiencia clínica, respaldo profesional y
             articulación con los profesionales que ya forman parte del proceso
             terapéutico.
           </p>

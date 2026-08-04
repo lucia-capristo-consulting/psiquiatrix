@@ -20,9 +20,9 @@ const editorial = [
     un equipo de psiquiatras que comparten esos mismos valores.
   </>,
   <>
-    Hoy seguimos involucradas en cada proceso importante, coordinando
-    supervisión clínica, ateneos y una red de trabajo construida sobre
-    confianza real.
+    Hoy seguimos involucradas en los procesos importantes, coordinando ateneos
+    clínicos, espacios de intercambio profesional y una red de trabajo
+    construida sobre confianza real.
   </>,
 ];
 

@@ -8,7 +8,7 @@ const ejes = [
       <>
         Diagnóstico, criterio médico,
         <br />
-        supervisión y experiencia.
+        respaldo y experiencia.
         <br />
         La solidez clínica como base de cada decisión.
       </>
