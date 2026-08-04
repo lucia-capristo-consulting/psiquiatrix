@@ -54,6 +54,8 @@ Patrón SPA + Netlify Forms con dos partes que **deben mantenerse sincronizadas*
 
 Forms actuales: `contacto-pacientes` y `contacto-psicologos`. Para agregar uno nuevo: stub en `index.html` con todos los campos + usar el helper desde el componente con el mismo `form-name`.
 
+Para registrar los envíos en un Google Sheet (vía outgoing webhook de Netlify, sin backend ni cambios de código), ver `docs/contactos-google-sheets.md`. Ahí también queda documentado por qué se descartó migrar a Vercel/Next.js.
+
 ### Animaciones
 
 `framer-motion` con presets centralizados en `src/motion.js`: `fadeUp`, `fadeIn`, `stagger`, `sectionTransition`, `inViewProps`. Reutilizá estos en vez de definir variants ad-hoc por componente.
