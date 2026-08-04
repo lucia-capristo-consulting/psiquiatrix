@@ -110,7 +110,7 @@ export default function PsicoContacto() {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Field label="Nombre">
+            <Field label="Nombre y apellido">
               <input type="text" name="nombre" required placeholder="—" className={inputCls} />
             </Field>
             <Field label="Profesión">

@@ -6,6 +6,14 @@ import { waUrl, WA_MESSAGES } from '../config/contact';
 
 const FORM_NAME = 'contacto-pacientes';
 
+const REFERRAL_OPTIONS = [
+  'Redes sociales',
+  'Recomendación',
+  'Búsqueda en Google',
+  'Eventos y congresos',
+  'Otros',
+];
+
 const waLink = waUrl(WA_MESSAGES.paciente);
 
 function WhatsappGlyph({ size = 22 }) {
@@ -44,6 +52,7 @@ function LockGlyph({ size = 12 }) {
 
 export default function CTA() {
   const [audience, setAudience] = useState('Para mí');
+  const [referral, setReferral] = useState('');
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
 
   const handleSubmit = async (e) => {
@@ -57,6 +66,7 @@ export default function CTA() {
       await submitNetlifyForm(FORM_NAME, data);
       setStatus('success');
       form.reset();
+      setReferral('');
     } catch (err) {
       console.error(err);
       setStatus('error');
@@ -121,8 +131,9 @@ export default function CTA() {
           </p>
 
           {[
-            { label: 'Nombre completo', name: 'nombre', type: 'text', required: true },
+            { label: 'Nombre y apellido', name: 'nombre', type: 'text', required: true },
             { label: 'Teléfono', name: 'telefono', type: 'tel', required: true },
+            { label: 'Email (opcional)', name: 'mail', type: 'email', required: false },
           ].map((f) => (
             <label key={f.name} className="flex flex-col gap-2">
               <span className="eyebrow text-taupe">{f.label}</span>
@@ -157,6 +168,44 @@ export default function CTA() {
               ))}
             </div>
           </div>
+
+          <div className="flex flex-col gap-2">
+            <span className="eyebrow text-taupe">¿Cómo nos conociste? (opcional)</span>
+            <div className="relative">
+              <select
+                name="conocimiento"
+                value={referral}
+                onChange={(e) => setReferral(e.target.value)}
+                className="bg-transparent border-0 border-b border-graphite/70 py-2 font-serif text-[20px] text-graphite appearance-none w-full pr-8 cursor-pointer focus:outline-none focus:border-accent transition-colors"
+                style={{ fontStyle: referral ? 'normal' : 'italic', opacity: referral ? 1 : 0.4 }}
+              >
+                <option value="" disabled>
+                  —
+                </option>
+                {REFERRAL_OPTIONS.map((o) => (
+                  <option key={o} value={o} style={{ fontStyle: 'normal', opacity: 1 }}>
+                    {o}
+                  </option>
+                ))}
+              </select>
+              <span
+                aria-hidden
+                className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 text-taupe text-[14px]"
+              >
+                ▾
+              </span>
+            </div>
+          </div>
+
+          <label className="flex flex-col gap-2">
+            <span className="eyebrow text-taupe">Mensaje (opcional)</span>
+            <textarea
+              name="mensaje"
+              rows={2}
+              placeholder="—"
+              className="bg-transparent border-0 border-b border-graphite/70 py-2 font-serif text-[20px] italic text-graphite placeholder:opacity-40 focus:outline-none focus:border-accent transition-colors resize-none leading-[1.5]"
+            />
+          </label>
 
           <button
             type="submit"
