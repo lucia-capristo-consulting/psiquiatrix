@@ -1,4 +1,4 @@
-import { SITE_URL } from './site.js';
+import { SITE_URL, LOGO, OG_IMAGE } from './site.js';
 
 export const medicalClinicSchema = {
   '@context': 'https://schema.org',
@@ -8,8 +8,8 @@ export const medicalClinicSchema = {
   description:
     'Centro de psiquiatría online para adultos en Argentina, con criterio clínico, seguimiento personalizado y mirada humana.',
   url: SITE_URL,
-  logo: `${SITE_URL}/favicon.svg`,
-  image: `${SITE_URL}/og-psiquiatrix.jpg`,
+  logo: LOGO.url,
+  image: OG_IMAGE.url,
   medicalSpecialty: 'Psychiatric',
   areaServed: {
     '@type': 'Country',

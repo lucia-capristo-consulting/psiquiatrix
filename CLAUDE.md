@@ -40,8 +40,10 @@ Las secciones se navegan por `id` HTML (no por rutas). El hook `src/hooks/useAct
 - La imagen de preview es `public/og-psiquiatrix.jpg` (1731×909). Su URL, tipo, dimensiones y alt están declarados una sola vez, en `src/seo/site.js`. Si se reemplaza la imagen, actualizar ahí las dimensiones y listo. En `Seo.jsx` esos tags sólo se emiten cuando `ogImage` es la imagen por defecto: si una página pasa la suya, declarar el tamaño de otra sería incorrecto.
 - `HelmetProvider` ya está montado en `src/main.jsx` — no envolver de nuevo.
 - Schemas JSON-LD viven en `src/seo/schema.js` (`medicalClinicSchema`, `psicologosServiceSchema`). Si agregás una página nueva, exportá su schema desde ese archivo en vez de inlinearlo.
-- `SITE_URL`, `SITE_NAME` y los datos de la imagen OG viven en `src/seo/site.js`, y de ahí los toman `Seo.jsx`, `schema.js`, `pages.js` y el script de prerender. Si cambia el dominio, además hay que tocar `public/sitemap.xml` y `public/robots.txt`, que son estáticos.
+- `SITE_URL`, `SITE_NAME`, los datos de la imagen OG y el logo (`LOGO`) viven en `src/seo/site.js`, y de ahí los toman `Seo.jsx`, `schema.js`, `pages.js` y el script de prerender. Si cambia el dominio, además hay que tocar `public/sitemap.xml` y `public/robots.txt`, que son estáticos.
 - **El dominio primario es `www.psiquiatrix.ar`, con `www`.** El apex (`psiquiatrix.ar`) también resuelve, pero redirige con 301 al `www`. Es una decisión de marca: al ser `.ar` una extensión poco común, el `www` deja claro que es un sitio web y no una red social, y se usa así en tarjetas y material impreso. Por eso los canonical y `og:url` deben llevar `www`: tienen que coincidir con la URL final, no con la que redirige.
+
+- Los archivos de marca (logotipo en SVG y PNG, con fondo y sin fondo) viven en `public/marca/`. El texto está convertido a curvas, así que no dependen de tener instalada Instrument Serif — es lo que permite mandárselos a una imprenta. El campo `logo` del JSON-LD apunta a la versión transparente.
 
 #### Prerender de metadatos (scrapers de WhatsApp)
 

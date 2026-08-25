@@ -13,3 +13,12 @@ export const OG_IMAGE = {
   height: 909,
   alt: 'PsiquiatriX — Centro de psiquiatría online: psiquiatría profesional con mirada humana.',
 };
+
+// Logotipo para el campo `logo` del JSON-LD. Se usa la versión con fondo
+// transparente porque los consumidores de datos estructurados suelen mostrarlo
+// sobre blanco. Los archivos de marca viven en `public/marca/`.
+export const LOGO = {
+  url: `${SITE_URL}/marca/logo-psiquiatrix-transparente.png`,
+  width: 2400,
+  height: 843,
+};
