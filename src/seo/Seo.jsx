@@ -1,26 +1,18 @@
 import { Helmet } from 'react-helmet-async';
-
-const SITE_URL = 'https://www.psiquiatrix.ar';
-const DEFAULT_OG_IMAGE = `${SITE_URL}/og-psiquiatrix.jpg`;
-const DEFAULT_OG_IMAGE_META = {
-  type: 'image/jpeg',
-  width: 1731,
-  height: 909,
-  alt: 'PsiquiatriX — Centro de psiquiatría online: psiquiatría profesional con mirada humana.',
-};
+import { SITE_URL, SITE_NAME, OG_IMAGE } from './site.js';
 
 export default function Seo({
   title,
   description,
   path = '/',
-  ogImage = DEFAULT_OG_IMAGE,
+  ogImage = OG_IMAGE.url,
   ogType = 'website',
   jsonLd,
 }) {
   const url = `${SITE_URL}${path}`;
   // Tipo, dimensiones y alt sólo se declaran para la imagen por defecto: si una
   // página pasa su propia `ogImage`, declarar el tamaño de otra sería incorrecto.
-  const imageMeta = ogImage === DEFAULT_OG_IMAGE ? DEFAULT_OG_IMAGE_META : null;
+  const imageMeta = ogImage === OG_IMAGE.url ? OG_IMAGE : null;
 
   return (
     <Helmet>
@@ -34,7 +26,7 @@ export default function Seo({
       <meta property="og:type" content={ogType} />
       <meta property="og:image" content={ogImage} />
       <meta property="og:locale" content="es_AR" />
-      <meta property="og:site_name" content="PsiquiatriX" />
+      <meta property="og:site_name" content={SITE_NAME} />
 
       {imageMeta && <meta property="og:image:type" content={imageMeta.type} />}
       {imageMeta && <meta property="og:image:width" content={String(imageMeta.width)} />}

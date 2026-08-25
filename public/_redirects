@@ -1,1 +1,9 @@
-/*    /index.html   200
+# Cada ruta prerenderizada (ver scripts/prerender-meta.mjs) se sirve como
+# rewrite 200 desde su propio HTML, para que los scrapers de preview lean los
+# tags correctos. El orden importa: gana la primera regla que matchea.
+/psicologos    /psicologos.html   200
+
+# Fallback de la SPA: cualquier otra ruta devuelve el index.html y la resuelve
+# React Router en el cliente. Sin esto, entrar directo a una URL o refrescar
+# devolveria 404.
+/*             /index.html        200

@@ -1,4 +1,4 @@
-const SITE_URL = 'https://www.psiquiatrix.ar';
+import { SITE_URL } from './site.js';
 
 export const medicalClinicSchema = {
   '@context': 'https://schema.org',

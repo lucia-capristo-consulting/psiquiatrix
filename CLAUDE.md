@@ -37,11 +37,29 @@ Las secciones se navegan por `id` HTML (no por rutas). El hook `src/hooks/useAct
 ### SEO
 
 - Cada página debe renderizar `<Seo />` (`src/seo/Seo.jsx`) con `title`, `description`, `path`, y opcionalmente `jsonLd`. Maneja canonical y Open Graph (usado por WhatsApp, Facebook, Instagram, LinkedIn y Telegram para el preview del link). No hay tags de Twitter Cards: la marca no tiene cuenta en Twitter/X y se removieron a propósito — no volver a agregarlas.
-- La imagen de preview es `public/og-psiquiatrix.jpg` (1731×909). Sus `og:image:type/width/height/alt` están declarados dos veces: en `index.html` (para el crawler que lee el HTML estático) y en `Seo.jsx` (para el render de React). Si se reemplaza la imagen, actualizar las dimensiones en **ambos** lugares. En `Seo.jsx` esos tags sólo se emiten cuando `ogImage` es la imagen por defecto: si una página pasa la suya, se omiten a propósito.
+- La imagen de preview es `public/og-psiquiatrix.jpg` (1731×909). Su URL, tipo, dimensiones y alt están declarados una sola vez, en `src/seo/site.js`. Si se reemplaza la imagen, actualizar ahí las dimensiones y listo. En `Seo.jsx` esos tags sólo se emiten cuando `ogImage` es la imagen por defecto: si una página pasa la suya, declarar el tamaño de otra sería incorrecto.
 - `HelmetProvider` ya está montado en `src/main.jsx` — no envolver de nuevo.
 - Schemas JSON-LD viven en `src/seo/schema.js` (`medicalClinicSchema`, `psicologosServiceSchema`). Si agregás una página nueva, exportá su schema desde ese archivo en vez de inlinearlo.
-- `SITE_URL` está hardcodeado a `https://www.psiquiatrix.ar` en `Seo.jsx` y `schema.js`. El mismo dominio aparece en `index.html` (hreflang, `og:url`, `og:image`), `public/sitemap.xml` y `public/robots.txt` — si cambia el dominio, actualizar todos esos lugares.
+- `SITE_URL`, `SITE_NAME` y los datos de la imagen OG viven en `src/seo/site.js`, y de ahí los toman `Seo.jsx`, `schema.js`, `pages.js` y el script de prerender. Si cambia el dominio, además hay que tocar `public/sitemap.xml` y `public/robots.txt`, que son estáticos.
 - **El dominio primario es `www.psiquiatrix.ar`, con `www`.** El apex (`psiquiatrix.ar`) también resuelve, pero redirige con 301 al `www`. Es una decisión de marca: al ser `.ar` una extensión poco común, el `www` deja claro que es un sitio web y no una red social, y se usa así en tarjetas y material impreso. Por eso los canonical y `og:url` deben llevar `www`: tienen que coincidir con la URL final, no con la que redirige.
+
+#### Prerender de metadatos (scrapers de WhatsApp)
+
+Los scrapers de preview (WhatsApp, Facebook, LinkedIn, Telegram) **no ejecutan JavaScript**: leen el HTML crudo del servidor y se van. Como esto es una SPA, sin prerender todas las rutas devolvían el mismo `index.html` y el preview de `/psicologos` mostraba el título de la home. Google no tiene el problema porque sí ejecuta JS.
+
+La solución tiene tres piezas que **deben mantenerse sincronizadas**:
+
+1. **`src/seo/pages.js`** — fuente única de verdad del SEO por ruta (`path`, `file`, `title`, `description`, `jsonLd`). La consumen tanto los componentes de página (`<Seo {...pageByPath('/...')} />`) como el prerender.
+2. **`scripts/prerender-meta.mjs`** — corre después de `vite build` (encadenado en el script `build` de `package.json`). Toma `dist/index.html` como plantilla y reescribe el bloque entre `<!-- seo:start -->` y `<!-- seo:end -->` con los tags de cada ruta, generando un HTML por página.
+3. **`public/_redirects`** — una regla `200` por ruta prerenderizada, **antes** del fallback `/*`. Gana la primera regla que matchea.
+
+Es un rewrite, no un redirect: la URL del browser no cambia, así que React Router sigue viendo `/psicologos` y renderiza lo que corresponde.
+
+**No editar a mano los tags de SEO en `index.html`**: están dentro de los marcadores y el build los pisa. Para cambiar un título o una descripción, editar `pages.js`.
+
+Esto **no es SSG**: el `<body>` sigue vacío y lo llena React. Sólo se prerenderiza el `<head>`, que es lo único que los scrapers leen.
+
+Para agregar una página: sumarla a `PAGES` en `pages.js`, agregar su regla en `_redirects` y su `<loc>` en `public/sitemap.xml`.
 
 ### Config de contacto (WhatsApp)
 
