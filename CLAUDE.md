@@ -36,10 +36,12 @@ Las secciones se navegan por `id` HTML (no por rutas). El hook `src/hooks/useAct
 
 ### SEO
 
-- Cada página debe renderizar `<Seo />` (`src/seo/Seo.jsx`) con `title`, `description`, `path`, y opcionalmente `jsonLd`. Maneja canonical, Open Graph y Twitter Cards.
+- Cada página debe renderizar `<Seo />` (`src/seo/Seo.jsx`) con `title`, `description`, `path`, y opcionalmente `jsonLd`. Maneja canonical y Open Graph (usado por WhatsApp, Facebook, Instagram, LinkedIn y Telegram para el preview del link). No hay tags de Twitter Cards: la marca no tiene cuenta en Twitter/X y se removieron a propósito — no volver a agregarlas.
+- La imagen de preview es `public/og-psiquiatrix.jpg` (1731×909). Sus `og:image:type/width/height/alt` están declarados dos veces: en `index.html` (para el crawler que lee el HTML estático) y en `Seo.jsx` (para el render de React). Si se reemplaza la imagen, actualizar las dimensiones en **ambos** lugares. En `Seo.jsx` esos tags sólo se emiten cuando `ogImage` es la imagen por defecto: si una página pasa la suya, se omiten a propósito.
 - `HelmetProvider` ya está montado en `src/main.jsx` — no envolver de nuevo.
 - Schemas JSON-LD viven en `src/seo/schema.js` (`medicalClinicSchema`, `psicologosServiceSchema`). Si agregás una página nueva, exportá su schema desde ese archivo en vez de inlinearlo.
-- `SITE_URL` está hardcodeado a `https://psiquiatrix.com` en `Seo.jsx` y `schema.js`.
+- `SITE_URL` está hardcodeado a `https://www.psiquiatrix.ar` en `Seo.jsx` y `schema.js`. El mismo dominio aparece en `index.html` (hreflang, `og:url`, `og:image`), `public/sitemap.xml` y `public/robots.txt` — si cambia el dominio, actualizar todos esos lugares.
+- **El dominio primario es `www.psiquiatrix.ar`, con `www`.** El apex (`psiquiatrix.ar`) también resuelve, pero redirige con 301 al `www`. Es una decisión de marca: al ser `.ar` una extensión poco común, el `www` deja claro que es un sitio web y no una red social, y se usa así en tarjetas y material impreso. Por eso los canonical y `og:url` deben llevar `www`: tienen que coincidir con la URL final, no con la que redirige.
 
 ### Config de contacto (WhatsApp)
 

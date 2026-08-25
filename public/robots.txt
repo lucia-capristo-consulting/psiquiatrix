@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://psiquiatrix.com/sitemap.xml
+Sitemap: https://www.psiquiatrix.ar/sitemap.xml
