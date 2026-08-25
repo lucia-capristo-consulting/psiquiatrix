@@ -80,3 +80,6 @@ coverage/
 .history/
 tmp/
 temp/
+
+# Notas locales (no se comparten)
+PROXIMOS PASOS.txt
