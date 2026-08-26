@@ -1,3 +1,57 @@
+/* Fuentes alojadas en el propio sitio, en public/fonts/.
+ *
+ * Antes se pedían a Google Fonts, lo que armaba una cadena serializada:
+ * documento -> CSS en fonts.googleapis.com -> woff2 en fonts.gstatic.com.
+ * Dos dominios extra, con su DNS y su TLS, bloqueando el render (~1.5 s).
+ * Desde el propio dominio la conexión ya está abierta y se pueden precargar
+ * desde index.html. De paso, dejan de existir pedidos a servidores de Google
+ * en cada visita, que importa en el sitio de una práctica médica.
+ *
+ * Subconjunto `latin`, que es el único que descargaba el navegador: cubre
+ * acentos, ñ, ¿ ¡ y la raya (—).
+ *
+ * Inter Tight y JetBrains Mono son fuentes VARIABLES: un archivo cubre todo
+ * el rango de pesos, por eso se declara `font-weight: <min> <max>` y no un
+ * valor suelto. Si se declarara uno solo, los demás pesos saldrían simulados.
+ *
+ * Para actualizar una fuente: bajar el .woff2 del subconjunto latin desde
+ * Google Fonts y guardarlo con un nombre NUEVO, actualizando la ruta acá y el
+ * preload de index.html. No reemplazar el archivo conservando el nombre:
+ * `public/_headers` los cachea como `immutable` por un año.
+ */
+
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/inter-tight-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/instrument-serif-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/instrument-serif-italic-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 300 500;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

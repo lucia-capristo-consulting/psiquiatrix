@@ -84,7 +84,13 @@ Para registrar los envíos en un Google Sheet (vía outgoing webhook de Netlify,
 
 ### Tailwind: paleta y tipografías
 
-`tailwind.config.js` extiende el theme con la paleta de marca (`ink`, `graphite`, `taupe`, `mute`, `bone`, `parchment`, `linen`, `accent`) y tres familias: `font-serif` (Instrument Serif), `font-sans` (Inter Tight), `font-mono` (JetBrains Mono). Las fuentes se cargan vía Google Fonts desde `index.html` (no hay `@import` en CSS).
+`tailwind.config.js` extiende el theme con la paleta de marca (`ink`, `graphite`, `taupe`, `mute`, `bone`, `parchment`, `linen`, `accent`) y tres familias: `font-serif` (Instrument Serif), `font-sans` (Inter Tight), `font-mono` (JetBrains Mono).
+
+**Las fuentes se sirven desde el propio sitio**, no desde Google Fonts: los `.woff2` (subconjunto `latin`) están en `public/fonts/` y las reglas `@font-face` al principio de `src/index.css`. Pedirlas a Google armaba una cadena serializada (documento → CSS en `fonts.googleapis.com` → woff2 en `fonts.gstatic.com`) que bloqueaba el render ~1,5 s, y además implicaba un pedido a servidores de Google en cada visita. Tres detalles que hay que respetar:
+
+- Inter Tight y JetBrains Mono son **fuentes variables**: un archivo cubre todos los pesos, por eso el `@font-face` declara `font-weight: <min> <max>`. Con un peso suelto, los demás saldrían simulados.
+- `index.html` **precarga** las dos que aparecen de entrada. El atributo `crossorigin` es obligatorio aunque sean del mismo dominio — sin él la precarga se descarta y el archivo se baja dos veces.
+- `public/_headers` las cachea como `immutable` por un año. Si se reemplaza una fuente hay que **cambiarle el nombre al archivo**, no pisarlo.
 
 Sombras de marca: `shadow-card`, `shadow-cardHover`, `shadow-cta`.
 

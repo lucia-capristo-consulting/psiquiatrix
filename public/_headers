@@ -1,0 +1,12 @@
+# Las fuentes propias no cambian nunca, así que conviene cachearlas fuerte:
+# sin esto Netlify sirve lo de public/ con `max-age=0, must-revalidate` y el
+# navegador revalida las cuatro en cada visita. Google Fonts las servía con
+# caché de un año, así que sin esta regla alojarlas nosotros sería un
+# retroceso para quien vuelve al sitio.
+#
+# OJO: estos nombres de archivo NO llevan hash. Si alguna vez se reemplaza una
+# fuente hay que RENOMBRAR el archivo y actualizar `src/index.css` e
+# `index.html`; si no, los navegadores van a seguir usando la vieja hasta un
+# año. Es la contracara de `immutable`.
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
