@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../motion';
 import { submitNetlifyForm } from '../lib/netlifyForm';
+import { trackEvent } from '../lib/analytics';
 import { waUrl, WA_MESSAGES } from '../config/contact';
 
 const FORM_NAME = 'contacto-pacientes';
@@ -65,6 +66,9 @@ export default function CTA() {
     try {
       await submitNetlifyForm(FORM_NAME, data);
       setStatus('success');
+      // Sólo se cuenta el envío exitoso, no el clic en el botón: lo que importa
+      // medir es la consulta que llegó, no la intención. Sin datos del form.
+      trackEvent('form-pacientes-enviado');
       form.reset();
       setReferral('');
     } catch (err) {
@@ -96,6 +100,7 @@ export default function CTA() {
             href={waLink}
             target="_blank"
             rel="noopener noreferrer"
+            data-umami-event="whatsapp-contacto"
             className="group mt-8 inline-flex w-fit items-center gap-3 pl-2.5 pr-4 py-2.5 bg-parchment border border-linen rounded-full no-underline transition-all duration-300 hover:border-accent/50"
           >
             <span className="flex items-center justify-center w-9 h-9 rounded-full bg-accent/10 text-accent flex-shrink-0">

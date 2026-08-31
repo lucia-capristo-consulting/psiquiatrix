@@ -38,6 +38,27 @@
          el archivo se baja dos veces. -->
     <link rel="preload" href="/fonts/inter-tight-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/instrument-serif-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- Analítica: Umami Cloud (plan Hobby, sin costo).
+         Se eligió por sobre Google Analytics porque NO usa cookies ni recolecta
+         datos personales: por eso el sitio no necesita banner de consentimiento,
+         que en una práctica médica sería un estorbo y un problema de más.
+
+         `defer` es importante: el script no bloquea el render. Es el único
+         pedido a un tercero que hace el sitio (las fuentes son propias).
+
+         El data-website-id NO es un secreto: viaja en el HTML público y sólo
+         identifica al sitio dentro de la cuenta. Las credenciales son las del
+         panel en cloud.umami.is, que no están acá.
+
+         Umami detecta solo los cambios de ruta de React Router, así que
+         /psicologos se mide sin agregar código. Los eventos de conversión se
+         marcan en los componentes; ver src/lib/analytics.js. -->
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="9b43146e-0ee3-40aa-a2c0-c66cbe646879"
+    ></script>
   </head>
   <body>
     <div id="root"></div>

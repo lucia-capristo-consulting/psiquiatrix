@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
 import { submitNetlifyForm } from '../../lib/netlifyForm';
+import { trackEvent } from '../../lib/analytics';
 
 const FORM_NAME = 'contacto-psicologos';
 
@@ -60,6 +61,9 @@ export default function PsicoContacto() {
     try {
       await submitNetlifyForm(FORM_NAME, data);
       setStatus('success');
+      // Igual que en el form de pacientes: se cuenta el envío exitoso, sin
+      // ningún dato de lo que la persona escribió.
+      trackEvent('form-psicologos-enviado');
       form.reset();
       setReferral('');
       setIntent('Sí');

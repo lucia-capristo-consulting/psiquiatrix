@@ -26,6 +26,13 @@ export default function FloatingCTA() {
     : 'Coordinar primera consulta por WhatsApp';
   const url = waUrl(message);
 
+  // El botón es el mismo, pero un clic desde /psicologos no significa lo mismo
+  // que uno desde la home. Con un único nombre de evento los dos públicos se
+  // mezclarían en un solo número y no se podría leer nada.
+  const eventName = isPsico
+    ? 'whatsapp-flotante-psico'
+    : 'whatsapp-flotante-paciente';
+
   return (
     <motion.a
       href={url}
@@ -33,6 +40,7 @@ export default function FloatingCTA() {
       rel="noopener noreferrer"
       aria-label={ariaLabel}
       title={ariaLabel}
+      data-umami-event={eventName}
       initial={{ opacity: 0, scale: 0.6, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: 1.2, duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}
