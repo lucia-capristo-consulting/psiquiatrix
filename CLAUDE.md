@@ -45,6 +45,16 @@ Las secciones se navegan por `id` HTML (no por rutas). El hook `src/hooks/useAct
 
 - Los archivos de marca (logotipo en SVG y PNG, con fondo y sin fondo) viven en `public/marca/`. El texto está convertido a curvas, así que no dependen de tener instalada Instrument Serif — es lo que permite mandárselos a una imprenta. El campo `logo` del JSON-LD apunta a la versión transparente.
 
+#### Listado de /marca/
+
+Netlify no genera listados de carpeta. Para que `www.psiquiatrix.ar/marca/` muestre los archivos sin tener que saber cada nombre, **`scripts/build-marca-index.mjs`** genera `dist/marca/index.html` después del build (encadenado en el script `build`, igual que el prerender).
+
+Lee la carpeta en cada build, así que **para sumar un logo alcanza con dejarlo en `public/marca/`**: aparece solo, con su formato, medidas y peso. Los títulos lindos salen del mapa `LABELS` del script; un archivo que no esté ahí igual se lista, con el nombre prettificado.
+
+La página va con `noindex`: es accesible por link pero no compite en los resultados de búsqueda. Por eso **no** hay que bloquearla en `robots.txt` — si se bloqueara, Google no podría leer el `noindex`.
+
+`public/_redirects` tiene sus dos reglas (`/marca` y `/marca/`) antes del fallback de la SPA; sin ellas, entrar a la carpeta mostraría la home.
+
 #### Prerender de metadatos (scrapers de WhatsApp)
 
 Los scrapers de preview (WhatsApp, Facebook, LinkedIn, Telegram) **no ejecutan JavaScript**: leen el HTML crudo del servidor y se van. Como esto es una SPA, sin prerender todas las rutas devolvían el mismo `index.html` y el preview de `/psicologos` mostraba el título de la home. Google no tiene el problema porque sí ejecuta JS.

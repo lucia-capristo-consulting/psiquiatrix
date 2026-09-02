@@ -3,6 +3,12 @@
 # tags correctos. El orden importa: gana la primera regla que matchea.
 /psicologos    /psicologos.html   200
 
+# La carpeta de archivos de marca se sirve con el listado que genera
+# scripts/build-marca-index.mjs. Sin estas reglas /marca caeria en el fallback
+# de abajo y mostraria la home en vez del listado.
+/marca         /marca/index.html  200
+/marca/        /marca/index.html  200
+
 # Fallback de la SPA: cualquier otra ruta devuelve el index.html y la resuelve
 # React Router en el cliente. Sin esto, entrar directo a una URL o refrescar
 # devolveria 404.
