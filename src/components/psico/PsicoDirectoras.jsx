@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
 import { directors } from '../../data/directors';
+import BioBody from '../BioBody';
 
 const editorial = [
   <>
-    Creamos Psiquiatri<span className="italic text-accent">x</span> después de
+    Creamos Psiquiatrix después de
     más de 30 años de trabajo clínico y de compartir{' '}
     <span className="italic text-accent">una misma forma de ejercer la psiquiatría.</span>
   </>,
@@ -15,7 +16,7 @@ const editorial = [
   </>,
   <>
     Con el tiempo, empezamos a recibir más pacientes de los que podíamos
-    atender personalmente. Así nació Psiquiatri<span className="italic text-accent">x</span>:
+    atender personalmente. Así nació Psiquiatrix:
     como una forma de ampliar esa manera de trabajar, formando y acompañando a
     un equipo de psiquiatras que comparten esos mismos valores.
   </>,
@@ -111,24 +112,30 @@ export default function PsicoDirectoras() {
               variants={fadeUp}
               transition={sectionTransition}
             >
-              <h3 className="font-serif text-[26px] md:text-[28px] leading-[1.1] tracking-[-0.015em] text-graphite m-0 font-normal">
-                {b.name}
-              </h3>
-              <div className="mt-2 font-mono text-[11px] tracking-[0.08em] text-taupe">
-                {b.mn}
+              <div className="flex items-center gap-5">
+                <div className="shrink-0 w-[96px] h-[120px] md:w-[112px] md:h-[140px] overflow-hidden">
+                  <img
+                    src={b.imgSm}
+                    alt={`${b.name}, ${b.role.toLowerCase()} de PsiquiatriX`}
+                    width="224"
+                    height="280"
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover object-top"
+                    style={{ filter: 'saturate(0.85) contrast(1.05)' }}
+                  />
+                </div>
+                <div>
+                  <h3 className="font-serif text-[26px] md:text-[28px] leading-[1.1] tracking-[-0.015em] text-graphite m-0 font-normal">
+                    {b.name}
+                  </h3>
+                  <div className="mt-2 font-mono text-[11px] tracking-[0.08em] text-taupe">
+                    {b.mn}
+                  </div>
+                </div>
               </div>
-              <p className="mt-5 text-[14.5px] leading-[1.65] text-graphite font-medium m-0">
-                {b.intro}
-              </p>
-              <div className="mt-4 flex flex-col gap-3.5">
-                {b.body.map((para, i) => (
-                  <p
-                    key={i}
-                    className="text-[14px] leading-[1.7] text-graphite font-normal m-0"
-                  >
-                    {para}
-                  </p>
-                ))}
+              <div className="mt-6">
+                <BioBody intro={b.intro} body={b.body} />
               </div>
             </motion.div>
           ))}

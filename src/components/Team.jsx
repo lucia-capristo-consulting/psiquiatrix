@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../motion';
 import { directors } from '../data/directors';
+import BioBody from './BioBody';
 
 export default function Team() {
   return (
@@ -64,19 +65,7 @@ export default function Team() {
               </div>
 
               <div className="mt-7 pt-7 border-t border-linen/80">
-                <p className="text-[14.5px] leading-[1.65] text-graphite font-medium m-0">
-                  {p.intro}
-                </p>
-                <div className="mt-4 flex flex-col gap-3.5">
-                  {p.body.map((para, i) => (
-                    <p
-                      key={i}
-                      className="text-[14px] leading-[1.7] text-graphite font-normal m-0"
-                    >
-                      {para}
-                    </p>
-                  ))}
-                </div>
+                <BioBody intro={p.intro} body={p.body} />
               </div>
             </motion.article>
           ))}
