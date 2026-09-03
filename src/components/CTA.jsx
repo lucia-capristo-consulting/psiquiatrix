@@ -4,8 +4,13 @@ import { fadeUp, stagger, sectionTransition, inViewProps } from '../motion';
 import { submitNetlifyForm } from '../lib/netlifyForm';
 import { trackEvent } from '../lib/analytics';
 import { waUrl, WA_MESSAGES } from '../config/contact';
+import CampoTelefono from './CampoTelefono';
+import CampoMail from './CampoMail';
 
 const FORM_NAME = 'contacto-pacientes';
+
+const inputCls =
+  'bg-transparent border-0 border-b border-graphite/70 py-2 font-serif text-[20px] italic text-graphite placeholder:opacity-40 focus:outline-none focus:border-accent transition-colors';
 
 const REFERRAL_OPTIONS = [
   'Redes sociales',
@@ -55,6 +60,9 @@ export default function CTA() {
   const [audience, setAudience] = useState('Para mí');
   const [referral, setReferral] = useState('');
   const [status, setStatus] = useState('idle'); // idle | sending | success | error
+  // form.reset() no limpia los campos que manejan su propio estado (teléfono y
+  // mail): cambiarles la key los vuelve a montar vacíos.
+  const [formKey, setFormKey] = useState(0);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,6 +79,7 @@ export default function CTA() {
       trackEvent('form-pacientes-enviado');
       form.reset();
       setReferral('');
+      setFormKey((k) => k + 1);
     } catch (err) {
       console.error(err);
       setStatus('error');
@@ -135,22 +144,20 @@ export default function CTA() {
             </label>
           </p>
 
-          {[
-            { label: 'Nombre y apellido', name: 'nombre', type: 'text', required: true },
-            { label: 'Teléfono', name: 'telefono', type: 'tel', required: true },
-            { label: 'Email (opcional)', name: 'mail', type: 'email', required: false },
-          ].map((f) => (
-            <label key={f.name} className="flex flex-col gap-2">
-              <span className="eyebrow text-taupe">{f.label}</span>
-              <input
-                type={f.type}
-                name={f.name}
-                required={f.required}
-                placeholder="—"
-                className="bg-transparent border-0 border-b border-graphite/70 py-2 font-serif text-[20px] italic text-graphite placeholder:opacity-40 focus:outline-none focus:border-accent transition-colors"
-              />
-            </label>
-          ))}
+          <label className="flex flex-col gap-2">
+            <span className="eyebrow text-taupe">Nombre y apellido</span>
+            <input type="text" name="nombre" required placeholder="—" className={inputCls} />
+          </label>
+
+          <div className="flex flex-col gap-2">
+            <span className="eyebrow text-taupe">Teléfono</span>
+            <CampoTelefono key={'tel-' + formKey} required className={inputCls} />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <span className="eyebrow text-taupe">Email (opcional)</span>
+            <CampoMail key={'mail-' + formKey} className={inputCls} />
+          </div>
 
           <div className="flex flex-col gap-2.5">
             <span className="eyebrow text-taupe">¿Es para vos o para un familiar?</span>

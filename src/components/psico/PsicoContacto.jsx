@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import CampoTelefono from '../CampoTelefono';
+import CampoMail from '../CampoMail';
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
 import { submitNetlifyForm } from '../../lib/netlifyForm';
@@ -43,6 +45,18 @@ function Field({ label, htmlFor, children }) {
   );
 }
 
+// Para campos con más de un input adentro: un <label> se asociaría solo al
+// primero. El título va como texto suelto y cada input trae su propio
+// aria-label desde su componente.
+function Grupo({ label, children }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="eyebrow text-taupe">{label}</span>
+      {children}
+    </div>
+  );
+}
+
 const inputCls =
   'bg-transparent border-0 border-b border-graphite/70 py-2 font-serif text-[20px] italic text-graphite placeholder:opacity-40 focus:outline-none focus:border-accent transition-colors';
 
@@ -50,6 +64,9 @@ export default function PsicoContacto() {
   const [referral, setReferral] = useState('');
   const [intent, setIntent] = useState('Sí');
   const [status, setStatus] = useState('idle');
+  // form.reset() no limpia los campos que manejan su propio estado (teléfono y
+  // mail): cambiarles la key los vuelve a montar vacíos.
+  const [formKey, setFormKey] = useState(0);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,6 +84,7 @@ export default function PsicoContacto() {
       form.reset();
       setReferral('');
       setIntent('Sí');
+      setFormKey((k) => k + 1);
     } catch (err) {
       console.error(err);
       setStatus('error');
@@ -128,12 +146,12 @@ export default function PsicoContacto() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Field label="Teléfono">
-              <input type="tel" name="telefono" placeholder="—" className={inputCls} />
-            </Field>
-            <Field label="Mail">
-              <input type="email" name="mail" required placeholder="—" className={inputCls} />
-            </Field>
+            <Grupo label="Teléfono">
+              <CampoTelefono key={'tel-' + formKey} className={inputCls} />
+            </Grupo>
+            <Grupo label="Mail">
+              <CampoMail key={'mail-' + formKey} required className={inputCls} />
+            </Grupo>
           </div>
 
           <Field label="¿Cómo nos conociste?">
