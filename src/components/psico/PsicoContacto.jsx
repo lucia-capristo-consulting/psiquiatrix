@@ -30,6 +30,15 @@ function LockGlyph({ size = 12 }) {
   );
 }
 
+const ENFOQUE_OPTIONS = [
+  'Psicodinámico',
+  'Cognitivo conductual',
+  'DBT',
+  'Sistémico',
+  'EMDR',
+  'Otro',
+];
+
 const REFERRAL_OPTIONS = [
   'Redes sociales',
   'Recomendación',
@@ -61,6 +70,7 @@ function Grupo({ label, children }) {
 
 export default function PsicoContacto() {
   const [referral, setReferral] = useState('');
+  const [enfoque, setEnfoque] = useState('');
   const [intent, setIntent] = useState('Sí');
   const [status, setStatus] = useState('idle');
   // form.reset() no limpia los campos que manejan su propio estado (teléfono y
@@ -82,6 +92,7 @@ export default function PsicoContacto() {
       trackEvent('form-psicologos-enviado');
       form.reset();
       setReferral('');
+      setEnfoque('');
       setIntent('Sí');
       setFormKey((k) => k + 1);
     } catch (err) {
@@ -143,6 +154,33 @@ export default function PsicoContacto() {
               />
             </Field>
           </div>
+
+          <Field label="Enfoque terapéutico (opcional)">
+            <div className="relative">
+              <select
+                name="enfoque"
+                value={enfoque}
+                onChange={(e) => setEnfoque(e.target.value)}
+                className={`${inputCls} appearance-none w-full pr-8 cursor-pointer`}
+                style={{ opacity: enfoque ? 1 : 0.4 }}
+              >
+                <option value="" disabled>
+                  —
+                </option>
+                {ENFOQUE_OPTIONS.map((o) => (
+                  <option key={o} value={o} style={{ opacity: 1 }}>
+                    {o}
+                  </option>
+                ))}
+              </select>
+              <span
+                aria-hidden
+                className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 text-taupe text-[14px]"
+              >
+                ▾
+              </span>
+            </div>
+          </Field>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Grupo label="Teléfono">
