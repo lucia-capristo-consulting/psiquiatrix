@@ -2,6 +2,7 @@ import { useState } from 'react';
 import CampoTelefono from '../CampoTelefono';
 import CampoMail from '../CampoMail';
 import { inputCls } from '../../lib/formulario';
+import { MENSAJES_PSICOLOGOS, BOTON } from '../../config/mensajes-formulario';
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
 import { submitNetlifyForm } from '../../lib/netlifyForm';
@@ -218,21 +219,20 @@ export default function PsicoContacto() {
             className="mt-2 self-start bg-accent text-bone rounded-full px-7 py-4 text-[14px] font-medium tracking-[-0.005em] transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-cta disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
             {status === 'sending'
-              ? 'Enviando…'
+              ? BOTON.enviando
               : status === 'success'
-                ? 'Enviado'
+                ? BOTON.enviado
                 : 'Enviar consulta profesional →'}
           </button>
 
           {status === 'success' && (
             <p className="text-[14px] leading-[1.6] text-graphite m-0" role="status">
-              Recibimos tu mensaje. Te escribimos a la brevedad para coordinar una
-              primera conversación. Te enviamos una confirmación por correo.
+              {MENSAJES_PSICOLOGOS.exito}
             </p>
           )}
           {status === 'error' && (
-            <p className="text-[13px] text-accent m-0" role="alert">
-              No pudimos enviar tu mensaje. Probá de nuevo en unos minutos.
+            <p className="text-[14px] leading-[1.6] text-accent m-0" role="alert">
+              {MENSAJES_PSICOLOGOS.error}
             </p>
           )}
 

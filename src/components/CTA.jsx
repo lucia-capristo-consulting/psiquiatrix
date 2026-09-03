@@ -8,6 +8,7 @@ import CampoTelefono from './CampoTelefono';
 import CampoMail from './CampoMail';
 import { inputCls } from '../lib/formulario';
 import { formatoValido } from '../lib/validarMail';
+import { MENSAJES_PACIENTES, BOTON } from '../config/mensajes-formulario';
 
 const FORM_NAME = 'contacto-pacientes';
 
@@ -228,22 +229,22 @@ export default function CTA() {
             className="mt-2 bg-accent text-bone rounded-full px-7 py-4 text-[14px] font-medium tracking-[-0.005em] transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-cta disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
             {status === 'sending'
-              ? 'Enviando…'
+              ? BOTON.enviando
               : status === 'success'
-                ? 'Enviado'
+                ? BOTON.enviado
                 : 'Quiero que me contacten →'}
           </button>
 
           {status === 'success' && (
             <p className="text-[14px] leading-[1.6] text-graphite m-0 text-center" role="status">
-              Recibimos tu mensaje. Una profesional del equipo te va a contactar a
-              la brevedad.
-              {avisamosPorMail && ' Te enviamos una confirmación por correo.'}
+              {avisamosPorMail
+                ? MENSAJES_PACIENTES.exito.conMail
+                : MENSAJES_PACIENTES.exito.sinMail}
             </p>
           )}
           {status === 'error' && (
-            <p className="text-[13px] text-accent m-0 text-center" role="alert">
-              No pudimos enviar tu mensaje. Probá de nuevo o escribinos por WhatsApp.
+            <p className="text-[14px] leading-[1.6] text-accent m-0 text-center" role="alert">
+              {MENSAJES_PACIENTES.error}
             </p>
           )}
 

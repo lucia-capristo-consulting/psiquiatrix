@@ -77,6 +77,14 @@ Para agregar una página: sumarla a `PAGES` en `pages.js`, agregar su regla en `
 
 `src/config/contact.js` centraliza el número de WhatsApp (`WA_NUMBER`, solo dígitos, formato internacional sin `+` ni espacios) y los mensajes prellenados (`WA_MESSAGES`). Lo consumen `CTA.jsx` y `FloatingCTA.jsx`. Para cambiar el número o los textos de WhatsApp, editar **solo** este archivo.
 
+`src/config/mensajes-formulario.js` hace lo mismo con los textos que aparecen **después de enviar** un formulario: confirmación y error, para las dos audiencias. Ningún componente tiene esos textos escritos adentro.
+
+En el de pacientes el mensaje de éxito tiene **dos versiones** (`conMail` / `sinMail`) porque ahí el mail es opcional: a quien no dejó dirección no se le puede prometer un correo. Están escritas enteras las dos, en vez de armarse concatenando partes, para que se vea exactamente lo que va a leer la persona.
+
+**Ese archivo promete un plazo** ("a la brevedad") y el auto-reply promete lo mismo con otras palabras. La persona lee los dos con minutos de diferencia, así que si se cambia el plazo hay que cambiarlo también en la pestaña `plantillas-mail` del Sheet (ver `docs/auto-reply-formularios.md`).
+
+El estilo de los campos vive en `src/lib/formulario.js` (`inputCls`), compartido por los dos formularios. No bajar de 16px: Safari en iPhone hace zoom automático al enfocar un campo con letra más chica.
+
 ### Netlify Forms (importante)
 
 Patrón SPA + Netlify Forms con dos partes que **deben mantenerse sincronizadas**:
