@@ -147,9 +147,12 @@ export const CODIGOS_TELEFONO = [...PAISES].sort((a, b) =>
 );
 
 // Los que van arriba de todo en el desplegable, en ESTE orden y no en el
-// alfabético: primero Argentina, después los dos destinos principales, y
-// después los países hispanohablantes donde vive más gente de acá. La idea es
-// que casi nadie tenga que buscar en la lista larga.
+// alfabético. La idea es que casi nadie tenga que buscar en la lista larga.
+//
+// El orden sigue dónde hay más gente de acá: Argentina primero; después los
+// tres destinos grandes de emigración (Italia entra por el tema de la
+// ciudadanía, aunque no sea hispanohablante); después los limítrofes,
+// empezando por Brasil; y al final el resto de Latinoamérica.
 //
 // Es una lista de nombres sueltos a propósito: para cambiar las prioridades se
 // reordena o se saca un renglón, sin tocar los datos de más abajo. Los nombres
@@ -159,6 +162,8 @@ const DESTACADOS = [
   'Argentina',
   'España',
   'Estados Unidos',
+  'Italia',
+  'Brasil',
   'Chile',
   'Uruguay',
   'Paraguay',
