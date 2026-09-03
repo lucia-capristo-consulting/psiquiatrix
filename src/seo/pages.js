@@ -1,4 +1,5 @@
 import { medicalClinicSchema, psicologosServiceSchema } from './schema.js';
+import { OG_IMAGE, imagenOg } from './site.js';
 
 // Fuente unica de verdad del SEO por ruta. La consumen dos cosas:
 //   1. Los componentes de pagina, via <Seo {...pageByPath('/...')} />
@@ -11,6 +12,17 @@ import { medicalClinicSchema, psicologosServiceSchema } from './schema.js';
 // JavaScript, asi que para el buscador alcanzaba con <Seo />.
 //
 // Si agregas una pagina: sumala aca y agregale su regla en public/_redirects.
+//
+// IMAGEN DE PREVIEW POR RUTA: cada pagina puede traer su propia `ogImage`. Si
+// no declara ninguna, usa la de la home. Para darle una propia a /psicologos:
+//
+//   1. Dejar el archivo en public/ (por ejemplo og-psiquiatrix-psicologos.jpg)
+//   2. Descomentar el bloque `ogImage` de mas abajo y poner las medidas REALES
+//      del archivo.
+//
+// No hace falta tocar nada mas: el componente <Seo /> y el prerender la toman
+// de aca. El prerender es el que importa para WhatsApp, que no ejecuta
+// JavaScript y lee el HTML tal como sale del servidor.
 
 export const PAGES = [
   {
@@ -28,6 +40,13 @@ export const PAGES = [
     description:
       'PsiquiatriX trabaja con psicólogos derivadores con comunicación profesional, continuidad terapéutica y criterio clínico compartido. Conocé cómo derivar.',
     jsonLd: psicologosServiceSchema,
+    // Cuando exista la imagen propia de esta pagina, descomentar y ajustar:
+    // ogImage: imagenOg({
+    //   archivo: 'og-psiquiatrix-psicologos.jpg',
+    //   width: 1200,
+    //   height: 630,
+    //   alt: 'PsiquiatriX — Derivaciones psiquiátricas para psicólogos.',
+    // }),
   },
 ];
 

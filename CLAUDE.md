@@ -37,7 +37,10 @@ Las secciones se navegan por `id` HTML (no por rutas). El hook `src/hooks/useAct
 ### SEO
 
 - Cada página debe renderizar `<Seo />` (`src/seo/Seo.jsx`) con `title`, `description`, `path`, y opcionalmente `jsonLd`. Maneja canonical y Open Graph (usado por WhatsApp, Facebook, Instagram, LinkedIn y Telegram para el preview del link). No hay tags de Twitter Cards: la marca no tiene cuenta en Twitter/X y se removieron a propósito — no volver a agregarlas.
-- La imagen de preview es `public/og-psiquiatrix.jpg` (1731×909). Su URL, tipo, dimensiones y alt están declarados una sola vez, en `src/seo/site.js`. Si se reemplaza la imagen, actualizar ahí las dimensiones y listo. En `Seo.jsx` esos tags sólo se emiten cuando `ogImage` es la imagen por defecto: si una página pasa la suya, declarar el tamaño de otra sería incorrecto.
+- La imagen de preview por defecto es `public/og-psiquiatrix.jpg` (1731×909), declarada en `src/seo/site.js` con el armador `imagenOg()`. Las dimensiones se escriben a mano y **tienen que coincidir con el archivo**: los scrapers les creen sin verificarlas.
+- **Cada ruta puede tener su propia imagen de preview**: se le agrega `ogImage: imagenOg({...})` a su entrada en `pages.js` y con eso alcanza. Si no declara ninguna, usa la de la home. En `src/seo/pages.js` hay un bloque comentado con el ejemplo listo para `/psicologos`.
+
+  Lo que hace que esto funcione de verdad es que **`scripts/prerender-meta.mjs` también lee la imagen de la página**. Antes tenía la de la home fija: una ruta con imagen propia igual mostraba la de la home al compartirla por WhatsApp, que es justo donde se nota, porque WhatsApp lee el HTML prerenderizado y no lo que arma React.
 - `HelmetProvider` ya está montado en `src/main.jsx` — no envolver de nuevo.
 - Schemas JSON-LD viven en `src/seo/schema.js` (`medicalClinicSchema`, `psicologosServiceSchema`). Si agregás una página nueva, exportá su schema desde ese archivo en vez de inlinearlo.
 - `SITE_URL`, `SITE_NAME`, los datos de la imagen OG y el logo (`LOGO`) viven en `src/seo/site.js`, y de ahí los toman `Seo.jsx`, `schema.js`, `pages.js` y el script de prerender. Si cambia el dominio, además hay que tocar `public/sitemap.xml` y `public/robots.txt`, que son estáticos.

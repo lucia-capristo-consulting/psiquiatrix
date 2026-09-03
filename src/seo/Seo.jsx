@@ -5,14 +5,16 @@ export default function Seo({
   title,
   description,
   path = '/',
-  ogImage = OG_IMAGE.url,
+  ogImage = OG_IMAGE,
   ogType = 'website',
   jsonLd,
 }) {
   const url = `${SITE_URL}${path}`;
-  // Tipo, dimensiones y alt sólo se declaran para la imagen por defecto: si una
-  // página pasa su propia `ogImage`, declarar el tamaño de otra sería incorrecto.
-  const imageMeta = ogImage === OG_IMAGE.url ? OG_IMAGE : null;
+  // `ogImage` es el objeto entero, con sus propias dimensiones. Antes era una
+  // URL suelta y las dimensiones salían sólo para la imagen por defecto: una
+  // página con imagen propia la publicaba sin medidas, y los scrapers tenían
+  // que bajarla para deducirlas.
+  const img = ogImage || OG_IMAGE;
 
   return (
     <Helmet>
@@ -24,14 +26,14 @@ export default function Seo({
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />
       <meta property="og:type" content={ogType} />
-      <meta property="og:image" content={ogImage} />
+      <meta property="og:image" content={img.url} />
       <meta property="og:locale" content="es_AR" />
       <meta property="og:site_name" content={SITE_NAME} />
 
-      {imageMeta && <meta property="og:image:type" content={imageMeta.type} />}
-      {imageMeta && <meta property="og:image:width" content={String(imageMeta.width)} />}
-      {imageMeta && <meta property="og:image:height" content={String(imageMeta.height)} />}
-      {imageMeta && <meta property="og:image:alt" content={imageMeta.alt} />}
+      <meta property="og:image:type" content={img.type} />
+      <meta property="og:image:width" content={String(img.width)} />
+      <meta property="og:image:height" content={String(img.height)} />
+      <meta property="og:image:alt" content={img.alt} />
 
       {jsonLd && (
         <script type="application/ld+json">

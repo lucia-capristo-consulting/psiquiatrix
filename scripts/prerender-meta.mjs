@@ -38,6 +38,11 @@ const jsonForScript = (data) => JSON.stringify(data).replace(/</g, '\\u003c');
 
 function headFor(page) {
   const url = `${SITE_URL}${page.path}`;
+  // Este bloque es el que leen WhatsApp y compañia, que no ejecutan
+  // JavaScript. Antes la imagen estaba fija en la de la home, asi que una
+  // pagina con imagen propia igual mostraba la de la home al compartirla:
+  // justo donde mas se nota.
+  const img = page.ogImage || OG_IMAGE;
   const tags = [
     `<title>${esc(page.title)}</title>`,
     `<meta name="description" content="${esc(page.description)}" />`,
@@ -50,11 +55,11 @@ function headFor(page) {
     `<meta property="og:title" content="${esc(page.title)}" />`,
     `<meta property="og:description" content="${esc(page.description)}" />`,
     `<meta property="og:url" content="${esc(url)}" />`,
-    `<meta property="og:image" content="${esc(OG_IMAGE.url)}" />`,
-    `<meta property="og:image:type" content="${esc(OG_IMAGE.type)}" />`,
-    `<meta property="og:image:width" content="${OG_IMAGE.width}" />`,
-    `<meta property="og:image:height" content="${OG_IMAGE.height}" />`,
-    `<meta property="og:image:alt" content="${esc(OG_IMAGE.alt)}" />`,
+    `<meta property="og:image" content="${esc(img.url)}" />`,
+    `<meta property="og:image:type" content="${esc(img.type)}" />`,
+    `<meta property="og:image:width" content="${img.width}" />`,
+    `<meta property="og:image:height" content="${img.height}" />`,
+    `<meta property="og:image:alt" content="${esc(img.alt)}" />`,
   ];
 
   if (page.jsonLd) {
