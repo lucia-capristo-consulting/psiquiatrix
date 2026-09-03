@@ -48,6 +48,16 @@ Las secciones se navegan por `id` HTML (no por rutas). El hook `src/hooks/useAct
 
 - Los archivos de marca (logotipo en SVG y PNG, con fondo y sin fondo) viven en `public/marca/`. El texto está convertido a curvas, así que no dependen de tener instalada Instrument Serif — es lo que permite mandárselos a una imprenta. El campo `logo` del JSON-LD apunta a la versión transparente.
 
+#### Códigos QR
+
+Las cuatro piezas de `public/marca/qr-*` las genera **`scripts/generar-qr.cjs`**, que NO corre en el build: se ejecuta a mano cuando cambia el dominio, el logotipo o los textos. Sus dependencias se instalan con `npm install --no-save` y a propósito no están en `package.json`.
+
+Hay dos variantes de cada destino y las diferencias no son estéticas: la de **pantalla** va sobre bone con corrección de errores M; la de **impresión** va sobre blanco puro —el bone impreso sale como un gris sucio— y con corrección Q, que tolera perder un cuarto del código cuando el papel se dobla o se mancha.
+
+La bajada ("PARA PROFESIONALES") se convierte a curvas leyendo el `.woff2` real del sitio, así que el SVG no depende de tener instalada ninguna tipografía. Usa el estilo del pie del sitio: JetBrains Mono, interletrado 0.18em, color taupe.
+
+**El script lee cada pieza después de generarla** y falla si no decodifica el destino esperado. El logotipo y la bajada quedan fuera del código, pero eso hay que comprobarlo, no suponerlo.
+
 #### Listado de /marca/
 
 Netlify no genera listados de carpeta. Para que `www.psiquiatrix.ar/marca/` muestre los archivos sin tener que saber cada nombre, **`scripts/build-marca-index.mjs`** genera `dist/marca/index.html` después del build (encadenado en el script `build`, igual que el prerender).

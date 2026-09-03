@@ -21,6 +21,8 @@ const LABELS = {
   'logo-psiquiatrix-mini': 'Isotipo para foto de perfil',
   'qr-psiquiatrix': 'Código QR para pantalla',
   'qr-psiquiatrix-impresion': 'Código QR para imprimir',
+  'qr-psicologos': 'Código QR de psicólogos',
+  'qr-psicologos-impresion': 'Código QR de psicólogos para imprimir',
 };
 
 const TIPOS = {
