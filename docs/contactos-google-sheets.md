@@ -23,7 +23,8 @@ Netlify Forms permite *outgoing webhooks*: por cada envío, hace un `POST` con e
 payload JSON a una URL. Esa URL es un Google Apps Script publicado como web app
 que agrega una fila al Sheet, en **una pestaña por formulario**
 (`contacto-pacientes`, `contacto-psicologos`), usando los nombres de campo como
-encabezados.
+encabezados. El mismo script le manda después el mail de confirmación a quien
+escribió (ver [auto-reply-formularios.md](auto-reply-formularios.md)).
 
 Payload relevante de Netlify: `{ form_name, created_at, data: { ...campos } }`.
 
@@ -31,8 +32,8 @@ Payload relevante de Netlify: `{ form_name, created_at, data: { ...campos } }`.
 
 1. **Creá un Google Sheet** en blanco.
 
-2. **Extensiones → Apps Script**. Borrá el contenido y pegá el script de abajo.
-   Guardá.
+2. **Extensiones → Apps Script**. Borrá el contenido y pegá el de
+   [`apps-script/Codigo.gs`](apps-script/Codigo.gs). Guardá.
 
 3. **Implementar (Deploy) → Nueva implementación → Aplicación web**:
    - *Ejecutar como:* **Yo** (tu cuenta)
@@ -51,91 +52,16 @@ Payload relevante de Netlify: `{ form_name, created_at, data: { ...campos } }`.
 
 ## Script (Google Apps Script)
 
-```javascript
-// Netlify Forms -> Google Sheets
-// Recibe el webhook de Netlify y agrega cada envío como una fila,
-// en una pestaña por formulario (contacto-pacientes / contacto-psicologos).
-// - Deduplica por el id único de envío que manda Netlify (reintentos /
-//   notificación duplicada NO generan filas repetidas).
-// - Los TÍTULOS visibles de las columnas se definen en ETIQUETAS: editá el
-//   texto de la derecha; NO toques la clave de la izquierda (es el nombre
-//   interno del campo del formulario).
+El código completo vive en **[`apps-script/Codigo.gs`](apps-script/Codigo.gs)**,
+como archivo propio del repo: así queda en el historial, se pueden revisar los
+cambios y no depende de que alguien recuerde qué había escrito en Google.
 
-var ETIQUETAS = {
-  id: 'ID',
-  Fecha: 'Fecha',
-  nombre: 'Nombre y apellido',
-  telefono: 'Teléfono',
-  mail: 'Email',
-  destinatario: 'Para quién es',     // solo contacto-pacientes
-  conocimiento: 'Cómo nos conoció',
-  mensaje: 'Mensaje',
-  profesion: 'Profesión',            // solo contacto-psicologos
-  intencion: 'Intención de derivar', // solo contacto-psicologos
-};
+El repo no puede ejecutarlo — es una copia de referencia. **Si se edita el
+script dentro de Google, hay que traer el cambio a ese archivo, y al revés.**
 
-function doPost(e) {
-  var lock = LockService.getScriptLock();
-  lock.waitLock(30000); // serializa llegadas concurrentes para que el dedup funcione
-  try {
-    var body = JSON.parse(e.postData.contents);
-    var formName = body.form_name || 'sin-nombre';
-    var data = body.data || {};
-    var createdAt = body.created_at || new Date().toISOString();
-    var submissionId = body.id || '';
-
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName(formName) || ss.insertSheet(formName);
-
-    // Campos internos a ignorar (honeypot antispam / form-name)
-    var skip = { 'bot-field': true, 'form-name': true };
-    var fields = Object.keys(data).filter(function (k) { return !skip[k]; });
-
-    // Orden interno de columnas (claves de campo, NO los títulos visibles)
-    var keys = ['id', 'Fecha'].concat(fields);
-
-    // Encabezados la primera vez: escribo los títulos lindos de ETIQUETAS
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow(keys.map(function (k) { return ETIQUETAS[k] || k; }));
-    }
-
-    // Mapa título-visible -> clave-de-campo, para saber qué valor va en cada columna
-    var keyByLabel = {};
-    Object.keys(ETIQUETAS).forEach(function (k) { keyByLabel[ETIQUETAS[k]] = k; });
-
-    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-    var headerKeys = headers.map(function (h) { return keyByLabel[h] || h; });
-
-    // Dedup: si ya existe este id de envío, no agrego otra fila.
-    var idCol = headerKeys.indexOf('id');
-    if (submissionId && idCol !== -1 && sheet.getLastRow() > 1) {
-      var ids = sheet.getRange(2, idCol + 1, sheet.getLastRow() - 1, 1).getValues();
-      for (var i = 0; i < ids.length; i++) {
-        if (String(ids[i][0]) === String(submissionId)) {
-          return ContentService.createTextOutput(JSON.stringify({ ok: true, duplicate: true }))
-            .setMimeType(ContentService.MimeType.JSON);
-        }
-      }
-    }
-
-    // Alineo cada valor a su columna, resolviendo el título a su clave de campo
-    var row = headerKeys.map(function (key) {
-      if (key === 'id') return submissionId;
-      if (key === 'Fecha') return createdAt;
-      return data[key] !== undefined ? data[key] : '';
-    });
-    sheet.appendRow(row);
-
-    return ContentService.createTextOutput(JSON.stringify({ ok: true }))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({ ok: false, error: String(err) }))
-      .setMimeType(ContentService.MimeType.JSON);
-  } finally {
-    lock.releaseLock();
-  }
-}
-```
+Ese mismo script hace dos cosas por cada envío: agrega la fila al Sheet y manda
+el mail de confirmación a quien escribió. La parte del mail está explicada en
+[auto-reply-formularios.md](auto-reply-formularios.md).
 
 > **Cómo cambiar los títulos de las columnas**: editá el texto **a la derecha**
 > en `ETIQUETAS` (ej. `nombre: 'Nombre y apellido'`). NO cambies la clave de la
