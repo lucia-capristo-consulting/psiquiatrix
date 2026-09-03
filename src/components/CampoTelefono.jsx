@@ -60,12 +60,13 @@ export default function CampoTelefono({ required = false, className = '' }) {
     <div>
       <input type="hidden" name="telefono" value={valor} />
 
-      {/* País y número van en el MISMO renglón: el campo comparte fila con el
-          de mail en /psicologos, y partido en dos quedaba el país arriba, el
-          mail al lado y el número recién abajo. `flex-wrap` deja que el número
-          baje solo en pantallas donde de verdad no entra. */}
-      <div className="flex flex-wrap items-end gap-3">
-        <div className="relative basis-[168px] shrink-0">
+      {/* País y número van SIEMPRE en el mismo renglón. Nada de envolver: si
+          el número baja de línea, queda separado de su código y el campo se
+          lee como dos campos distintos. Cuando falta ancho, los dos se
+          encogen (de ahí el min-w-0, que sin él los input se plantan en su
+          ancho por defecto y fuerzan el desborde). */}
+      <div className="flex flex-nowrap items-end gap-3">
+        <div className="relative basis-[168px] min-w-0">
           <select
             value={pais}
             onChange={(e) => setPais(e.target.value)}

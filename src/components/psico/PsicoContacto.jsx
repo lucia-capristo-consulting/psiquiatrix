@@ -182,14 +182,13 @@ export default function PsicoContacto() {
             </div>
           </Field>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Grupo label="Teléfono">
-              <CampoTelefono key={'tel-' + formKey} className={inputCls} />
-            </Grupo>
-            <Grupo label="Mail">
-              <CampoMail key={'mail-' + formKey} required className={inputCls} />
-            </Grupo>
-          </div>
+          <Grupo label="Teléfono">
+            <CampoTelefono key={'tel-' + formKey} className={inputCls} />
+          </Grupo>
+
+          <Grupo label="Mail">
+            <CampoMail key={'mail-' + formKey} required className={inputCls} />
+          </Grupo>
 
           <Field label="¿Cómo nos conociste?">
             <div className="relative">
