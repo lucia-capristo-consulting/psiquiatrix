@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../motion';
-import { directors } from '../data/directors';
+import { directors } from '../contenido/bios-directoras';
 import BioBody from './BioBody';
 
 export default function Team() {

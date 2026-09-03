@@ -5,7 +5,7 @@ import {
   CODIGOS_RESTO,
   CODIGO_POR_DEFECTO,
   OTRO,
-} from '../data/codigos-telefono';
+} from '../contenido/codigos-telefono';
 
 const PAIS_POR_DEFECTO = 'Argentina';
 

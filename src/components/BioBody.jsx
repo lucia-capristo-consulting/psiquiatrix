@@ -9,7 +9,7 @@ const toParagraphs = (v) => (Array.isArray(v) ? v : v ? [v] : []);
  *
  * Se comparte entre Team.jsx (/) y psico/PsicoDirectoras.jsx (/psicologos)
  * para que las dos audiencias muestren exactamente el mismo texto. Los dos
- * textos salen de src/data/directors.js.
+ * textos salen de src/contenido/bios-directoras.js.
  */
 export default function BioBody({ intro, body }) {
   const [open, setOpen] = useState(false);

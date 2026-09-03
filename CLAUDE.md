@@ -73,11 +73,17 @@ Esto **no es SSG**: el `<body>` sigue vacío y lo llena React. Sólo se prerende
 
 Para agregar una página: sumarla a `PAGES` en `pages.js`, agregar su regla en `_redirects` y su `<loc>` en `public/sitemap.xml`.
 
-### Config de contacto (WhatsApp)
+### Textos y datos editables
 
-`src/config/contact.js` centraliza el número de WhatsApp (`WA_NUMBER`, solo dígitos, formato internacional sin `+` ni espacios) y los mensajes prellenados (`WA_MESSAGES`). Lo consumen `CTA.jsx` y `FloatingCTA.jsx`. Para cambiar el número o los textos de WhatsApp, editar **solo** este archivo.
+Todo lo que se cambia sin tocar el diseño vive en **`src/contenido/`**, con su índice en `src/contenido/LEEME.md`: bios de las directoras, número y mensajes de WhatsApp, textos de confirmación de los formularios y códigos de país. Ningún componente tiene textos escritos adentro.
 
-`src/config/mensajes-formulario.js` hace lo mismo con los textos que aparecen **después de enviar** un formulario: confirmación y error, para las dos audiencias. Ningún componente tiene esos textos escritos adentro.
+Dos excepciones que NO pueden estar ahí: los títulos y descripciones de SEO viven en `src/seo/pages.js` (los lee el script de prerender durante el build), y el texto de los mails automáticos vive en una pestaña del Google Sheet, a propósito, para poder cambiarlo sin publicar.
+
+#### Config de contacto (WhatsApp)
+
+`src/contenido/contacto-whatsapp.js` centraliza el número de WhatsApp (`WA_NUMBER`, solo dígitos, formato internacional sin `+` ni espacios) y los mensajes prellenados (`WA_MESSAGES`). Lo consumen `CTA.jsx` y `FloatingCTA.jsx`. Para cambiar el número o los textos de WhatsApp, editar **solo** este archivo.
+
+`src/contenido/mensajes-formulario.js` hace lo mismo con los textos que aparecen **después de enviar** un formulario: confirmación y error, para las dos audiencias. Ningún componente tiene esos textos escritos adentro.
 
 En el de pacientes el mensaje de éxito tiene **dos versiones** (`conMail` / `sinMail`) porque ahí el mail es opcional: a quien no dejó dirección no se le puede prometer un correo. Están escritas enteras las dos, en vez de armarse concatenando partes, para que se vea exactamente lo que va a leer la persona.
 

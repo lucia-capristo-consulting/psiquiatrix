@@ -2,7 +2,7 @@ import { useState } from 'react';
 import CampoTelefono from '../CampoTelefono';
 import CampoMail from '../CampoMail';
 import { inputCls } from '../../lib/formulario';
-import { MENSAJES_PSICOLOGOS, BOTON } from '../../config/mensajes-formulario';
+import { MENSAJES_PSICOLOGOS, BOTON } from '../../contenido/mensajes-formulario';
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
 import { submitNetlifyForm } from '../../lib/netlifyForm';

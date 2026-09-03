@@ -3,12 +3,12 @@ import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../motion';
 import { submitNetlifyForm } from '../lib/netlifyForm';
 import { trackEvent } from '../lib/analytics';
-import { waUrl, WA_MESSAGES } from '../config/contact';
+import { waUrl, WA_MESSAGES } from '../contenido/contacto-whatsapp';
 import CampoTelefono from './CampoTelefono';
 import CampoMail from './CampoMail';
 import { inputCls } from '../lib/formulario';
 import { formatoValido } from '../lib/validarMail';
-import { MENSAJES_PACIENTES, BOTON } from '../config/mensajes-formulario';
+import { MENSAJES_PACIENTES, BOTON } from '../contenido/mensajes-formulario';
 
 const FORM_NAME = 'contacto-pacientes';
 

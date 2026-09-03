@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
-import { waUrl, WA_MESSAGES } from '../config/contact';
+import { waUrl, WA_MESSAGES } from '../contenido/contacto-whatsapp';
 
 function WhatsappGlyph({ size = 30 }) {
   return (
