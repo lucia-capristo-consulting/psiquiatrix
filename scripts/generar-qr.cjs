@@ -67,6 +67,21 @@ const viewBox = (svg) => {
 
 // Convierte el texto a curvas, glifo por glifo, agregando el interletrado a
 // mano: opentype no lo aplica solo.
+/**
+ * Trazo de un glifo, esquivando un error de opentype: para ciertos cuerpos
+ * puntuales devuelve coordenadas NaN en algunos glifos de las fuentes
+ * variables. El rasterizador no falla: descarta esos segmentos y rellena el
+ * contorno, asi que la letra sale como un bloque solido. Paso con la "E" a
+ * cuerpo 31,746. Se reintenta con el cuerpo corrido un pelo, imperceptible.
+ */
+function trazoDeGlifo(glifo, size) {
+  for (const s of [size, Math.round(size * 100) / 100, size + 0.01, size - 0.01]) {
+    const d = glifo.getPath(0, 0, s).toPathData(2);
+    if (!d.includes('NaN')) return d;
+  }
+  throw new Error('No se pudo dibujar un glifo sin NaN a cuerpo ' + size);
+}
+
 function textoACurvas(font, texto, anchoObjetivo) {
   const upm = font.unitsPerEm;
   let anchoEm = 0;
@@ -78,11 +93,15 @@ function textoACurvas(font, texto, anchoObjetivo) {
   const partes = [];
   for (const ch of texto) {
     const g = font.charToGlyph(ch);
-    partes.push(g.getPath(x, 0, size).toPathData(2));
+    // Cada glifo se dibuja en el origen y se ubica con un transform. Con
+    // coordenadas grandes el rasterizador falla en silencio: corta el dibujo
+    // o rellena las contraformas. Ver el detalle en scripts/generar-og.cjs.
+    const d = trazoDeGlifo(g, size);
+    if (d.length > 2) partes.push({ d: d, x: x });
     x += (g.advanceWidth / upm) * size + INTERLETRADO * size;
   }
   const capHeight = (font.tables.os2 && font.tables.os2.sCapHeight) || upm * 0.7;
-  return { d: partes.join(' '), alto: (capHeight / upm) * size };
+  return { partes: partes, alto: (capHeight / upm) * size };
 }
 
 async function decodificar(buf, ancho, fondo) {
@@ -132,12 +151,21 @@ async function decodificar(buf, ancho, fondo) {
       // La baseline va debajo del logotipo, corrida por la altura de mayuscula.
       const y = logoY + logoH + HUECO_BAJADA + bajada.alto;
       const x = (W - BAJADA_W) / 2;
-      cuerpo += `  <path transform="translate(${x} ${y})" fill="${TAUPE}" d="${bajada.d}"/>\n`;
+      cuerpo +=
+        bajada.partes
+          .map(
+            (p) =>
+              `  <path transform="translate(${(x + p.x).toFixed(2)} ${y.toFixed(2)})" fill="${TAUPE}" d="${p.d}"/>`
+          )
+          .join('\n') + '\n';
     }
 
     const svg =
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Código QR de ${p.destino}">\n` +
       `  <title>PsiquiatriX — ${p.destino}</title>\n` + cuerpo + `</svg>\n`;
+
+    // Ultima red: un NaN no rompe el rasterizado, lo deforma en silencio.
+    if (svg.includes('NaN')) throw new Error('El SVG de ' + p.nombre + ' contiene NaN');
 
     const svgPath = `public/marca/${p.nombre}.svg`;
     const pngPath = `public/marca/${p.nombre}.png`;

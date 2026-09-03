@@ -44,7 +44,7 @@ export const PAGES = [
       archivo: 'og-psiquiatrix-psicologos.jpg',
       width: 1200,
       height: 630,
-      alt: 'PsiquiatriX — Derivá y seguí en la conversación.',
+      alt: 'PsiquiatriX — Cuando derivás a Psiquiatrix, seguís en la conversación.',
     }),
   },
 ];
