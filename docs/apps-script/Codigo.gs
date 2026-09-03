@@ -31,6 +31,7 @@ var ETIQUETAS = {
   conocimiento: 'Cómo nos conoció',
   mensaje: 'Mensaje',
   profesion: 'Profesión',            // solo contacto-psicologos
+  enfoque: 'Enfoque terapéutico',    // solo contacto-psicologos
   intencion: 'Intención de derivar', // solo contacto-psicologos
 };
 
@@ -121,6 +122,21 @@ function doPost(e) {
 
     var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
     var headerKeys = headers.map(function (h) { return keyByLabel[h] || h; });
+
+    // Campos que el formulario manda y que todavia no tienen columna: se les
+    // abre una al final.
+    //
+    // Sin esto, agregar un campo al formulario hacia que su valor se perdiera
+    // EN SILENCIO. Los encabezados solo se escribian con la pestaña vacia, y
+    // la fila se arma recorriendo las columnas que ya existen: un campo que no
+    // figuraba ahi simplemente no se guardaba, sin ningun error visible.
+    var faltantes = fields.filter(function (k) { return headerKeys.indexOf(k) === -1; });
+    if (faltantes.length) {
+      sheet
+        .getRange(1, sheet.getLastColumn() + 1, 1, faltantes.length)
+        .setValues([faltantes.map(function (k) { return ETIQUETAS[k] || k; })]);
+      headerKeys = headerKeys.concat(faltantes);
+    }
 
     // Dedup: si ya existe este id de envío, no agrego otra fila NI mando otro
     // mail. Netlify reintenta el webhook ante un error, y sin esto la persona

@@ -85,9 +85,12 @@ Los campos están definidos en los stubs de `index.html`:
 - **contacto-psicologos**: `nombre`, `profesion`, `telefono`, `mail`,
   `conocimiento`, `intencion`, `mensaje`
 
-Si se agregan/renombran campos en `index.html` y en el form React, aparecerán
-como columnas nuevas automáticamente (los envíos viejos quedan con esas celdas
-vacías).
+Si se agrega un campo en `index.html` y en el form React, el script le abre una
+columna nueva al final la primera vez que llega un envío con ese dato (los
+envíos viejos quedan con esa celda vacía).
+
+**Cuidado al renombrar un campo**: para el script es un campo distinto, así que
+abre otra columna y la vieja queda ahí con los datos históricos.
 
 ## Notas
 
