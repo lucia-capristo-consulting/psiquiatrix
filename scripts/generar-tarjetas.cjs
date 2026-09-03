@@ -29,32 +29,30 @@ const GRAPHITE = '#3C3833';
 const ACCENT = '#B8541F';
 const BONE = '#F2EDE4';
 
-const TARJETAS = [
-  {
-    slug: 'amanda',
+// Lo unico que vive aca es COMO generar los archivos. El nombre, el telefono,
+// el mail y el resto salen de src/contenido/tarjetas.js, que es el archivo que
+// se edita a mano.
+//
+// Antes estaban duplicados en los dos lados y era una trampa: cambiar el
+// telefono en uno solo dejaba la pagina diciendo una cosa y el contacto
+// descargable otra, sin ningun aviso.
+const GENERACION = {
+  amanda: {
     original: 'originales/amanda-villaverde.jpg',
     // Recorte del encabezado. Se elige a mano mirando la foto: arranca un poco
     // abajo del borde superior para que la cara quede alta pero no pegada.
     recorte: { left: 0, top: 60, width: 1023, height: 920 },
-    vcard: {
-      archivo: 'amanda-villaverde.vcf',
-      apellido: 'Villaverde',
-      nombre: 'Amanda',
-      prefijo: 'Dra.',
-      titulo: 'Médica psiquiatra',
-      organizacion: 'PsiquiatriX',
-      telefono: '+5491154200104',
-      mail: 'psiquiatrix.online@gmail.com',
-      nota: 'M.N. 60.654 — Cofundadora y Directora Clínica de Psiquiatrix',
-    },
-    og: {
-      nombre: 'Amanda Villaverde',
-      titulo: 'Médica psiquiatra',
-      rol: 'Cofundadora y Directora Clínica de Psiquiatrix',
-      url: 'www.psiquiatrix.ar/amanda',
-    },
   },
-];
+};
+
+// "Amanda Villaverde" -> { nombre: 'Amanda', apellido: 'Villaverde' }, que es
+// como lo quiere una agenda de contactos. Si algun apellido compuesto se parte
+// mal, se declara `agenda: { nombre, apellido }` en tarjetas.js y manda eso.
+function partirNombre(t) {
+  if (t.agenda) return t.agenda;
+  const partes = t.nombre.trim().split(/\s+/);
+  return { nombre: partes.slice(0, -1).join(' '), apellido: partes[partes.length - 1] };
+}
 
 // --- QR con la "x" de la marca en el centro ---------------------------------
 
@@ -121,18 +119,19 @@ async function armarQr(destino, italica) {
 // vCard 3.0 y no 4.0: es la que abren sin chistar tanto iPhone como Android.
 // Las lineas van separadas con CRLF porque asi lo pide la norma y hay lectores
 // que con saltos sueltos no lo reconocen.
-function armarVcard(v, url) {
+function armarVcard(t, url) {
+  const { nombre, apellido } = partirNombre(t);
   const lineas = [
     'BEGIN:VCARD',
     'VERSION:3.0',
-    `N:${v.apellido};${v.nombre};;${v.prefijo};`,
-    `FN:${v.prefijo} ${v.nombre} ${v.apellido}`,
-    `TITLE:${v.titulo}`,
-    `ORG:${v.organizacion}`,
-    `TEL;TYPE=CELL,VOICE:${v.telefono}`,
-    `EMAIL;TYPE=INTERNET:${v.mail}`,
+    `N:${apellido};${nombre};;Dra.;`,
+    `FN:Dra. ${nombre} ${apellido}`,
+    `TITLE:${t.titulo}`,
+    'ORG:PsiquiatriX',
+    `TEL;TYPE=CELL,VOICE:${t.contacto.telefono.replace(/[^\d+]/g, '')}`,
+    `EMAIL;TYPE=INTERNET:${t.contacto.mail}`,
     `URL:${url}`,
-    `NOTE:${v.nota}`,
+    `NOTE:${t.matricula} — ${t.rol}`,
     'END:VCARD',
   ];
   return lineas.join('\r\n') + '\r\n';
@@ -151,13 +150,22 @@ function armarVcard(v, url) {
     ).buffer
   );
 
+  // Los datos salen del mismo archivo que usa la web. Import dinamico porque
+  // aquel es un modulo ES y este script es CommonJS.
+  const { TARJETAS } = await import('../src/contenido/tarjetas.js');
+
   for (const t of TARJETAS) {
+    const gen = GENERACION[t.slug];
+    if (!gen) {
+      console.log(t.slug + ': falta declararla en GENERACION (que foto usar y como recortarla)');
+      continue;
+    }
     const destino = `${SITIO}/${t.slug}`;
 
     // 1. Foto del encabezado.
     const foto = `${SALIDA}/${t.slug}.jpg`;
-    await sharp(t.original)
-      .extract(t.recorte)
+    await sharp(gen.original)
+      .extract(gen.recorte)
       .jpeg({ quality: 84, mozjpeg: true, chromaSubsampling: '4:4:4' })
       .toFile(foto);
 
@@ -169,8 +177,8 @@ function armarVcard(v, url) {
     await sharp(Buffer.from(svg), { density: 288 }).resize({ width: 1200 }).png().toFile(qrPng);
 
     // 3. Contacto para agendar.
-    const vcf = `${SALIDA}/${t.vcard.archivo}`;
-    fs.writeFileSync(vcf, armarVcard(t.vcard, destino), 'utf8');
+    const vcf = `${SALIDA}/${t.vcard.split('/').pop()}`;
+    fs.writeFileSync(vcf, armarVcard(t, destino), 'utf8');
 
     console.log(t.slug + ' -> ' + destino);
     for (const f of [foto, qrSvg, qrPng, vcf]) {
@@ -251,20 +259,20 @@ async function generarOgTarjeta(t, fuentes) {
   const partes = [];
   let y = 214;
 
-  const nombre = lineaOg(fuentes.serif, t.og.nombre, 58, OG_MARGEN, y, GRAPHITE);
+  const nombre = lineaOg(fuentes.serif, t.nombre, 58, OG_MARGEN, y, GRAPHITE);
   partes.push(nombre.paths);
 
   y += 44;
   partes.push(`<rect x="${OG_MARGEN}" y="${y}" width="64" height="2" fill="${ACCENT}"/>`);
 
   y += 2 + 40 + cap(fuentes.serif, 30);
-  partes.push(lineaOg(fuentes.serif, t.og.titulo, 30, OG_MARGEN, y, ACCENT).paths);
+  partes.push(lineaOg(fuentes.serif, t.titulo, 30, OG_MARGEN, y, ACCENT).paths);
 
   y += 42;
-  partes.push(lineaOg(fuentes.sans, t.og.rol, 20, OG_MARGEN, y, GRAPHITE).paths);
+  partes.push(lineaOg(fuentes.sans, t.rol, 20, OG_MARGEN, y, GRAPHITE).paths);
 
   partes.push(
-    lineaOg(fuentes.sans, t.og.url, 18, OG_MARGEN, OG_H - OG_MARGEN, TAUPE).paths
+    lineaOg(fuentes.sans, `www.psiquiatrix.ar/${t.slug}`, 18, OG_MARGEN, OG_H - OG_MARGEN, TAUPE).paths
   );
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${OG_W}" height="${OG_H}" viewBox="0 0 ${OG_W} ${OG_H}">
@@ -281,7 +289,7 @@ async function generarOgTarjeta(t, fuentes) {
   if (svg.includes('NaN')) throw new Error('El SVG del preview contiene NaN');
   if (nombre.ancho > anchoTexto) console.log('   OJO: el nombre se pasa del ancho de texto');
 
-  const foto = await sharp(t.original)
+  const foto = await sharp(GENERACION[t.slug].original)
     .resize(OG_FOTO_W, OG_H, { fit: 'cover', position: 'top' })
     .toBuffer();
 
