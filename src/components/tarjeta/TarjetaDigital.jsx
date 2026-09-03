@@ -100,16 +100,17 @@ export default function TarjetaDigital({ tarjeta }) {
             src={tarjeta.foto}
             alt={`${tarjeta.nombre}, ${tarjeta.titulo.toLowerCase()}`}
             width="1023"
-            height="920"
-            className="w-full h-[46vh] max-h-[420px] min-h-[280px] object-cover object-top"
+            height="1250"
+            className="w-full h-[56vh] max-h-[480px] min-h-[340px] object-cover object-top"
           />
           <svg
             className="absolute bottom-[-1px] left-0 w-full"
-            viewBox="0 0 100 12"
+            viewBox="0 0 100 6"
             preserveAspectRatio="none"
             aria-hidden
           >
-            <path d="M0 12 Q50 -2 100 12 L100 12 L0 12 Z" fill="#F2EDE4" />
+            {/* Curva baja a proposito: mas profunda le muerde la cara. */}
+            <path d="M0 6 Q50 0 100 6 L100 6 L0 6 Z" fill="#F2EDE4" />
           </svg>
         </div>
 
@@ -184,17 +185,15 @@ export default function TarjetaDigital({ tarjeta }) {
             transition={sectionTransition}
             className="mt-10 pt-8 border-t border-linen"
           >
-            <h2 className="font-serif text-[26px] leading-[1.15] tracking-[-0.015em] font-normal m-0">
-              Sobre {tarjeta.nombre.split(' ')[0]}
-            </h2>
-            <div className="mt-4">
-              <BioBody
-                intro={[tarjeta.sobre]}
-                body={bio ? [...bio.intro, ...bio.body] : []}
-                textoAbrir="Conocer su trayectoria"
-                textoCerrar="Ver menos"
-              />
-            </div>
+            {/* Sin titulo ni resumen: lo que resume su profesion ya se leyo
+                arriba, y repetirlo con otras palabras solo alarga la pagina.
+                Queda el desplegable, para quien quiera la trayectoria. */}
+            <BioBody
+              intro={[]}
+              body={bio ? [...bio.intro, ...bio.body] : []}
+              textoAbrir="Conocer su trayectoria"
+              textoCerrar="Ver menos"
+            />
           </motion.div>
 
           <motion.div
@@ -208,9 +207,12 @@ export default function TarjetaDigital({ tarjeta }) {
             >
               Psiquiatri<span className="italic text-accent">x</span>
             </Link>
-            <p className="mt-2 font-mono text-[10px] tracking-[0.18em] text-taupe m-0">
+            <Link
+              to="/"
+              className="mt-2 inline-block font-mono text-[10px] tracking-[0.18em] text-taupe no-underline hover:text-accent transition-colors"
+            >
               WWW.PSIQUIATRIX.AR
-            </p>
+            </Link>
           </motion.div>
         </motion.div>
       </div>

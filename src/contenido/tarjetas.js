@@ -30,9 +30,6 @@ export const TARJETAS = [
     // Una línea, la que se lee de un vistazo antes de decidir si seguir leyendo.
     presentacion:
       'Médica Especialista en Psiquiatría y Psicología Médica con más de 35 años de experiencia clínica.',
-    // Resumen de la sección "Sobre Amanda", más corto que la bio completa.
-    sobre:
-      'Una mirada clínica integral, construida a lo largo de más de 35 años de práctica en instituciones hospitalarias, docencia universitaria y consultorio privado.',
     foto: '/tarjetas/amanda.jpg',
     qr: '/tarjetas/qr-amanda.svg',
     vcard: '/tarjetas/amanda-villaverde.vcf',

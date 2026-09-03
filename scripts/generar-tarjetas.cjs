@@ -39,9 +39,10 @@ const BONE = '#F2EDE4';
 const GENERACION = {
   amanda: {
     original: 'originales/amanda-villaverde.jpg',
-    // Recorte del encabezado. Se elige a mano mirando la foto: arranca un poco
-    // abajo del borde superior para que la cara quede alta pero no pegada.
-    recorte: { left: 0, top: 60, width: 1023, height: 920 },
+    // Recorte del encabezado, elegido a mano mirando la foto. Vertical y desde
+    // el borde de arriba: asi entra mas cuerpo, la cara sube en el encuadre y
+    // deja de caer en la zona que tapa la curva de abajo.
+    recorte: { left: 0, top: 0, width: 1023, height: 1250 },
   },
 };
 
