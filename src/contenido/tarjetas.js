@@ -8,15 +8,13 @@
 // La BIO no se escribe acá: sale de bios-directoras.js, para que no haya dos
 // versiones del mismo texto conviviendo. Acá va sólo lo propio de la tarjeta.
 //
-// OJO CON LOS DATOS DE CONTACTO: hoy son los INSTITUCIONALES, los mismos del
-// resto del sitio. No tengo un teléfono ni un mail personal de cada una. Si
-// quieren usar los suyos, se reemplazan acá y cambia en la página, en el botón
-// de guardar contacto y en el archivo de agenda que se descarga.
+// LOS DATOS DE CONTACTO SON PERSONALES de cada una, no los del sitio: quien
+// escanea la tarjeta espera escribirle A ELLA.
+//
+// Si se cambia un teléfono o un mail acá, hay que volver a correr
+// `node scripts/generar-tarjetas.cjs`: el archivo que se guarda en la agenda
+// se genera a partir de esto y si no queda desactualizado.
 // ─────────────────────────────────────────────────────────────────────────────
-
-import { WA_NUMBER } from './contacto-whatsapp.js';
-
-const MAIL_INSTITUCIONAL = 'psiquiatrix.online@gmail.com';
 
 export const TARJETAS = [
   {
@@ -34,9 +32,12 @@ export const TARJETAS = [
     qr: '/tarjetas/qr-amanda.svg',
     vcard: '/tarjetas/amanda-villaverde.vcf',
     contacto: {
-      whatsapp: WA_NUMBER,
-      telefono: '+54 9 11 5420-0104',
-      mail: MAIL_INSTITUCIONAL,
+      // Sólo dígitos y con el 9 de celular: es lo que necesita el link de
+      // WhatsApp. Sin ese 9, wa.me no resuelve el número.
+      whatsapp: '5491149479933',
+      // Como se muestra y como se marca al tocar "llamar".
+      telefono: '+54 11 4947-9933',
+      mail: 'dra.mavillaverde@gmail.com',
     },
   },
 ];

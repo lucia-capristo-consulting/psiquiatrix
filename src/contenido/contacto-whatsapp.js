@@ -26,6 +26,9 @@ export const WA_MESSAGES = {
 };
 
 // Construye una URL de WhatsApp con mensaje prellenado.
-export function waUrl(message) {
-  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
+//
+// Por defecto usa el número del sitio, pero acepta otro: las tarjetas
+// digitales de las directoras llevan el personal de cada una.
+export function waUrl(message, numero = WA_NUMBER) {
+  return `https://wa.me/${numero}?text=${encodeURIComponent(message)}`;
 }

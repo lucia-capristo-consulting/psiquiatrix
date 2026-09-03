@@ -162,7 +162,7 @@ export default function TarjetaDigital({ tarjeta }) {
             className="mt-3 grid grid-cols-4 gap-3"
           >
             <AccionRapida
-              href={waUrl(mensajeWa)}
+              href={waUrl(mensajeWa, contacto.whatsapp)}
               etiqueta={`Escribir a ${tarjeta.nombre} por WhatsApp`}
               hijo={<IconoWhatsapp />}
               externo
