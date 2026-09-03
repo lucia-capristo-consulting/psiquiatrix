@@ -19,6 +19,7 @@ const LABELS = {
   'logo-psiquiatrix': 'Logotipo principal',
   'logo-psiquiatrix-transparente': 'Logotipo sin fondo',
   'logo-psiquiatrix-mini': 'Isotipo para foto de perfil',
+  'qr-psiquiatrix': 'Código QR del sitio',
 };
 
 const TIPOS = {
