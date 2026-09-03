@@ -22,9 +22,9 @@ export function imagenOg({ archivo, width, height, alt, type = 'image/jpeg' }) {
 
 export const OG_IMAGE = imagenOg({
   archivo: 'og-psiquiatrix.jpg',
-  width: 1731,
-  height: 909,
-  alt: 'PsiquiatriX — Centro de psiquiatría online: psiquiatría profesional con mirada humana.',
+  width: 1200,
+  height: 630,
+  alt: 'PsiquiatriX — Psiquiatría online con mirada humana.',
 });
 
 // Logotipo para el campo `logo` del JSON-LD. Se usa la versión con fondo

@@ -40,13 +40,12 @@ export const PAGES = [
     description:
       'PsiquiatriX trabaja con psicólogos derivadores con comunicación profesional, continuidad terapéutica y criterio clínico compartido. Conocé cómo derivar.',
     jsonLd: psicologosServiceSchema,
-    // Cuando exista la imagen propia de esta pagina, descomentar y ajustar:
-    // ogImage: imagenOg({
-    //   archivo: 'og-psiquiatrix-psicologos.jpg',
-    //   width: 1200,
-    //   height: 630,
-    //   alt: 'PsiquiatriX — Derivaciones psiquiátricas para psicólogos.',
-    // }),
+    ogImage: imagenOg({
+      archivo: 'og-psiquiatrix-psicologos.jpg',
+      width: 1200,
+      height: 630,
+      alt: 'PsiquiatriX — Derivá y seguí en la conversación.',
+    }),
   },
 ];
 
