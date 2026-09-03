@@ -18,6 +18,7 @@ const DIR = 'dist/marca';
 const LABELS = {
   'logo-psiquiatrix': 'Logotipo principal',
   'logo-psiquiatrix-transparente': 'Logotipo sin fondo',
+  'logo-psiquiatrix-mini': 'Isotipo para foto de perfil',
 };
 
 const TIPOS = {
@@ -29,12 +30,36 @@ const TIPOS = {
     nombre: 'PNG',
     nota: 'Mapa de bits. Para usos digitales rápidos: mail, presentaciones, redes.',
   },
+  '.jpg': {
+    nombre: 'JPEG',
+    nota: 'Mapa de bits sin transparencia. Pensado para donde piden una imagen cuadrada, como la foto de perfil de una red social.',
+  },
 };
+TIPOS['.jpeg'] = TIPOS['.jpg'];
 
 const pngSize = (buf) =>
   buf.length > 24 && buf.readUInt32BE(12) === 0x49484452
     ? { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) }
     : null;
+
+// El tamaño de un JPEG está en el marcador SOF, que hay que ir a buscar
+// saltando de segmento en segmento: no está a un offset fijo como en PNG.
+const jpegSize = (buf) => {
+  let i = 2;
+  while (i + 9 < buf.length) {
+    if (buf[i] !== 0xff) {
+      i++;
+      continue;
+    }
+    const marcador = buf[i + 1];
+    const esSOF =
+      marcador >= 0xc0 && marcador <= 0xcf &&
+      marcador !== 0xc4 && marcador !== 0xc8 && marcador !== 0xcc;
+    if (esSOF) return { w: buf.readUInt16BE(i + 7), h: buf.readUInt16BE(i + 5) };
+    i += 2 + buf.readUInt16BE(i + 2);
+  }
+  return null;
+};
 
 const svgSize = (txt) => {
   const vb = txt.match(/viewBox\s*=\s*["']\s*[\d.-]+\s+[\d.-]+\s+([\d.]+)\s+([\d.]+)/i);
@@ -70,7 +95,13 @@ for (const file of readdirSync(DIR).sort()) {
   const ext = file.slice(punto).toLowerCase();
   const buf = readFileSync(join(DIR, file));
   const dim =
-    ext === '.png' ? pngSize(buf) : ext === '.svg' ? svgSize(buf.toString('utf8')) : null;
+    ext === '.png'
+      ? pngSize(buf)
+      : ext === '.svg'
+        ? svgSize(buf.toString('utf8'))
+        : ext === '.jpg' || ext === '.jpeg'
+          ? jpegSize(buf)
+          : null;
   if (!grupos.has(base)) grupos.set(base, []);
   grupos.get(base).push({ file, ext, bytes: buf.length, dim });
 }
