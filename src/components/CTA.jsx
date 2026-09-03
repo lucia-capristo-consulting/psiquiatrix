@@ -7,6 +7,7 @@ import { waUrl, WA_MESSAGES } from '../config/contact';
 import CampoTelefono from './CampoTelefono';
 import CampoMail from './CampoMail';
 import { inputCls } from '../lib/formulario';
+import { formatoValido } from '../lib/validarMail';
 
 const FORM_NAME = 'contacto-pacientes';
 
@@ -61,6 +62,9 @@ export default function CTA() {
   // form.reset() no limpia los campos que manejan su propio estado (teléfono y
   // mail): cambiarles la key los vuelve a montar vacíos.
   const [formKey, setFormKey] = useState(0);
+  // El mail es opcional en este formulario, asi que solo se promete la
+  // confirmacion por correo si la persona efectivamente dejo una direccion.
+  const [avisamosPorMail, setAvisamosPorMail] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,6 +75,7 @@ export default function CTA() {
     setStatus('sending');
     try {
       await submitNetlifyForm(FORM_NAME, data);
+      setAvisamosPorMail(formatoValido(data.mail));
       setStatus('success');
       // Sólo se cuenta el envío exitoso, no el clic en el botón: lo que importa
       // medir es la consulta que llegó, no la intención. Sin datos del form.
@@ -225,13 +230,15 @@ export default function CTA() {
             {status === 'sending'
               ? 'Enviando…'
               : status === 'success'
-                ? '¡Recibido!'
+                ? 'Enviado'
                 : 'Quiero que me contacten →'}
           </button>
 
           {status === 'success' && (
-            <p className="text-[13px] text-graphite m-0 text-center" role="status">
-              Recibimos tus datos. Una profesional del equipo te va a contactar pronto.
+            <p className="text-[14px] leading-[1.6] text-graphite m-0 text-center" role="status">
+              Recibimos tu mensaje. Una profesional del equipo te va a contactar a
+              la brevedad.
+              {avisamosPorMail && ' Te enviamos una confirmación por correo.'}
             </p>
           )}
           {status === 'error' && (

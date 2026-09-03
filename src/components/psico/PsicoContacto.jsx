@@ -220,13 +220,14 @@ export default function PsicoContacto() {
             {status === 'sending'
               ? 'Enviando…'
               : status === 'success'
-                ? '¡Recibido!'
+                ? 'Enviado'
                 : 'Enviar consulta profesional →'}
           </button>
 
           {status === 'success' && (
-            <p className="text-[13px] text-graphite m-0" role="status">
-              Recibimos tu consulta. Te vamos a responder pronto.
+            <p className="text-[14px] leading-[1.6] text-graphite m-0" role="status">
+              Recibimos tu mensaje. Te escribimos a la brevedad para coordinar una
+              primera conversación. Te enviamos una confirmación por correo.
             </p>
           )}
           {status === 'error' && (
