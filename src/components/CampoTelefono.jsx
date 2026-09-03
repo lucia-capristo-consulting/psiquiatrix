@@ -47,16 +47,20 @@ export default function CampoTelefono({ required = false, className = '' }) {
   const esArgentina = soloDigitos(codigo) === '54';
 
   return (
-    <div className="flex flex-col gap-3">
+    <div>
       <input type="hidden" name="telefono" value={valor} />
 
-      <div className="flex items-end gap-3">
-        <div className="relative flex-1 min-w-0">
+      {/* País y número van en el MISMO renglón: el campo comparte fila con el
+          de mail en /psicologos, y partido en dos quedaba el país arriba, el
+          mail al lado y el número recién abajo. `flex-wrap` deja que el número
+          baje solo en pantallas donde de verdad no entra. */}
+      <div className="flex flex-wrap items-end gap-3">
+        <div className="relative basis-[168px] shrink-0">
           <select
             value={pais}
             onChange={(e) => setPais(e.target.value)}
             aria-label="País"
-            className={`${className} appearance-none w-full pr-8 cursor-pointer`}
+            className={`${className} appearance-none w-full pr-6 cursor-pointer`}
             style={{ fontStyle: 'normal' }}
           >
             {CODIGOS_TELEFONO.map((c) => (
@@ -68,7 +72,7 @@ export default function CampoTelefono({ required = false, className = '' }) {
           </select>
           <span
             aria-hidden
-            className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 text-taupe text-[14px]"
+            className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-taupe text-[14px]"
           >
             ▾
           </span>
@@ -82,24 +86,24 @@ export default function CampoTelefono({ required = false, className = '' }) {
             inputMode="tel"
             placeholder="+00"
             aria-label="Código de país"
-            className={`${className} w-[84px] flex-shrink-0`}
+            className={`${className} w-[72px] shrink-0`}
           />
         )}
+
+        <input
+          type="tel"
+          value={numero}
+          onChange={(e) => setNumero(e.target.value)}
+          required={required}
+          placeholder="—"
+          autoComplete="tel-national"
+          aria-label="Número de teléfono"
+          className={`${className} flex-1 basis-[130px] min-w-0`}
+        />
       </div>
 
-      <input
-        type="tel"
-        value={numero}
-        onChange={(e) => setNumero(e.target.value)}
-        required={required}
-        placeholder="—"
-        autoComplete="tel-national"
-        aria-label="Número de teléfono"
-        className={className}
-      />
-
       {esArgentina && (
-        <p className="-mt-1 text-[11px] leading-[1.5] text-taupe m-0">
+        <p className="mt-1.5 text-[11px] leading-[1.5] text-taupe m-0">
           Sin el 0 de área ni el 15. Por ejemplo: 11 5555 5555
         </p>
       )}
