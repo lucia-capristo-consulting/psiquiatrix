@@ -71,7 +71,6 @@ export default function CampoTelefono({ required = false, className = '' }) {
             onChange={(e) => setPais(e.target.value)}
             aria-label="País"
             className={`${className} appearance-none w-full pr-6 cursor-pointer`}
-            style={{ fontStyle: 'normal' }}
           >
             {/* Dos grupos en vez de una lista sola: los destacados primero,
                 el resto alfabético abajo. El navegador dibuja el título de

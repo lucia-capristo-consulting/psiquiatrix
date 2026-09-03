@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import CampoTelefono from '../CampoTelefono';
 import CampoMail from '../CampoMail';
+import { inputCls } from '../../lib/formulario';
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
 import { submitNetlifyForm } from '../../lib/netlifyForm';
@@ -56,9 +57,6 @@ function Grupo({ label, children }) {
     </div>
   );
 }
-
-const inputCls =
-  'bg-transparent border-0 border-b border-graphite/70 py-2 font-serif text-[20px] italic text-graphite placeholder:opacity-40 focus:outline-none focus:border-accent transition-colors';
 
 export default function PsicoContacto() {
   const [referral, setReferral] = useState('');
@@ -161,16 +159,13 @@ export default function PsicoContacto() {
                 value={referral}
                 onChange={(e) => setReferral(e.target.value)}
                 className={`${inputCls} appearance-none w-full pr-8 cursor-pointer`}
-                style={{
-                  fontStyle: referral ? 'normal' : 'italic',
-                  opacity: referral ? 1 : 0.4,
-                }}
+                style={{ opacity: referral ? 1 : 0.4 }}
               >
                 <option value="" disabled>
                   —
                 </option>
                 {REFERRAL_OPTIONS.map((o) => (
-                  <option key={o} value={o} style={{ fontStyle: 'normal', opacity: 1 }}>
+                  <option key={o} value={o} style={{ opacity: 1 }}>
                     {o}
                   </option>
                 ))}

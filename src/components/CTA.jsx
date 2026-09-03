@@ -6,11 +6,9 @@ import { trackEvent } from '../lib/analytics';
 import { waUrl, WA_MESSAGES } from '../config/contact';
 import CampoTelefono from './CampoTelefono';
 import CampoMail from './CampoMail';
+import { inputCls } from '../lib/formulario';
 
 const FORM_NAME = 'contacto-pacientes';
-
-const inputCls =
-  'bg-transparent border-0 border-b border-graphite/70 py-2 font-serif text-[20px] italic text-graphite placeholder:opacity-40 focus:outline-none focus:border-accent transition-colors';
 
 const REFERRAL_OPTIONS = [
   'Redes sociales',
@@ -188,14 +186,14 @@ export default function CTA() {
                 name="conocimiento"
                 value={referral}
                 onChange={(e) => setReferral(e.target.value)}
-                className="bg-transparent border-0 border-b border-graphite/70 py-2 font-serif text-[20px] text-graphite appearance-none w-full pr-8 cursor-pointer focus:outline-none focus:border-accent transition-colors"
-                style={{ fontStyle: referral ? 'normal' : 'italic', opacity: referral ? 1 : 0.4 }}
+                className={`${inputCls} appearance-none w-full pr-8 cursor-pointer`}
+                style={{ opacity: referral ? 1 : 0.4 }}
               >
                 <option value="" disabled>
                   —
                 </option>
                 {REFERRAL_OPTIONS.map((o) => (
-                  <option key={o} value={o} style={{ fontStyle: 'normal', opacity: 1 }}>
+                  <option key={o} value={o} style={{ opacity: 1 }}>
                     {o}
                   </option>
                 ))}
@@ -215,7 +213,7 @@ export default function CTA() {
               name="mensaje"
               rows={2}
               placeholder="—"
-              className="bg-transparent border-0 border-b border-graphite/70 py-2 font-serif text-[20px] italic text-graphite placeholder:opacity-40 focus:outline-none focus:border-accent transition-colors resize-none leading-[1.5]"
+              className={`${inputCls} resize-none leading-[1.5]`}
             />
           </label>
 
