@@ -109,5 +109,6 @@ Utilidades custom en `src/index.css`: `.eyebrow` (caps espaciadas) y `.mono-tag`
 ## Notas operativas
 
 - **SPA fallback en Netlify**: resuelto con `public/_redirects` (`/* /index.html 200`). Vite lo copia a `dist/` en el build y Netlify lo aplica, de modo que cargar `/psicologos` directamente o refrescar devuelve el `index.html` de la SPA en vez de 404. No borrar este archivo.
+- **Fotos de las directoras**: lo publicado vive en `public/team/`, con **dos medidas por directora** (`-bio.jpg` 400×480 para `/`, `-bio-sm.jpg` 224×280 para `/psicologos`). Se entregan ya en el tamaño en que se muestran, al doble por retina: si el navegador tiene que achicarlas, su filtro barato produce muaré en los estampados finos. **Si se reemplaza una foto hay que regenerar las dos medidas**, no alcanza con pisar una. Los archivos en alta están en `originales/`, fuera de `public/` para que no se publiquen; el recorte exacto de cada una y la receta para regenerarlas están en `originales/LEEME.md`.
 - **Branch de deploy**: `main`. Push a `main` → rebuild automático en Netlify.
 - **No commitear `.claude/`** — está en `.gitignore`, es estado local de Claude Code.
