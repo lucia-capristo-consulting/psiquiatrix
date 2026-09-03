@@ -10,3 +10,8 @@
 # año. Es la contracara de `immutable`.
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
+
+# El archivo de contacto tiene que llegar con su tipo correcto: si sale como
+# descarga generica, el iPhone lo baja en vez de abrir la ficha para agendar.
+/tarjetas/*.vcf
+  Content-Type: text/vcard; charset=utf-8

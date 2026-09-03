@@ -9,6 +9,11 @@
 /marca         /marca/index.html  200
 /marca/        /marca/index.html  200
 
+# Tarjetas digitales de las directoras. Una regla por persona, igual que las
+# demas rutas prerenderizadas: el QR que ellas muestran lleva aca, y el link se
+# comparte, asi que el preview tiene que salir bien.
+/amanda        /amanda.html       200
+
 # Fallback de la SPA: cualquier otra ruta devuelve el index.html y la resuelve
 # React Router en el cliente. Sin esto, entrar directo a una URL o refrescar
 # devolveria 404.

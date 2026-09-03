@@ -51,6 +51,30 @@ export const medicalClinicSchema = {
   ],
 };
 
+// Ficha de una profesional, para su tarjeta digital. Es lo que le permite a
+// Google entender que la pagina es sobre una persona concreta y no sobre la
+// clinica, y de paso alimenta el panel lateral cuando alguien busca su nombre.
+export function physicianSchema({ nombre, titulo, rol, matricula, url, foto, presentacion }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Physician',
+    name: nombre,
+    honorificPrefix: 'Dra.',
+    jobTitle: [titulo, rol],
+    description: presentacion,
+    identifier: matricula,
+    medicalSpecialty: 'Psychiatric',
+    url,
+    image: `${SITE_URL}${foto}`,
+    worksFor: {
+      '@type': 'MedicalClinic',
+      name: 'PsiquiatriX',
+      url: SITE_URL,
+    },
+    areaServed: { '@type': 'Country', name: 'Argentina' },
+  };
+}
+
 export const psicologosServiceSchema = {
   '@context': 'https://schema.org',
   '@type': 'Service',

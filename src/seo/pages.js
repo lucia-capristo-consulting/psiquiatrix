@@ -1,5 +1,6 @@
-import { medicalClinicSchema, psicologosServiceSchema } from './schema.js';
+import { medicalClinicSchema, psicologosServiceSchema, physicianSchema } from './schema.js';
 import { OG_IMAGE, imagenOg } from './site.js';
+import { TARJETAS } from '../contenido/tarjetas.js';
 
 // Fuente unica de verdad del SEO por ruta. La consumen dos cosas:
 //   1. Los componentes de pagina, via <Seo {...pageByPath('/...')} />
@@ -48,6 +49,27 @@ export const PAGES = [
     }),
   },
 ];
+
+// Las tarjetas digitales se suman solas: alcanza con dar de alta a la persona
+// en src/contenido/tarjetas.js. Igual hay que acordarse de su regla en
+// public/_redirects y de su <loc> en public/sitemap.xml.
+const PAGINAS_DE_TARJETAS = TARJETAS.map((t) => ({
+  path: `/${t.slug}`,
+  file: `${t.slug}.html`,
+  title: `${t.nombre} — ${t.titulo} | PsiquiatriX`,
+  description: `${t.presentacion} ${t.rol}. Contacto directo y trayectoria.`,
+  jsonLd: physicianSchema({
+    nombre: t.nombre,
+    titulo: t.titulo,
+    rol: t.rol,
+    matricula: t.matricula,
+    url: `https://www.psiquiatrix.ar/${t.slug}`,
+    foto: t.foto,
+    presentacion: t.presentacion,
+  }),
+}));
+
+PAGES.push(...PAGINAS_DE_TARJETAS);
 
 export function pageByPath(path) {
   const page = PAGES.find((p) => p.path === path);

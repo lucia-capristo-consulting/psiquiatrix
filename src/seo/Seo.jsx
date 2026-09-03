@@ -8,6 +8,7 @@ export default function Seo({
   ogImage = OG_IMAGE,
   ogType = 'website',
   jsonLd,
+  noindex = false,
 }) {
   const url = `${SITE_URL}${path}`;
   // `ogImage` es el objeto entero, con sus propias dimensiones. Antes era una
@@ -21,6 +22,9 @@ export default function Seo({
       <title>{title}</title>
       <meta name="description" content={description} />
       <link rel="canonical" href={url} />
+      {/* Paginas de uso interno, como la que se muestra para escanear: son
+          utiles pero no tienen nada que hacer en un resultado de busqueda. */}
+      {noindex && <meta name="robots" content="noindex, follow" />}
 
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />

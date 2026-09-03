@@ -11,7 +11,7 @@ const toParagraphs = (v) => (Array.isArray(v) ? v : v ? [v] : []);
  * para que las dos audiencias muestren exactamente el mismo texto. Los dos
  * textos salen de src/contenido/bios-directoras.js.
  */
-export default function BioBody({ intro, body }) {
+export default function BioBody({ intro, body, textoAbrir = 'Ver más', textoCerrar = 'Ver menos' }) {
   const [open, setOpen] = useState(false);
   const reduceMotion = useReducedMotion();
   const id = useId();
@@ -71,7 +71,7 @@ export default function BioBody({ intro, body }) {
             aria-controls={id}
             className="mt-5 inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.08em] uppercase text-accent hover:text-graphite transition-colors duration-300"
           >
-            {open ? 'Ver menos' : 'Ver más'}
+            {open ? textoCerrar : textoAbrir}
             <svg
               width="12"
               height="12"
