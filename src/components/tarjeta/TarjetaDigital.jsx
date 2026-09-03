@@ -100,8 +100,8 @@ export default function TarjetaDigital({ tarjeta }) {
             src={tarjeta.foto}
             alt={`${tarjeta.nombre}, ${tarjeta.titulo.toLowerCase()}`}
             width="1023"
-            height="1250"
-            className="w-full h-[56vh] max-h-[480px] min-h-[340px] object-cover object-top"
+            height="1080"
+            className="w-full h-auto block"
           />
           <svg
             className="absolute bottom-[-1px] left-0 w-full"
@@ -118,7 +118,7 @@ export default function TarjetaDigital({ tarjeta }) {
           initial="hidden"
           animate="visible"
           variants={stagger(0.07)}
-          className="px-7 pb-16 -mt-2"
+          className="px-7 pb-16 pt-7"
         >
           <motion.h1
             variants={fadeUp}
@@ -193,6 +193,7 @@ export default function TarjetaDigital({ tarjeta }) {
               body={bio ? [...bio.intro, ...bio.body] : []}
               textoAbrir="Conocer su trayectoria"
               textoCerrar="Ver menos"
+              botonPrimero
             />
           </motion.div>
 
@@ -207,12 +208,14 @@ export default function TarjetaDigital({ tarjeta }) {
             >
               Psiquiatri<span className="italic text-accent">x</span>
             </Link>
-            <Link
-              to="/"
-              className="mt-2 inline-block font-mono text-[10px] tracking-[0.18em] text-taupe no-underline hover:text-accent transition-colors"
-            >
-              WWW.PSIQUIATRIX.AR
-            </Link>
+            <div className="mt-4">
+              <Link
+                to="/"
+                className="font-mono text-[10px] tracking-[0.18em] text-taupe no-underline hover:text-accent transition-colors"
+              >
+                WWW.PSIQUIATRIX.AR
+              </Link>
+            </div>
           </motion.div>
         </motion.div>
       </div>

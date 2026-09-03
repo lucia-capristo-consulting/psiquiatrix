@@ -129,7 +129,10 @@ function armarVcard(t, url) {
     `FN:Dra. ${nombre} ${apellido}`,
     `TITLE:${t.titulo}`,
     'ORG:PsiquiatriX',
-    `TEL;TYPE=CELL,VOICE:${t.contacto.telefono.replace(/[^\d+]/g, '')}`,
+    // Se usa el numero de WhatsApp y no el que se muestra: es el mismo, pero
+    // con el 9 de celular, que es lo que lo hace valido en formato
+    // internacional. Sin el 9, quien lo guarde no puede llamarla desde afuera.
+    `TEL;TYPE=CELL,VOICE:+${t.contacto.whatsapp}`,
     `EMAIL;TYPE=INTERNET:${t.contacto.mail}`,
     `URL:${url}`,
     `NOTE:${t.matricula} — ${t.rol}`,

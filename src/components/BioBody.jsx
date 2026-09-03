@@ -11,7 +11,16 @@ const toParagraphs = (v) => (Array.isArray(v) ? v : v ? [v] : []);
  * para que las dos audiencias muestren exactamente el mismo texto. Los dos
  * textos salen de src/contenido/bios-directoras.js.
  */
-export default function BioBody({ intro, body, textoAbrir = 'Ver más', textoCerrar = 'Ver menos' }) {
+export default function BioBody({
+  intro,
+  body,
+  textoAbrir = 'Ver más',
+  textoCerrar = 'Ver menos',
+  // Con el boton arriba, el texto desplegado se cierra desde el mismo lugar
+  // donde se abrio. Abajo obliga a recorrer todo el texto para encontrarlo, y
+  // en un telefono eso es bastante scroll.
+  botonPrimero = false,
+}) {
   const [open, setOpen] = useState(false);
   const reduceMotion = useReducedMotion();
   const id = useId();
@@ -37,7 +46,7 @@ export default function BioBody({ intro, body, textoAbrir = 'Ver más', textoCer
       </div>
 
       {detalle.length > 0 && (
-        <>
+        <div className={botonPrimero ? 'flex flex-col-reverse' : ''}>
           {/* Los párrafos quedan siempre en el DOM (height 0 cuando está
               plegado) para que los buscadores lean la bio completa. */}
           <motion.div
@@ -69,7 +78,7 @@ export default function BioBody({ intro, body, textoAbrir = 'Ver más', textoCer
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls={id}
-            className="mt-5 inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.08em] uppercase text-accent hover:text-graphite transition-colors duration-300"
+            className={`${botonPrimero ? 'mb-1 self-start' : 'mt-5'} inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.08em] uppercase text-accent hover:text-graphite transition-colors duration-300`}
           >
             {open ? textoCerrar : textoAbrir}
             <svg
@@ -87,7 +96,7 @@ export default function BioBody({ intro, body, textoAbrir = 'Ver más', textoCer
               <path d="M6 9l6 6 6-6" />
             </svg>
           </button>
-        </>
+        </div>
       )}
     </div>
   );
