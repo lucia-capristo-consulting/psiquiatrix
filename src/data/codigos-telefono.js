@@ -140,8 +140,40 @@ const PAISES = [
   { codigo: '+64', pais: 'Nueva Zelanda' },
 ];
 
+// Lista completa, en orden alfabético. Se usa para buscar el código a partir
+// del país elegido.
 export const CODIGOS_TELEFONO = [...PAISES].sort((a, b) =>
   a.pais.localeCompare(b.pais, 'es')
+);
+
+// Los que van arriba de todo en el desplegable, en ESTE orden y no en el
+// alfabético: primero Argentina, después los dos destinos principales, y
+// después los países hispanohablantes donde vive más gente de acá. La idea es
+// que casi nadie tenga que buscar en la lista larga.
+//
+// Es una lista de nombres sueltos a propósito: para cambiar las prioridades se
+// reordena o se saca un renglón, sin tocar los datos de más abajo. Los nombres
+// tienen que coincidir EXACTO con los de PAISES; si uno no coincide, el país
+// no aparece destacado (igual sigue estando en el resto de la lista).
+const DESTACADOS = [
+  'Argentina',
+  'España',
+  'Estados Unidos',
+  'Chile',
+  'Uruguay',
+  'Paraguay',
+  'Bolivia',
+  'Perú',
+  'México',
+  'Colombia',
+];
+
+export const CODIGOS_DESTACADOS = DESTACADOS.map((nombre) =>
+  CODIGOS_TELEFONO.find((c) => c.pais === nombre)
+).filter(Boolean);
+
+export const CODIGOS_RESTO = CODIGOS_TELEFONO.filter(
+  (c) => DESTACADOS.indexOf(c.pais) === -1
 );
 
 export const CODIGO_POR_DEFECTO = '+54';

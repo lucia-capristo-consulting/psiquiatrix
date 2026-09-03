@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { CODIGOS_TELEFONO, CODIGO_POR_DEFECTO, OTRO } from '../data/codigos-telefono';
+import {
+  CODIGOS_TELEFONO,
+  CODIGOS_DESTACADOS,
+  CODIGOS_RESTO,
+  CODIGO_POR_DEFECTO,
+  OTRO,
+} from '../data/codigos-telefono';
 
 const PAIS_POR_DEFECTO = 'Argentina';
 
@@ -12,7 +18,11 @@ function normalizarCodigo(c) {
 
 /**
  * Teléfono con código de país. Arranca en Argentina y el desplegable se abre
- * como cualquier otro, mostrando la lista completa en orden alfabético.
+ * como cualquier otro.
+ *
+ * La lista va en dos grupos: primero un puñado de países frecuentes, en orden
+ * de probabilidad y no alfabético, y debajo todos los demás alfabéticamente.
+ * Quién va arriba se define en DESTACADOS, en el archivo de datos.
  *
  * Antes esto era un input con datalist. No servía: el datalist filtra las
  * sugerencias por lo que hay escrito, así que con "+54" en el campo la lista
@@ -63,12 +73,25 @@ export default function CampoTelefono({ required = false, className = '' }) {
             className={`${className} appearance-none w-full pr-6 cursor-pointer`}
             style={{ fontStyle: 'normal' }}
           >
-            {CODIGOS_TELEFONO.map((c) => (
-              <option key={c.pais} value={c.pais}>
-                {c.pais} ({c.codigo})
-              </option>
-            ))}
-            <option value={OTRO}>Otro país…</option>
+            {/* Dos grupos en vez de una lista sola: los destacados primero,
+                el resto alfabético abajo. El navegador dibuja el título de
+                cada grupo, que separa mejor que una línea suelta y además
+                los lectores de pantalla lo anuncian. */}
+            <optgroup label="Más frecuentes">
+              {CODIGOS_DESTACADOS.map((c) => (
+                <option key={c.pais} value={c.pais}>
+                  {c.pais} ({c.codigo})
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Todos los países">
+              {CODIGOS_RESTO.map((c) => (
+                <option key={c.pais} value={c.pais}>
+                  {c.pais} ({c.codigo})
+                </option>
+              ))}
+              <option value={OTRO}>Otro país…</option>
+            </optgroup>
           </select>
           <span
             aria-hidden
