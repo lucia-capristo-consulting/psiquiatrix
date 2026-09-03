@@ -7,9 +7,10 @@
  * alguien recuerde que habia escrito. Si se edita el script en Google, hay que
  * traer el cambio a este archivo, y al reves.
  *
- * Hace dos cosas por cada envio de formulario:
+ * Hace tres cosas por cada envio de formulario:
  *   1. Agrega una fila al Sheet, en una pestaña por formulario.
- *   2. Le manda un mail de confirmacion a la persona que escribio.
+ *   2. Le avisa al equipo, con el nombre de quien escribio en el asunto.
+ *   3. Le manda un mail de confirmacion a la persona que escribio.
  *
  * Guias: docs/contactos-google-sheets.md y docs/auto-reply-formularios.md
  */
@@ -49,6 +50,17 @@ var NOMBRE_REMITENTE = 'PsiquiatriX';
 // Pestañas que usa el auto-reply. Se crean solas la primera vez.
 var HOJA_PLANTILLAS = 'plantillas-mail';
 var HOJA_LOG = 'log-autoreply';
+
+// A quien se le avisa que entro una consulta nueva. Se pueden poner varias
+// direcciones separadas por coma. Si se deja vacio, no se manda ningun aviso.
+var NOTIFICAR_A = ['psiquiatrix.online@gmail.com'];
+
+var ZONA = 'America/Argentina/Buenos_Aires';
+
+var NOMBRE_AUDIENCIA = {
+  'contacto-pacientes': 'Pacientes',
+  'contacto-psicologos': 'Psicólogos',
+};
 
 var SITIO = 'https://www.psiquiatrix.ar';
 var LOGO_URL = SITIO + '/marca/logo-psiquiatrix-transparente.png';
@@ -159,8 +171,16 @@ function doPost(e) {
     });
     sheet.appendRow(row);
 
-    // El mail va DESPUES de guardar la fila y nunca puede tumbar la respuesta:
-    // si falla el envio, el contacto igual quedo registrado.
+    // Los mails van DESPUES de guardar la fila y nunca pueden tumbar la
+    // respuesta: si falla un envio, el contacto igual quedo registrado.
+    var aviso;
+    try {
+      aviso = notificarEquipo_(formName, data, createdAt);
+    } catch (err) {
+      aviso = { ok: false, detalle: String(err) };
+    }
+    registrarEnvio_(formName + ' (aviso al equipo)', NOTIFICAR_A.join(', '), aviso);
+
     var envio;
     try {
       envio = enviarAutoReply_(formName, data);
@@ -391,6 +411,84 @@ function html_(parrafos, aviso) {
 
     '</td></tr>' +
   '</table>';
+}
+
+// ===========================================================================
+// AVISO AL EQUIPO
+// ===========================================================================
+
+/**
+ * Avisa por mail que entro una consulta nueva.
+ *
+ * Netlify ya manda un aviso propio, pero con asunto FIJO: Gmail agrupa todos
+ * los avisos en una sola conversacion y hay que abrirla para ver cual es cual.
+ * Ese asunto no se puede configurar desde Netlify, por eso el aviso se manda
+ * desde aca, donde el asunto lo escribimos nosotros.
+ *
+ * El asunto lleva la audiencia, el nombre de quien escribio y la hora. El
+ * nombre es lo que hace falta para reconocer la consulta sin abrirla; la hora
+ * ademas garantiza que dos consultas nunca compartan asunto, que es lo que
+ * dispara el agrupado de Gmail.
+ *
+ * El "Responder a" apunta a la persona que escribio, asi que se le contesta
+ * directamente desde el aviso, sin copiar la direccion a mano.
+ */
+function notificarEquipo_(formName, data, createdAt) {
+  if (!NOTIFICAR_A.length) return { ok: false, detalle: 'sin destinatarios' };
+  if (MailApp.getRemainingDailyQuota() < 1) {
+    return { ok: false, detalle: 'cuota diaria de envio agotada' };
+  }
+
+  var fecha = new Date(createdAt);
+  if (isNaN(fecha.getTime())) fecha = new Date();
+
+  var audiencia = NOMBRE_AUDIENCIA[formName] || formName;
+  var nombre = String(data.nombre || '').trim() || 'sin nombre';
+  var cuando = Utilities.formatDate(fecha, ZONA, 'dd/MM HH:mm');
+  var asunto = '[' + audiencia + '] Nueva consulta de ' + nombre + ' — ' + cuando;
+
+  // Se recorren las ETIQUETAS y no los campos que llegaron, para que el orden
+  // del mail sea siempre el mismo y no dependa de como venga el formulario.
+  var filas = [];
+  Object.keys(ETIQUETAS).forEach(function (k) {
+    if (k === 'id' || k === 'Fecha') return;
+    var v = data[k];
+    if (v === undefined || String(v).trim() === '') return;
+    filas.push({ etiqueta: ETIQUETAS[k], valor: String(v).trim() });
+  });
+
+  var SALTO = String.fromCharCode(10);
+  var texto = filas
+    .map(function (f) { return f.etiqueta + ': ' + f.valor; })
+    .join(SALTO);
+  texto +=
+    SALTO + SALTO + 'Recibida: ' +
+    Utilities.formatDate(fecha, ZONA, 'dd/MM/yyyy HH:mm');
+
+  var html =
+    '<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#3C3833;">' +
+    '<p style="margin:0 0 18px 0;font-size:13px;color:#7A6F5E;">' +
+    escapar_(audiencia) + ' · ' + escapar_(Utilities.formatDate(fecha, ZONA, 'dd/MM/yyyy HH:mm')) +
+    '</p><table cellpadding="0" cellspacing="0" border="0">' +
+    filas.map(function (f) {
+      return '<tr>' +
+        '<td style="padding:6px 18px 6px 0;vertical-align:top;color:#7A6F5E;font-size:13px;white-space:nowrap;">' +
+          escapar_(f.etiqueta) +
+        '</td>' +
+        '<td style="padding:6px 0;vertical-align:top;">' + escapar_(f.valor) + '</td>' +
+      '</tr>';
+    }).join('') +
+    '</table></div>';
+
+  var opciones = { name: NOMBRE_REMITENTE, htmlBody: html };
+  // Responder desde el aviso le escribe directamente a la persona.
+  if (esMailValido_(data.mail)) opciones.replyTo = String(data.mail).trim();
+
+  var alias = aliasDisponible_();
+  if (alias) opciones.from = alias;
+
+  GmailApp.sendEmail(NOTIFICAR_A.join(','), asunto, texto, opciones);
+  return { ok: true, detalle: asunto };
 }
 
 // ===========================================================================

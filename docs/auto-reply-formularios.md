@@ -128,10 +128,56 @@ Partiendo del script que ya está andando:
 5. **Probá de punta a punta**: completá cada formulario en el sitio publicado,
    con una dirección tuya, y confirmá que llegan el mail y la fila del Sheet.
 
+## El aviso al equipo
+
+Además del mail a la persona, el script manda uno **al equipo** avisando que
+entró una consulta.
+
+Netlify ya manda un aviso propio, pero con **asunto fijo**: Gmail agrupa todos
+los avisos en una sola conversación y hay que abrirla para ver cuál es cuál.
+Ese asunto **no se puede configurar desde Netlify** — no hay ninguna plantilla
+que tocar. Por eso el aviso se manda desde el script, donde lo escribimos
+nosotros.
+
+El asunto queda así:
+
+    [Pacientes] Nueva consulta de Juan Pérez — 03/09 14:32
+    [Psicólogos] Nueva consulta de Ana Ruiz — 03/09 15:10
+
+Tres decisiones detrás de ese formato:
+
+- **El nombre** es lo que permite reconocer la consulta sin abrirla.
+- **La hora** garantiza que dos consultas nunca compartan asunto. Es lo que
+  dispara el agrupado de Gmail: si la misma persona escribe dos veces, sin la
+  hora los dos mails volverían a apilarse.
+- **La audiencia entre corchetes** se lee de un vistazo y sirve para filtrar en
+  Gmail.
+
+El **"Responder a" apunta a quien escribió**, así que desde el aviso se le
+contesta directamente, sin copiar la dirección a mano.
+
+A quién le llega se configura en `NOTIFICAR_A`, arriba del script. Acepta
+varias direcciones. Si se deja vacío, no se manda ningún aviso.
+
+### Qué hacer con la notificación de Netlify
+
+Conviene **dejarla prendida unas semanas** y recién después apagarla, por una
+razón concreta: el aviso del script viaja por el webhook, así que si el webhook
+se cae —ya pasó una vez— dejás de enterarte de las consultas. El de Netlify es
+independiente y llega igual.
+
+Mientras convivan, si molesta verlos duplicados, se puede armar un filtro en
+Gmail que archive los de Netlify bajo una etiqueta: quedan como respaldo sin
+ocupar la bandeja.
+
+Para apagarla: Netlify → Forms → Settings & usage → Form notifications →
+Options → Delete, en las dos notificaciones por mail.
+
 ## Registro de envíos
 
 El script anota cada intento en la pestaña **`log-autoreply`**: fecha,
-formulario, destinatario, si salió o no, y el detalle. Es el primer lugar donde
+formulario, destinatario, si salió o no, y el detalle. Aparecen los dos mails:
+el aviso al equipo va marcado como `(aviso al equipo)`. Es el primer lugar donde
 mirar si alguien dice que no le llegó nada.
 
 Un envío que falla **nunca** frena el registro del contacto: la fila se guarda
