@@ -25,7 +25,7 @@ export const TARJETAS = [
     bioId: 'amanda', // con qué entrada de bios-directoras.js se corresponde
     nombre: 'Amanda Villaverde',
     titulo: 'Médica psiquiatra',
-    rol: 'Cofundadora y Directora Clínica de PsiquiatriX',
+    rol: 'Cofundadora y Directora Clínica de Psiquiatrix',
     matricula: 'M.N. 60.654',
     // Una línea, la que se lee de un vistazo antes de decidir si seguir leyendo.
     presentacion:

@@ -45,7 +45,13 @@ const TARJETAS = [
       organizacion: 'PsiquiatriX',
       telefono: '+5491154200104',
       mail: 'psiquiatrix.online@gmail.com',
-      nota: 'M.N. 60.654 — Cofundadora y Directora Clínica de PsiquiatriX',
+      nota: 'M.N. 60.654 — Cofundadora y Directora Clínica de Psiquiatrix',
+    },
+    og: {
+      nombre: 'Amanda Villaverde',
+      titulo: 'Médica psiquiatra',
+      rol: 'Cofundadora y Directora Clínica de Psiquiatrix',
+      url: 'www.psiquiatrix.ar/amanda',
     },
   },
 ];
@@ -135,6 +141,10 @@ function armarVcard(v, url) {
 (async () => {
   fs.mkdirSync(SALIDA, { recursive: true });
 
+  const cargar = async (p) =>
+    opentype.parse(Uint8Array.from(await woff2.decompress(fs.readFileSync(p))).buffer);
+  const serif = await cargar('public/fonts/instrument-serif-latin.woff2');
+  const sans = await cargar('public/fonts/inter-tight-latin.woff2');
   const italica = opentype.parse(
     Uint8Array.from(
       await woff2.decompress(fs.readFileSync('public/fonts/instrument-serif-italic-latin.woff2'))
@@ -167,6 +177,9 @@ function armarVcard(v, url) {
       console.log('   ' + f.padEnd(44) + (fs.statSync(f).size / 1024).toFixed(1) + ' kB');
     }
 
+    // 4. Imagen de preview para cuando se comparta el link de la tarjeta.
+    await generarOgTarjeta(t, { serif: serif, sans: sans, italica: italica });
+
     // Tapar el centro de un QR es justo lo que lo puede romper: se comprueba.
     for (const [etq, buf, ancho] of [
       ['SVG 1000px', fs.readFileSync(qrSvg), 1000],
@@ -179,3 +192,106 @@ function armarVcard(v, url) {
     }
   }
 })();
+
+// ---------------------------------------------------------------------------
+// IMAGEN DE PREVIEW DE LA TARJETA
+// ---------------------------------------------------------------------------
+// El link de la tarjeta se comparte por WhatsApp, asi que su preview importa
+// tanto como la pagina. Lleva la foto a la derecha y los datos a la izquierda:
+// al compartir el contacto de una persona, la cara es lo que se reconoce
+// primero.
+//
+// Se arma en dos pasos, no en uno: primero se rasteriza el fondo con el texto,
+// y despues se PEGA la foto encima con sharp. Meter la foto adentro del SVG
+// obligaria a incrustarla en base64, que infla el archivo y no aporta nada.
+
+const OG_W = 1200;
+const OG_H = 630;
+const OG_MARGEN = 84;
+const OG_FOTO_W = 470;
+const TAUPE = '#7A6F5E';
+const PARCHMENT = '#E9DFCC';
+
+// Mismo criterio que en generar-og.cjs: cada glifo se dibuja en el origen y se
+// ubica con un transform, y si aparece un NaN se reintenta con el cuerpo
+// corrido un pelo. Los dos problemas estan explicados alla en detalle.
+function trazoGlifo(glifo, size) {
+  for (const s of [size, Math.round(size * 100) / 100, size + 0.01, size - 0.01]) {
+    const d = glifo.getPath(0, 0, s).toPathData(2);
+    if (!d.includes('NaN')) return d;
+  }
+  throw new Error('No se pudo dibujar un glifo sin NaN a cuerpo ' + size);
+}
+
+function lineaOg(font, texto, size, x, y, color) {
+  const glifos = [...texto].map((ch) => font.charToGlyph(ch));
+  let cursor = x;
+  const paths = [];
+  for (let i = 0; i < glifos.length; i++) {
+    const d = trazoGlifo(glifos[i], size);
+    if (d.length > 2) {
+      paths.push(
+        `<path transform="translate(${cursor.toFixed(2)} ${y.toFixed(2)})" fill="${color}" d="${d}"/>`
+      );
+    }
+    cursor += (glifos[i].advanceWidth / font.unitsPerEm) * size;
+    if (i + 1 < glifos.length) {
+      const k = font.getKerningValue(glifos[i], glifos[i + 1]);
+      if (k) cursor += (k / font.unitsPerEm) * size;
+    }
+  }
+  return { paths: paths.join('\n  '), ancho: cursor - x };
+}
+
+async function generarOgTarjeta(t, fuentes) {
+  const anchoTexto = OG_W - OG_FOTO_W - OG_MARGEN * 2;
+  const cap = (f, size) =>
+    (((f.tables.os2 && f.tables.os2.sCapHeight) || f.unitsPerEm * 0.7) / f.unitsPerEm) * size;
+
+  const partes = [];
+  let y = 214;
+
+  const nombre = lineaOg(fuentes.serif, t.og.nombre, 58, OG_MARGEN, y, GRAPHITE);
+  partes.push(nombre.paths);
+
+  y += 44;
+  partes.push(`<rect x="${OG_MARGEN}" y="${y}" width="64" height="2" fill="${ACCENT}"/>`);
+
+  y += 2 + 40 + cap(fuentes.serif, 30);
+  partes.push(lineaOg(fuentes.serif, t.og.titulo, 30, OG_MARGEN, y, ACCENT).paths);
+
+  y += 42;
+  partes.push(lineaOg(fuentes.sans, t.og.rol, 20, OG_MARGEN, y, GRAPHITE).paths);
+
+  partes.push(
+    lineaOg(fuentes.sans, t.og.url, 18, OG_MARGEN, OG_H - OG_MARGEN, TAUPE).paths
+  );
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${OG_W}" height="${OG_H}" viewBox="0 0 ${OG_W} ${OG_H}">
+  <defs>
+    <linearGradient id="f" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="${BONE}"/>
+      <stop offset="1" stop-color="${PARCHMENT}"/>
+    </linearGradient>
+  </defs>
+  <rect width="${OG_W}" height="${OG_H}" fill="url(#f)"/>
+  ${partes.join('\n  ')}
+</svg>
+`;
+  if (svg.includes('NaN')) throw new Error('El SVG del preview contiene NaN');
+  if (nombre.ancho > anchoTexto) console.log('   OJO: el nombre se pasa del ancho de texto');
+
+  const foto = await sharp(t.original)
+    .resize(OG_FOTO_W, OG_H, { fit: 'cover', position: 'top' })
+    .toBuffer();
+
+  const salida = `public/og-${t.slug}.jpg`;
+  await sharp(Buffer.from(svg), { density: 288 })
+    .resize(OG_W * 2, OG_H * 2)
+    .resize(OG_W, OG_H, { kernel: 'lanczos3' })
+    .composite([{ input: foto, left: OG_W - OG_FOTO_W, top: 0 }])
+    .jpeg({ quality: 88, mozjpeg: true, chromaSubsampling: '4:4:4' })
+    .toFile(salida);
+
+  console.log('   ' + salida.padEnd(44) + (fs.statSync(salida).size / 1024).toFixed(1) + ' kB');
+}

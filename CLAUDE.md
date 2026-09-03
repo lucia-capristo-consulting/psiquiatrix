@@ -86,6 +86,23 @@ Esto **no es SSG**: el `<body>` sigue vacío y lo llena React. Sólo se prerende
 
 Para agregar una página: sumarla a `PAGES` en `pages.js`, agregar su regla en `_redirects` y su `<loc>` en `public/sitemap.xml`.
 
+### Tarjetas digitales
+
+Cada directora tiene una tarjeta de contacto en su propia ruta (`/amanda`). Son **dos pantallas que se complementan**:
+
+- **`/amanda/tarjeta`** — la que ella MUESTRA en el celular: su nombre y un QR grande. Entra sin scrollear y el QR va sobre blanco puro, no sobre el bone de la marca: se escanea desde lejos, con reflejos y con el brillo bajo, y ahí cada punto de contraste cuenta. Va con `noindex`.
+- **`/amanda`** — la que LEE quien escaneó. "Guardar contacto" ocupa todo el ancho y va antes que nada: quien llega está parado, con el celular en la mano, y quiere hacer una sola cosa. Va indexada, con datos estructurados `Physician`.
+
+Las dos van **fuera del `Layout`**: no llevan el nav ni el pie del sitio.
+
+Los datos están en `src/contenido/tarjetas.js`. **La bio no se duplica**: sale de `bios-directoras.js`, la misma que usa el resto del sitio.
+
+**`scripts/generar-tarjetas.cjs`** (manual, no corre en el build) produce por persona: la foto del encabezado, el QR, el `.vcf` para agendar y la imagen de preview. El QR lleva la "x" de la marca en el centro, así que va con corrección de errores H y **se lee después de generarlo**: tapar el centro de un código es justo lo que lo puede volver ilegible.
+
+El `.vcf` va en **vCard 3.0** (no 4.0: es la que abren sin chistar iPhone y Android) con saltos CRLF, y `public/_headers` le fija el `Content-Type`; sin eso el iPhone lo baja como archivo en vez de abrir la ficha para agendar.
+
+Para sumar a otra persona: darla de alta en `tarjetas.js`, correr el generador, y agregar su regla en `_redirects` y su `<loc>` en el sitemap. La ruta, el prerender y el schema salen solos.
+
 ### Textos y datos editables
 
 Todo lo que se cambia sin tocar el diseño vive en **`src/contenido/`**, con su índice en `src/contenido/LEEME.md`: bios de las directoras, número y mensajes de WhatsApp, textos de confirmación de los formularios y códigos de país. Ningún componente tiene textos escritos adentro.

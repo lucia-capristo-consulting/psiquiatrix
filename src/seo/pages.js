@@ -58,6 +58,12 @@ const PAGINAS_DE_TARJETAS = TARJETAS.map((t) => ({
   file: `${t.slug}.html`,
   title: `${t.nombre} — ${t.titulo} | PsiquiatriX`,
   description: `${t.presentacion} ${t.rol}. Contacto directo y trayectoria.`,
+  ogImage: imagenOg({
+    archivo: `og-${t.slug}.jpg`,
+    width: 1200,
+    height: 630,
+    alt: `${t.nombre}, ${t.titulo.toLowerCase()} de PsiquiatriX.`,
+  }),
   jsonLd: physicianSchema({
     nombre: t.nombre,
     titulo: t.titulo,
