@@ -187,9 +187,15 @@ Los archivos se guardan como `Nombre Apellido — CV.pdf`. Sin eso quedan todos 
 
 Para ver dónde quedaron la planilla y la carpeta, correr **`verDondeGuarda()`** desde el editor: deja los dos links en el registro de ejecución.
 
-### Permisos nuevos
+### Permisos nuevos: correr `prepararGuardado()` una vez
 
-Guardar en Drive y descargar el archivo son permisos que el script **todavía no tiene**. Al pegar esta versión hay que volver a autorizarlo: elegir `verDondeGuarda` en el editor, tocar Ejecutar y aceptar. Sin eso, las postulaciones entran pero el CV no se copia.
+Guardar en Drive y descargar un archivo son permisos **distintos** de los que el script ya tenía. Crear una planilla usa uno que ya estaba; crear una carpeta no.
+
+Después de pegar esta versión: elegir **`prepararGuardado`** en el editor, tocar Ejecutar y aceptar los permisos. Crea la planilla y la carpeta, se descarga un archivo chico para comprobar que la salida a internet quedó habilitada, y deja los links en el registro.
+
+**No alcanza con `verDondeGuarda()`**, aunque lo parezca: como todavía no hay nada creado, esa función no llega a tocar Drive, no dispara la autorización, y la primera postulación real se encuentra sin permisos. Pasó en la puesta en marcha: el CV quedó en la URL pública de Netlify en vez de copiarse, y la celda del Sheet lo avisa con un "no se pudo copiar al Drive".
+
+Si eso ya ocurrió, se corre `prepararGuardado()` y los envíos siguientes se copian bien. Los CV anteriores hay que bajarlos a mano desde el link de Netlify.
 
 ## Registro de envíos
 

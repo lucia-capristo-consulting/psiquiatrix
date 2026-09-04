@@ -355,6 +355,33 @@ function guardarArchivos_(formName, data) {
 }
 
 /**
+ * CORRER ESTA UNA VEZ, desde el editor, antes de esperar postulaciones.
+ *
+ * Crea la planilla de postulaciones y la carpeta de CV, y con eso fuerza el
+ * pedido de permisos de Drive y de descarga de archivos, que son DISTINTOS de
+ * los que el script ya tenia.
+ *
+ * Existe porque verDondeGuarda() no servia para eso: como no habia nada
+ * creado, no llegaba a tocar Drive, no disparaba la autorizacion, y la primera
+ * postulacion real se encontraba sin permisos. El CV quedaba en la URL publica
+ * de Netlify en vez de copiarse.
+ */
+function prepararGuardado() {
+  var planilla = planillaPara_('contacto-sumate');
+  var carpeta = carpetaCv_();
+
+  // Se descarga algo chico de verdad: es la unica forma de comprobar que el
+  // permiso de salir a internet quedo otorgado, y no descubrirlo cuando entre
+  // una postulacion.
+  var prueba = UrlFetchApp.fetch(LOGO_URL).getBlob();
+  Logger.log('Descarga de prueba: ' + Math.round(prueba.getBytes().length / 1024) + ' kB, ok');
+
+  Logger.log('Planilla de postulaciones: ' + planilla.getUrl());
+  Logger.log('Carpeta de CV: ' + carpeta.getUrl());
+  Logger.log('Listo. Ya se pueden recibir postulaciones con CV.');
+}
+
+/**
  * Corré esta funcion desde el editor para ver donde estan guardadas las
  * postulaciones y los CV. Devuelve los links en el registro de ejecucion.
  */
@@ -461,7 +488,26 @@ function plantillaPara_(formName) {
 function asegurarHojaPlantillas_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var hoja = ss.getSheetByName(HOJA_PLANTILLAS);
-  if (hoja) return hoja;
+
+  if (hoja) {
+    // La pestaña ya existe, pero puede haberse creado cuando habia menos
+    // formularios. Se suman los que falten, para que TODOS los textos se
+    // puedan editar desde el Sheet y no queden algunos escondidos en el
+    // codigo, donde cambiarlos obliga a desplegar de nuevo.
+    var existentes = {};
+    if (hoja.getLastRow() > 1) {
+      hoja.getRange(2, 1, hoja.getLastRow() - 1, 1).getValues().forEach(function (f) {
+        existentes[String(f[0]).trim()] = true;
+      });
+    }
+    Object.keys(PLANTILLAS_POR_DEFECTO).forEach(function (k) {
+      if (existentes[k]) return;
+      var p = PLANTILLAS_POR_DEFECTO[k];
+      hoja.appendRow([k, p.asunto, p.cuerpo, p.aviso]);
+      hoja.getRange(hoja.getLastRow(), 1, 1, 4).setWrap(true).setVerticalAlignment('top');
+    });
+    return hoja;
+  }
 
   hoja = ss.insertSheet(HOJA_PLANTILLAS);
   hoja.appendRow(['Formulario', 'Asunto', 'Cuerpo del mail', 'Aviso destacado']);
