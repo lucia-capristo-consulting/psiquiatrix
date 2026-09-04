@@ -27,10 +27,13 @@ export const HERO = {
 };
 
 export const DIRECCION = {
-  titulo: 'No es una marca lo que respalda: son dos personas.',
+  // El título afirma qué ES el respaldo. Antes decía "no es una marca lo que
+  // respalda", y abrir por la negación obliga a leer dos frases para entender
+  // de qué se trata.
+  titulo: 'Dos psiquiatras con treinta años de práctica, atentas a la tuya.',
   parrafos: [
-    'Claudia Heller y Amanda Villaverde dirigen clínicamente el equipo. Las dos ejercen desde hace más de treinta años y se formaron en hospitales de alta complejidad. Participan de los ateneos, supervisan los casos difíciles y están cuando hay que consultar algo.',
-    'Es la parte del trabajo que no se puede comprar hecha, y es la razón por la que existe esta convocatoria.',
+    'Claudia Heller y Amanda Villaverde dirigen clínicamente el equipo. Las dos se formaron en hospitales de alta complejidad y siguen ejerciendo. Participan de los ateneos, supervisan los casos difíciles y siguen de cerca cómo trabaja cada profesional del equipo.',
+    'Eso es lo que estás por sumar: un lugar donde se aprende trabajando, con alguien que responde con vos por cada tratamiento. No es una plataforma que te consigue pacientes: es un equipo clínico, y vas a formar parte de él.',
   ],
 };
 
@@ -51,9 +54,12 @@ export const TRABAJO = {
 
 export const PERFIL = {
   antetitulo: 'A quién buscamos',
-  titulo: 'Nos importa menos la antigüedad que la forma de atender.',
+  // Afirmativo y sin comparar. El título anterior ponía la antigüedad en el
+  // centro para después restarle valor, y sonaba raro viniendo de quien
+  // justamente ofrece experiencia.
+  titulo: 'Nos interesa cómo atendés.',
   intro:
-    'Buscamos gente que ejerza una psiquiatría cercana: con tiempo real para cada paciente, con un vínculo que se sostiene en el tiempo y con ganas de seguir aprendiendo. El resto se enseña.',
+    'Buscamos profesionales que ejerzan una psiquiatría cercana: con tiempo real para cada paciente, con un vínculo que se sostiene y con ganas de seguir aprendiendo. El resto se enseña.',
   requisitos: [
     'Título de médico/a especialista en Psiquiatría, o certificado de residencia o curso superior a partir del segundo año.',
     'Monotributo vigente.',
