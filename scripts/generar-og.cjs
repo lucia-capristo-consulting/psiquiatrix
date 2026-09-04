@@ -80,6 +80,20 @@ const PIEZAS = [
     url: 'www.psiquiatrix.ar',
   },
   {
+    archivo: 'public/og-sumate.jpg',
+    // Con logotipo: quien la recibe en un grupo de residencias tiene que saber
+    // en un segundo QUIEN convoca, no solo que hay una busqueda.
+    conLogo: true,
+    lineas: [
+      [
+        { texto: 'Buscamos psiquiatras y ', estilo: 'serif', color: GRAPHITE },
+        { texto: 'residentes', estilo: 'serifItalica', color: ACCENT },
+        { texto: '.', estilo: 'serif', color: GRAPHITE },
+      ],
+    ],
+    url: 'www.psiquiatrix.ar/sumate',
+  },
+  {
     archivo: 'public/og-psiquiatrix-psicologos.jpg',
     conLogo: false,
     // El H1 de /psicologos, con el mismo tratamiento que en la web: la "x"

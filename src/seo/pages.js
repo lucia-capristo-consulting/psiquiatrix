@@ -57,6 +57,12 @@ export const PAGES = [
     // Se comparte por link con residencias y colegas, asi que necesita
     // preview; pero no tiene por que competir en los resultados de busqueda.
     // Para indexarla, se borra esta linea y se suma su <loc> al sitemap.
+    ogImage: imagenOg({
+      archivo: 'og-sumate.jpg',
+      width: 1200,
+      height: 630,
+      alt: 'PsiquiatriX busca psiquiatras y residentes para atención online.',
+    }),
     noindex: true,
   },
 ];
