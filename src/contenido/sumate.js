@@ -71,7 +71,10 @@ export const PERFIL = {
 
 export const NO_ES = {
   antetitulo: 'Qué no es',
-  titulo: 'Para que no perdamos tiempo, ni vos ni nosotras.',
+  // El titulo anterior --'para que no perdamos tiempo'-- insinuaba que quien
+  // lee podria ser una perdida de tiempo. La seccion hace lo contrario: le
+  // ahorra a la otra persona una entrevista que no iba a ningun lado.
+  titulo: 'Preferimos decirlo antes.',
   puntos: [
     'No hacemos psicoterapia. La atención es psiquiátrica.',
     'No trabajamos con obras sociales ni prepagas.',
