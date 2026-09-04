@@ -43,7 +43,7 @@ export const MENSAJES_PSICOLOGOS = {
 export const MENSAJES_SUMATE = {
   exito:
     'Recibimos tu postulación y te enviamos una confirmación por correo. Vamos a leerla y te escribimos.',
-  error: 'No pudimos enviar tu postulación. Probá de nuevo en unos minutos.',
+  error: 'No pudimos enviar tu postulación. Probá de nuevo en un minuto.',
 };
 
 // Texto del botón según el estado del envío.

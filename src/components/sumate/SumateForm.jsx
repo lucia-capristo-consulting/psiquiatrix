@@ -66,16 +66,7 @@ export default function SumateForm() {
           <p className="mt-4 text-[15px] leading-[1.65] text-graphite max-w-[440px] m-0">
             {POSTULACION.promesa}
           </p>
-          <p className="mt-10 pt-6 border-t border-linen text-[13px] leading-[1.6] text-taupe max-w-[440px] m-0">
-            {POSTULACION.nota}{' '}
-            <a
-              href={`mailto:${POSTULACION.mailCv}?subject=${encodeURIComponent('Postulación')}`}
-              className="underline underline-offset-2 hover:text-accent transition-colors"
-            >
-              {POSTULACION.mailCv}
-            </a>
-            .
-          </p>
+
         </motion.div>
 
         <motion.form
@@ -182,9 +173,24 @@ export default function SumateForm() {
             </p>
           )}
           {status === 'error' && (
-            <p className="text-[14px] leading-[1.6] text-accent m-0" role="alert">
-              {MENSAJES_SUMATE.error}
-            </p>
+            <div
+              role="alert"
+              className="mt-2 flex flex-col gap-2 border-l-2 border-accent bg-bone px-5 py-4"
+            >
+              <p className="text-[14.5px] leading-[1.6] text-accent font-medium m-0">
+                {MENSAJES_SUMATE.error}
+              </p>
+              <p className="text-[14px] leading-[1.6] text-graphite m-0">
+                {POSTULACION.nota}{' '}
+                <a
+                  href={`mailto:${POSTULACION.mailCv}?subject=${encodeURIComponent('Postulación')}`}
+                  className="text-accent underline underline-offset-2 break-words"
+                >
+                  {POSTULACION.mailCv}
+                </a>
+                .
+              </p>
+            </div>
           )}
         </motion.form>
       </motion.div>

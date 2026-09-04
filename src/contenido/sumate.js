@@ -126,10 +126,11 @@ export const POSTULACION = {
   // OJO: esta frase es una promesa chica y muy visible. Quien se postula y no
   // recibe respuesta lo cuenta. Si no se va a poder cumplir, se saca.
   promesa: 'Respondemos todas las postulaciones.',
-  // El mail queda SOLO como salida de emergencia, no como segundo camino: si
-  // se ofrece como alternativa, parte de la gente lo elige y el formulario
-  // deja de servir para lo que se hizo.
-  nota: 'Si el formulario no te funciona, escribinos a',
+  // El mail NO se muestra salvo que el envío falle. Ofrecido de entrada, parte
+  // de la gente lo elige y el formulario --con su CV y su confirmación
+  // automática-- deja de servir para lo que se hizo. Apareciendo sólo cuando
+  // hace falta, es una salida y no una alternativa.
+  nota: 'Si sigue sin andar, mandanos tu postulación por mail a',
   mailCv: 'psiquiatrix.online@gmail.com',
 };
 
