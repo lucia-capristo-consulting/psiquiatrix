@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
 import { HERO, ESTADO, BUSQUEDA_ABIERTA } from '../../contenido/sumate';
+import Frase from './Frase';
 
 /**
  * El cartel de estado es lo que vuelve permanente a esta página. Cuando se
@@ -9,8 +10,6 @@ import { HERO, ESTADO, BUSQUEDA_ABIERTA } from '../../contenido/sumate';
  * espontáneas, en vez de quedar desactualizada.
  */
 export default function SumateHero() {
-  const [antes, resaltado, despues] = HERO.titulo;
-
   return (
     <section className="bg-bone border-b border-linen">
       <motion.div
@@ -32,9 +31,7 @@ export default function SumateHero() {
           transition={sectionTransition}
           className="font-serif text-[44px] md:text-[60px] lg:text-[68px] leading-[1.05] tracking-[-0.028em] text-graphite font-normal m-0 max-w-[960px]"
         >
-          {antes}
-          <span className="italic text-accent">{resaltado}</span>
-          {despues}
+          <Frase texto={HERO.titulo} />
         </motion.h1>
 
         <motion.p

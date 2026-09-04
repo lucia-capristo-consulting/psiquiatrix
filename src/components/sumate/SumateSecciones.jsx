@@ -3,6 +3,7 @@ import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
 import { directors } from '../../contenido/bios-directoras';
 import BioBody from '../BioBody';
 import { DIRECCION, TRABAJO, COMIENZO, PERFIL, NO_ES } from '../../contenido/sumate';
+import Frase from './Frase';
 
 /**
  * Bloque de lista con antetítulo y título. Las tres secciones de la página
@@ -20,7 +21,7 @@ function Lista({ antetitulo, titulo, intro, puntos, cierre, fondo }) {
         <motion.div variants={fadeUp} transition={sectionTransition}>
           <span className="eyebrow text-accent">{antetitulo}</span>
           <h2 className="font-serif text-[30px] md:text-[38px] leading-[1.12] tracking-[-0.02em] text-graphite mt-5 m-0 font-normal">
-            {titulo}
+            <Frase texto={titulo} />
           </h2>
         </motion.div>
 
@@ -126,7 +127,7 @@ export function SumateDireccion() {
         <motion.div variants={fadeUp} transition={sectionTransition}>
           <span className="eyebrow text-accent">Quiénes acompañan</span>
           <h2 className="font-serif text-[30px] md:text-[38px] leading-[1.12] tracking-[-0.02em] text-graphite mt-5 m-0 font-normal max-w-[760px]">
-            {DIRECCION.titulo}
+            <Frase texto={DIRECCION.titulo} />
           </h2>
           <div className="mt-6 flex flex-col gap-4 max-w-[620px]">
             {DIRECCION.parrafos.map((p) => (

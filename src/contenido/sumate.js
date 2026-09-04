@@ -19,9 +19,12 @@ export const ESTADO = {
 
 export const HERO = {
   antetitulo: 'Para psiquiatras y residentes',
-  // El título se parte en tres para poder resaltar el medio, como en el resto
-  // del sitio. La "x" de Psiquiatrix y las frases en itálica van en acento.
-  titulo: ['Sumate a un equipo donde la experiencia ', 'se transmite', '.'],
+  // Dos líneas, cortadas a propósito: "la experiencia se transmite" tiene que
+  // leerse junta. Si se deja al navegador, dónde parte depende del ancho.
+  titulo: [
+    ['Sumate a un equipo donde'],
+    ['la experiencia ', { acento: 'se transmite' }, '.'],
+  ],
   bajada:
     'Buscamos psiquiatras y residentes desde segundo año para atender pacientes derivados por la institución. Vas a llevar tus propios tratamientos, con supervisión, ateneos y la dirección clínica de dos psiquiatras con más de treinta años de práctica.',
 };
@@ -30,13 +33,17 @@ export const DIRECCION = {
   // El título afirma qué ES el respaldo. Antes decía "no es una marca lo que
   // respalda", y abrir por la negación obliga a leer dos frases para entender
   // de qué se trata.
-  titulo: 'Dos psiquiatras con treinta años de práctica, atentas a la tuya.',
+  titulo: [
+    'Dos psiquiatras con treinta años de práctica, ',
+    { acento: 'atentas' },
+    ' a la tuya.',
+  ],
   parrafos: [
     'Claudia Heller y Amanda Villaverde dirigen clínicamente el equipo. Las dos se formaron en hospitales de alta complejidad y siguen ejerciendo. Participan de los ateneos, supervisan los casos difíciles y siguen de cerca cómo trabaja cada profesional del equipo.',
     'Eso es lo que estás por sumar: un lugar donde se aprende trabajando, con alguien que responde con vos por cada tratamiento. No es una plataforma que te consigue pacientes: es un equipo clínico, y vas a formar parte de él.',
   ],
   puntos: [
-    'Ateneos semanales, con todo el equipo y las dos directoras.',
+    'Ateneos semanales, con todo el equipo y las directoras.',
     'Supervisión de los casos difíciles, cuando la necesitás.',
     'Si algo sale mal, no lo resolvés solo: te ayudamos a reconducirlo con el paciente y con quien lo derivó.',
     'Los pacientes siguen con vos. Vas a sostener tratamientos durante años y ver qué pasó con lo que indicaste, que es la experiencia que la rotación de una residencia no da.',
@@ -77,7 +84,7 @@ export const PERFIL = {
   // Afirmativo y sin comparar. El título anterior ponía la antigüedad en el
   // centro para después restarle valor, y sonaba raro viniendo de quien
   // justamente ofrece experiencia.
-  titulo: 'Nos interesa cómo atendés.',
+  titulo: ['Nos interesa ', { acento: 'cómo' }, ' atendés.'],
   intro:
     'Buscamos profesionales que ejerzan una psiquiatría cercana: con tiempo real para cada paciente, con un vínculo que se sostiene y con ganas de seguir formándose. Lo demás se aprende.',
   requisitos: [
