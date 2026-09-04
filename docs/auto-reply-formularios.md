@@ -173,6 +173,24 @@ ocupar la bandeja.
 Para apagarla: Netlify → Forms → Settings & usage → Form notifications →
 Options → Delete, en las dos notificaciones por mail.
 
+## Postulaciones: planilla aparte y CV en el Drive
+
+El formulario de `/sumate` no se comporta como los otros dos, por dos razones que valen para cualquier formulario que reciba archivos.
+
+**Va a su propia planilla.** No es prolijidad: es para poder compartir la de contactos con el equipo sin dar acceso a las postulaciones, y al revés. La planilla se llama *PsiquiatriX — Postulaciones* y **se crea sola** la primera vez que entra una; su id queda guardado en las propiedades del script, así que no hay nada que configurar a mano.
+
+**El CV no se queda en Netlify.** Netlify guarda el archivo en una URL larga y difícil de adivinar, pero **sin contraseña**: quien tenga el link entra. Un CV trae teléfono, a veces domicilio, y la trayectoria laboral completa de una persona. El script lo baja y lo copia a una carpeta del Drive llamada *PsiquiatriX — CV de postulaciones*, y en la planilla queda el link de Drive. Ahí el archivo tiene los permisos que ustedes le pongan.
+
+Los archivos se guardan como `Nombre Apellido — CV.pdf`. Sin eso quedan todos con el nombre que puso cada persona, y buscar entre treinta `cv.pdf` no sirve de nada.
+
+**Si la copia al Drive falla** —se cayó la red, cambió la URL— la celda queda con el link original de Netlify y la aclaración de que no se pudo copiar. Es preferible tener el CV en un lugar menos ideal que perderlo.
+
+Para ver dónde quedaron la planilla y la carpeta, correr **`verDondeGuarda()`** desde el editor: deja los dos links en el registro de ejecución.
+
+### Permisos nuevos
+
+Guardar en Drive y descargar el archivo son permisos que el script **todavía no tiene**. Al pegar esta versión hay que volver a autorizarlo: elegir `verDondeGuarda` en el editor, tocar Ejecutar y aceptar. Sin eso, las postulaciones entran pero el CV no se copia.
+
 ## Registro de envíos
 
 El script anota cada intento en la pestaña **`log-autoreply`**: fecha,

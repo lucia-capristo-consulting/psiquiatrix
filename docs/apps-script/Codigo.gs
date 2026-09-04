@@ -31,6 +31,7 @@ var ETIQUETAS = {
   destinatario: 'Para quién es',     // solo contacto-pacientes
   conocimiento: 'Cómo nos conoció',
   mensaje: 'Mensaje',
+  cv: 'CV',                          // solo contacto-sumate
   profesion: 'Profesión',            // solo contacto-psicologos
   enfoque: 'Enfoque terapéutico',    // solo contacto-psicologos
   intencion: 'Intención de derivar', // solo contacto-psicologos
@@ -51,6 +52,30 @@ var NOMBRE_REMITENTE = 'PsiquiatriX';
 // Pestañas que usa el auto-reply. Se crean solas la primera vez.
 var HOJA_PLANTILLAS = 'plantillas-mail';
 var HOJA_LOG = 'log-autoreply';
+
+// ---------------------------------------------------------------------------
+// POSTULACIONES: PLANILLA APARTE Y CV EN EL DRIVE
+// ---------------------------------------------------------------------------
+//
+// Las postulaciones no van a la misma planilla que las consultas de pacientes.
+// No es prolijidad: es para poder compartir una sin dar acceso a la otra.
+//
+// La planilla y la carpeta se CREAN SOLAS la primera vez y sus ids quedan
+// guardados en las propiedades del script. No hay nada que configurar a mano;
+// para ver donde quedaron, correr verDondeGuarda() desde el editor.
+var FORMULARIOS_APARTE = {
+  'contacto-sumate': {
+    propiedad: 'ID_PLANILLA_POSTULACIONES',
+    nombre: 'PsiquiatriX — Postulaciones',
+  },
+};
+
+// Campos que llegan como archivo. Netlify no manda el contenido: manda una URL
+// suya donde lo dejo guardado.
+var CAMPOS_ARCHIVO = { 'contacto-sumate': ['cv'] };
+
+var PROP_CARPETA_CV = 'ID_CARPETA_CV';
+var NOMBRE_CARPETA_CV = 'PsiquiatriX — CV de postulaciones';
 
 // A quien se le avisa que entro una consulta nueva. Se pueden poner varias
 // direcciones separadas por coma. Si se deja vacio, no se manda ningun aviso.
@@ -126,7 +151,8 @@ function doPost(e) {
     var createdAt = body.created_at || new Date().toISOString();
     var submissionId = body.id || '';
 
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    // Las postulaciones van a su propia planilla; el resto, a esta.
+    var ss = planillaPara_(formName);
     var sheet = ss.getSheetByName(formName) || ss.insertSheet(formName);
 
     // Campos internos a ignorar (honeypot antispam / form-name)
@@ -176,6 +202,11 @@ function doPost(e) {
       }
     }
 
+    // Los adjuntos se copian al Drive ANTES de armar la fila, para que en la
+    // planilla quede el link nuestro y no el de Netlify. Va despues del dedup:
+    // si Netlify reintenta el webhook, no se duplica el archivo.
+    guardarArchivos_(formName, data);
+
     // Alineo cada valor a su columna, resolviendo el título a su clave de campo
     var row = headerKeys.map(function (key) {
       if (key === 'id') return submissionId;
@@ -213,6 +244,109 @@ function doPost(e) {
 function respuesta_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ===========================================================================
+// DONDE SE GUARDA CADA COSA
+// ===========================================================================
+
+/**
+ * La planilla que le toca a cada formulario.
+ *
+ * Casi todos van a la que contiene este script. Las postulaciones van a una
+ * aparte, que se crea sola la primera vez. Si alguien la borra o la manda a la
+ * papelera, se crea otra en vez de romperse: es preferible perder el historial
+ * viejo antes que perder los envios que estan entrando.
+ */
+function planillaPara_(formName) {
+  var aparte = FORMULARIOS_APARTE[formName];
+  if (!aparte) return SpreadsheetApp.getActiveSpreadsheet();
+
+  var props = PropertiesService.getScriptProperties();
+  var id = props.getProperty(aparte.propiedad);
+  if (id) {
+    try {
+      return SpreadsheetApp.openById(id);
+    } catch (err) {
+      // Ya no existe o no hay acceso: se cae al alta de abajo.
+    }
+  }
+  var nueva = SpreadsheetApp.create(aparte.nombre);
+  props.setProperty(aparte.propiedad, nueva.getId());
+  return nueva;
+}
+
+function carpetaCv_() {
+  var props = PropertiesService.getScriptProperties();
+  var id = props.getProperty(PROP_CARPETA_CV);
+  if (id) {
+    try {
+      return DriveApp.getFolderById(id);
+    } catch (err) {
+      // idem: si desaparecio, se crea otra.
+    }
+  }
+  var carpeta = DriveApp.createFolder(NOMBRE_CARPETA_CV);
+  props.setProperty(PROP_CARPETA_CV, carpeta.getId());
+  return carpeta;
+}
+
+/**
+ * Se trae los archivos adjuntos a nuestro Drive y reemplaza, en los datos, la
+ * URL de Netlify por la del Drive.
+ *
+ * POR QUE NO SE DEJAN DONDE ESTAN: Netlify los guarda en una URL larga y
+ * dificil de adivinar, pero SIN contraseña. Un CV trae telefono, a veces
+ * domicilio, y la trayectoria laboral completa de una persona. Copiado al
+ * Drive queda con los permisos que le pongamos, como cualquier documento
+ * nuestro.
+ *
+ * Si la copia falla, se deja la URL original: es preferible tener el CV en un
+ * lugar menos ideal que no tenerlo.
+ */
+function guardarArchivos_(formName, data) {
+  var campos = CAMPOS_ARCHIVO[formName];
+  if (!campos) return;
+
+  var carpeta = null;
+  campos.forEach(function (campo) {
+    var url = String(data[campo] || '').trim();
+    if (!/^https?:\/\//.test(url)) return; // no adjunto nada
+
+    try {
+      if (!carpeta) carpeta = carpetaCv_();
+      var blob = UrlFetchApp.fetch(url).getBlob();
+
+      // Nombre legible: sin esto quedan todos con el nombre que puso la
+      // persona, y buscar "cv.pdf" entre treinta no sirve de nada.
+      var quien = String(data.nombre || 'Sin nombre').trim();
+      var extension = (url.match(/\.([a-zA-Z0-9]{2,5})(?:\?|$)/) || [, 'pdf'])[1];
+      blob.setName(quien + ' — CV.' + extension.toLowerCase());
+
+      data[campo] = carpeta.createFile(blob).getUrl();
+    } catch (err) {
+      // Se deja la URL de Netlify. Queda anotado en el log del envio.
+      data[campo] = url + '  (no se pudo copiar al Drive)';
+    }
+  });
+}
+
+/**
+ * Corré esta funcion desde el editor para ver donde estan guardadas las
+ * postulaciones y los CV. Devuelve los links en el registro de ejecucion.
+ */
+function verDondeGuarda() {
+  var props = PropertiesService.getScriptProperties();
+  var idPlanilla = props.getProperty('ID_PLANILLA_POSTULACIONES');
+  var idCarpeta = props.getProperty(PROP_CARPETA_CV);
+
+  Logger.log(
+    'Planilla de postulaciones: ' +
+      (idPlanilla ? SpreadsheetApp.openById(idPlanilla).getUrl() : 'todavia no se creo')
+  );
+  Logger.log(
+    'Carpeta de CV: ' + (idCarpeta ? DriveApp.getFolderById(idCarpeta).getUrl() : 'todavia no se creo')
+  );
 }
 
 // ===========================================================================

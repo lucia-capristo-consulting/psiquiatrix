@@ -78,9 +78,8 @@ export const POSTULACION = {
   // OJO: esta frase es una promesa chica y muy visible. Quien se postula y no
   // recibe respuesta lo cuenta. Si no se va a poder cumplir, se saca.
   promesa: 'Respondemos todas las postulaciones.',
-  // El CV no se sube por el formulario a propósito: son datos personales y
-  // terminarían en el mismo Sheet que las consultas de pacientes. Va por mail.
-  nota: 'Si querés, mandanos tu CV por mail a',
+  // Alternativa para quien esté desde el celular y no tenga el CV a mano.
+  nota: 'Si preferís, escribinos a',
   mailCv: 'psiquiatrix.online@gmail.com',
 };
 

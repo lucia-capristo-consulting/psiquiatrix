@@ -16,3 +16,23 @@ export async function submitNetlifyForm(formName, data) {
   if (!res.ok) throw new Error(`Netlify form submission failed: ${res.status}`);
   return true;
 }
+
+/**
+ * Envío con archivos adjuntos.
+ *
+ * El envío de arriba serializa los campos como texto, y así un archivo no
+ * viaja: llega el nombre, no el contenido. Para adjuntar hay que mandar el
+ * FormData tal cual, en multipart.
+ *
+ * Y hay un detalle que se paga caro si se pasa por alto: NO se declara el
+ * Content-Type. El navegador lo arma solo, e incluye el separador aleatorio
+ * que marca dónde empieza y termina cada parte. Si se escribe a mano, ese
+ * separador falta y el servidor no puede leer nada.
+ */
+export async function submitNetlifyFormConArchivos(formName, formElement) {
+  const payload = new FormData(formElement);
+  payload.set('form-name', formName);
+  const res = await fetch('/', { method: 'POST', body: payload });
+  if (!res.ok) throw new Error(`Netlify form submission failed: ${res.status}`);
+  return true;
+}

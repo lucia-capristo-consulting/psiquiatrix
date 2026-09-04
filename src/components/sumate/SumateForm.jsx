@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
-import { submitNetlifyForm } from '../../lib/netlifyForm';
+import { submitNetlifyFormConArchivos } from '../../lib/netlifyForm';
 import { trackEvent } from '../../lib/analytics';
 import { inputCls } from '../../lib/formulario';
 import CampoMail from '../CampoMail';
@@ -14,9 +14,13 @@ const FORM_NAME = 'contacto-sumate';
 /**
  * Postulación.
  *
- * El CV NO se sube por acá a propósito: es un dato personal y terminaría en el
- * mismo Google Sheet que las consultas de pacientes. Se pide por mail, que
- * ademas no obliga a sumar manejo de archivos.
+ * El CV se adjunta acá, y por eso este formulario se envía distinto a los
+ * otros dos: en multipart, con el FormData tal cual. Serializado como texto,
+ * de un archivo viaja el nombre y no el contenido.
+ *
+ * El archivo NO se queda en Netlify: el Apps Script lo baja y lo guarda en una
+ * carpeta del Drive de la institución. Un CV trae teléfono, domicilio y
+ * trayectoria completa, y no tiene por qué vivir en una URL pública.
  */
 export default function SumateForm() {
   const [instancia, setInstancia] = useState('');
@@ -27,10 +31,10 @@ export default function SumateForm() {
     e.preventDefault();
     if (status === 'sending') return;
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
     setStatus('sending');
     try {
-      await submitNetlifyForm(FORM_NAME, data);
+      // Con adjunto: se manda el formulario entero, no los campos sueltos.
+      await submitNetlifyFormConArchivos(FORM_NAME, form);
       setStatus('success');
       // Igual que en los otros formularios: se cuenta el envío, nunca el
       // contenido de lo que la persona escribió.
@@ -81,6 +85,7 @@ export default function SumateForm() {
           method="POST"
           data-netlify="true"
           data-netlify-honeypot="bot-field"
+          encType="multipart/form-data"
           onSubmit={handleSubmit}
           className="bg-parchment border border-linen p-8 md:p-10 flex flex-col gap-5"
         >
@@ -134,6 +139,19 @@ export default function SumateForm() {
             <span className="eyebrow text-taupe">Teléfono</span>
             <CampoTelefono key={'tel-' + formKey} className={inputCls} />
           </div>
+
+          <label className="flex flex-col gap-2">
+            <span className="eyebrow text-taupe">Tu CV</span>
+            <input
+              type="file"
+              name="cv"
+              accept=".pdf,.doc,.docx"
+              className="text-[14px] text-graphite file:mr-4 file:py-2.5 file:px-4 file:border file:border-graphite file:bg-transparent file:text-graphite file:text-[13px] file:font-medium file:cursor-pointer hover:file:bg-bone file:transition-colors"
+            />
+            <span className="text-[12.5px] leading-[1.5] text-taupe">
+              PDF o Word, hasta 8 MB. Opcional, pero nos ayuda a leerte mejor.
+            </span>
+          </label>
 
           <label className="flex flex-col gap-2">
             <span className="eyebrow text-taupe">Contanos brevemente</span>
