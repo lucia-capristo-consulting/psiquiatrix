@@ -116,14 +116,20 @@ export const NO_ES = {
 
 export const POSTULACION = {
   antetitulo: 'Postulación',
-  titulo: 'Escribinos.',
+  // Una sola instrucción y una sola acción. Antes convivían cuatro
+  // invitaciones distintas --escribinos, contanos, mandanos el CV por mail, el
+  // botón-- y competían entre sí: quien lee tiene que saber exactamente qué se
+  // espera que haga.
+  titulo: 'Contanos de vos.',
   bajada:
-    'Contanos en qué instancia de tu formación estás y qué te interesa de esta modalidad de trabajo.',
+    'Decinos en qué instancia de tu formación estás y qué te interesa de esta modalidad de trabajo. Con eso alcanza para empezar a conversar.',
   // OJO: esta frase es una promesa chica y muy visible. Quien se postula y no
   // recibe respuesta lo cuenta. Si no se va a poder cumplir, se saca.
   promesa: 'Respondemos todas las postulaciones.',
-  // Alternativa para quien esté desde el celular y no tenga el CV a mano.
-  nota: 'Si preferís, escribinos a',
+  // El mail queda SOLO como salida de emergencia, no como segundo camino: si
+  // se ofrece como alternativa, parte de la gente lo elige y el formulario
+  // deja de servir para lo que se hizo.
+  nota: 'Si el formulario no te funciona, escribinos a',
   mailCv: 'psiquiatrix.online@gmail.com',
 };
 

@@ -66,11 +66,11 @@ export default function SumateForm() {
           <p className="mt-4 text-[15px] leading-[1.65] text-graphite max-w-[440px] m-0">
             {POSTULACION.promesa}
           </p>
-          <p className="mt-6 text-[14px] leading-[1.6] text-taupe max-w-[440px] m-0">
+          <p className="mt-10 pt-6 border-t border-linen text-[13px] leading-[1.6] text-taupe max-w-[440px] m-0">
             {POSTULACION.nota}{' '}
             <a
-              href={`mailto:${POSTULACION.mailCv}?subject=${encodeURIComponent('Postulación — CV')}`}
-              className="text-accent underline underline-offset-2"
+              href={`mailto:${POSTULACION.mailCv}?subject=${encodeURIComponent('Postulación')}`}
+              className="underline underline-offset-2 hover:text-accent transition-colors"
             >
               {POSTULACION.mailCv}
             </a>
