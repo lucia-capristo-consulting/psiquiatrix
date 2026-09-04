@@ -21,9 +21,9 @@ export const HERO = {
   antetitulo: 'Para psiquiatras y residentes',
   // El título se parte en tres para poder resaltar el medio, como en el resto
   // del sitio. La "x" de Psiquiatrix y las frases en itálica van en acento.
-  titulo: ['Ejercé con autonomía, y con ', 'quién consultar', ' cuando hace falta.'],
+  titulo: ['Sumate a un equipo donde la experiencia ', 'se transmite', '.'],
   bajada:
-    'Buscamos psiquiatras y residentes desde segundo año para atender pacientes derivados por la institución. Vas a llevar tus propios tratamientos, con tus decisiones, dentro de un equipo que discute los casos y acompaña.',
+    'Buscamos psiquiatras y residentes desde segundo año para atender pacientes derivados por la institución. Vas a llevar tus propios tratamientos, con supervisión, ateneos y la dirección clínica de dos psiquiatras con más de treinta años de práctica.',
 };
 
 export const DIRECCION = {
@@ -36,13 +36,16 @@ export const DIRECCION = {
 
 export const TRABAJO = {
   antetitulo: 'Cómo se trabaja',
-  titulo: 'De lo que no te vas a tener que ocupar.',
+  // El título estaba en negativo ("de lo que no te vas a tener que ocupar") y
+  // los puntos también. Se enuncian como lo que la persona recibe, que es lo
+  // que realmente son: ejercer sin tener que montar un consultorio.
+  titulo: 'Vos atendés. De todo lo demás nos ocupamos nosotras.',
   puntos: [
-    'Los pacientes llegan derivados por la institución. No tenés que conseguirlos.',
-    'La atención es enteramente online.',
-    'Los turnos y las historias clínicas se gestionan con herramientas que damos nosotros.',
-    'La facturación y el cobro al paciente los hacemos nosotros. Vos atendés.',
-    'Los honorarios se liquidan cada quince días, con ajuste por IPC cada tres o cuatro meses.',
+    'Los pacientes te llegan derivados por la institución.',
+    'Atendés desde donde estés: la modalidad es enteramente online.',
+    'Te damos las herramientas para gestionar turnos e historias clínicas.',
+    'Nosotras facturamos y le cobramos al paciente.',
+    'Cobrás cada quince días, con ajuste por IPC cada tres o cuatro meses.',
   ],
 };
 
