@@ -5,6 +5,7 @@ import Footer from '../components/Footer.jsx';
 import SumateHero from '../components/sumate/SumateHero.jsx';
 import {
   SumateTrabajo,
+  SumateComienzo,
   SumateDireccion,
   SumatePerfil,
   SumateNoEs,
@@ -38,6 +39,7 @@ export default function Sumate() {
       <main>
         <SumateHero />
         <SumateTrabajo />
+        <SumateComienzo />
         <SumateDireccion />
         <SumatePerfil />
         <SumateNoEs />

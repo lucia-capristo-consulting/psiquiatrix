@@ -2,14 +2,14 @@ import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
 import { directors } from '../../contenido/bios-directoras';
 import BioBody from '../BioBody';
-import { DIRECCION, TRABAJO, PERFIL, NO_ES } from '../../contenido/sumate';
+import { DIRECCION, TRABAJO, COMIENZO, PERFIL, NO_ES } from '../../contenido/sumate';
 
 /**
  * Bloque de lista con antetítulo y título. Las tres secciones de la página
  * tienen la misma forma —enunciado y puntos— así que comparten componente:
  * lo que cambia entre ellas es el contenido, no la estructura.
  */
-function Lista({ antetitulo, titulo, intro, puntos, fondo }) {
+function Lista({ antetitulo, titulo, intro, puntos, cierre, fondo }) {
   return (
     <section className={`${fondo} border-t border-linen`}>
       <motion.div
@@ -49,6 +49,15 @@ function Lista({ antetitulo, titulo, intro, puntos, fondo }) {
               </motion.li>
             ))}
           </ul>
+          {cierre && (
+            <motion.p
+              variants={fadeUp}
+              transition={sectionTransition}
+              className="text-[15.5px] leading-[1.7] text-graphite m-0 max-w-[560px] pt-2"
+            >
+              {cierre}
+            </motion.p>
+          )}
         </motion.div>
       </motion.div>
     </section>
@@ -66,6 +75,17 @@ export function SumateTrabajo() {
   );
 }
 
+export function SumateComienzo() {
+  return (
+    <Lista
+      antetitulo={COMIENZO.antetitulo}
+      titulo={COMIENZO.titulo}
+      puntos={COMIENZO.puntos}
+      fondo="bg-bone"
+    />
+  );
+}
+
 export function SumatePerfil() {
   return (
     <Lista
@@ -73,6 +93,7 @@ export function SumatePerfil() {
       titulo={PERFIL.titulo}
       intro={PERFIL.intro}
       puntos={PERFIL.requisitos}
+      cierre={PERFIL.cierre}
       fondo="bg-bone"
     />
   );
@@ -96,7 +117,7 @@ export function SumateNoEs() {
  */
 export function SumateDireccion() {
   return (
-    <section className="bg-bone border-t border-linen">
+    <section className="bg-parchment border-t border-linen">
       <motion.div
         {...inViewProps}
         variants={stagger(0.1)}
@@ -114,6 +135,17 @@ export function SumateDireccion() {
               </p>
             ))}
           </div>
+
+          <ul className="mt-8 flex flex-col gap-4 m-0 p-0 list-none max-w-[620px]">
+            {DIRECCION.puntos.map((p) => (
+              <li key={p} className="relative pl-6 text-[15.5px] leading-[1.7] text-graphite">
+                <span aria-hidden className="absolute left-0 top-[3px] text-accent">
+                  —
+                </span>
+                {p}
+              </li>
+            ))}
+          </ul>
         </motion.div>
 
         <motion.div

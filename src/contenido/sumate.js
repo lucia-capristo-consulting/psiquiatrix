@@ -35,6 +35,26 @@ export const DIRECCION = {
     'Claudia Heller y Amanda Villaverde dirigen clínicamente el equipo. Las dos se formaron en hospitales de alta complejidad y siguen ejerciendo. Participan de los ateneos, supervisan los casos difíciles y siguen de cerca cómo trabaja cada profesional del equipo.',
     'Eso es lo que estás por sumar: un lugar donde se aprende trabajando, con alguien que responde con vos por cada tratamiento. No es una plataforma que te consigue pacientes: es un equipo clínico, y vas a formar parte de él.',
   ],
+  puntos: [
+    'Ateneos semanales, con todo el equipo y las dos directoras.',
+    'Supervisión de los casos difíciles, cuando la necesitás.',
+    'Si algo sale mal, no lo resolvés solo: te ayudamos a reconducirlo con el paciente y con quien lo derivó.',
+    'Los pacientes siguen con vos. Vas a sostener tratamientos durante años y ver qué pasó con lo que indicaste, que es la experiencia que la rotación de una residencia no da.',
+  ],
+};
+
+// Responde la primera pregunta que se hace un residente al leer esto: si puede
+// hacerlo mientras cursa. Antes la página no la contestaba, y lo único que
+// decía de horarios ("cuanto más amplia, mejor") estaba escrito desde lo que
+// necesita la institución: se leía como que piden mucho.
+export const COMIENZO = {
+  antetitulo: 'Cómo se empieza',
+  titulo: 'Nadie arranca con la agenda llena.',
+  puntos: [
+    'Empezás con pocos pacientes y sumás horas a medida que te vas acomodando. No hay un mínimo de dedicación ni hace falta que este sea tu único trabajo.',
+    'Los días y los horarios los acordamos con vos, para que entren donde te sirvan: la residencia, el hospital, tu consultorio.',
+    'Una vez acordados, se sostienen. No es una agenda que cambia cada semana, y es a propósito: tu paciente necesita encontrarte siempre a la misma hora.',
+  ],
 };
 
 export const TRABAJO = {
@@ -48,7 +68,7 @@ export const TRABAJO = {
     'Atendés desde donde estés: la modalidad es enteramente online.',
     'Te damos las herramientas para gestionar turnos e historias clínicas.',
     'Nosotras facturamos y le cobramos al paciente.',
-    'Cobrás cada quince días, con ajuste por IPC cada tres o cuatro meses.',
+    'Se cobra por consulta, cada quince días, con ajuste por IPC cada tres o cuatro meses.',
   ],
 };
 
@@ -65,8 +85,13 @@ export const PERFIL = {
     'Monotributo vigente.',
     'Seguro de mala praxis.',
     'Buena conexión a internet.',
-    'Disponibilidad horaria: cuanto más amplia, mejor.',
+    'Disponibilidad horaria para sostener un día y un horario fijos por semana.',
   ],
+  // Dicho sin vueltas: el problema real de la institución es que los
+  // profesionales se van cuando consiguen algo mejor pago. Decirlo de entrada
+  // no espanta a quien viene a formarse; sí filtra a quien viene de paso.
+  cierre:
+    'No pedimos permanencia mínima, pero buscamos vínculos largos. Lo que se aprende acá lleva tiempo, y los pacientes también.',
 };
 
 export const NO_ES = {
