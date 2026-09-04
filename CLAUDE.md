@@ -86,6 +86,18 @@ Esto **no es SSG**: el `<body>` sigue vacío y lo llena React. Sólo se prerende
 
 Para agregar una página: sumarla a `PAGES` en `pages.js`, agregar su regla en `_redirects` y su `<loc>` en `public/sitemap.xml`.
 
+### Convocatoria (/sumate)
+
+Página para reclutar psiquiatras, con su texto en `src/contenido/sumate.js`.
+
+**Es permanente, no una búsqueda puntual.** Cuando se cubren los puestos no se despublica: se cambia `BUSQUEDA_ABIERTA` a `false` y el cartel del encabezado pasa a decir que no hay búsquedas abiertas. Así sigue recibiendo candidaturas espontáneas en vez de quedar vieja.
+
+Va **fuera del `Layout`**, con una cabecera propia mínima y el `Footer` del sitio: el nav conmuta por audiencia y sus anclas no existen acá. A propósito **no está enlazada desde el menú** — un "trabajá con nosotros" arriba le cambia el tono a un sitio que le habla a pacientes.
+
+**Va con `noindex`** pero **sí se prerenderiza**: son cosas distintas. Se comparte por link con residencias y colegas, así que el preview de WhatsApp tiene que salir bien; lo que no queremos es que compita en los resultados de búsqueda. Para indexarla: borrar `noindex: true` de su entrada en `pages.js` y sumar su `<loc>` al sitemap.
+
+El formulario es `contacto-sumate`, con su stub en `index.html` como los otros dos. **El CV no se sube por el formulario**: es un dato personal y terminaría en el mismo Sheet que las consultas de pacientes, así que se pide por mail.
+
 ### Tarjetas digitales
 
 Cada directora tiene una tarjeta de contacto en su propia ruta (`/amanda`). Son **dos pantallas que se complementan**:

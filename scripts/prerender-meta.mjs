@@ -48,6 +48,7 @@ function headFor(page) {
     `<meta name="description" content="${esc(page.description)}" />`,
     `<link rel="canonical" href="${esc(url)}" />`,
     `<link rel="alternate" hreflang="es-AR" href="${esc(url)}" />`,
+    ...(page.noindex ? ['<meta name="robots" content="noindex, follow" />'] : []),
     '',
     '<meta property="og:type" content="website" />',
     `<meta property="og:site_name" content="${esc(SITE_NAME)}" />`,

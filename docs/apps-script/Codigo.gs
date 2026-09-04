@@ -34,6 +34,7 @@ var ETIQUETAS = {
   profesion: 'Profesión',            // solo contacto-psicologos
   enfoque: 'Enfoque terapéutico',    // solo contacto-psicologos
   intencion: 'Intención de derivar', // solo contacto-psicologos
+  instancia: 'Instancia de formación', // solo contacto-sumate
 };
 
 // ===========================================================================
@@ -60,6 +61,7 @@ var ZONA = 'America/Argentina/Buenos_Aires';
 var NOMBRE_AUDIENCIA = {
   'contacto-pacientes': 'Pacientes',
   'contacto-psicologos': 'Psicólogos',
+  'contacto-sumate': 'Postulación',
 };
 
 var SITIO = 'https://www.psiquiatrix.ar';
@@ -95,6 +97,17 @@ var PLANTILLAS_POR_DEFECTO = {
       'una primera conversación profesional.\n\n' +
       'No hace falta que respondas este correo: es sólo la confirmación de ' +
       'que tu mensaje está con nosotros.',
+    aviso: '',
+  },
+  'contacto-sumate': {
+    asunto: 'Recibimos tu postulación',
+    cuerpo:
+      'Hola {{nombre}}:\n\n' +
+      'Recibimos tu postulación y queríamos confirmarte que llegó bien.\n\n' +
+      'La vamos a leer con atención y te vamos a escribir, te sumemos o no al ' +
+      'equipo.\n\n' +
+      'Si todavía no nos mandaste tu CV, podés responder este correo con el ' +
+      'archivo adjunto.',
     aviso: '',
   },
 };

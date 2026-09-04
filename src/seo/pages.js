@@ -48,6 +48,17 @@ export const PAGES = [
       alt: 'PsiquiatriX — Cuando derivás a Psiquiatrix, seguís en la conversación.',
     }),
   },
+  {
+    path: '/sumate',
+    file: 'sumate.html',
+    title: 'Sumate al equipo | PsiquiatriX',
+    description:
+      'Buscamos psiquiatras y residentes desde segundo año para atención online, con supervisión y ateneos. Ejercé con autonomía y con quién consultar.',
+    // Se comparte por link con residencias y colegas, asi que necesita
+    // preview; pero no tiene por que competir en los resultados de busqueda.
+    // Para indexarla, se borra esta linea y se suma su <loc> al sitemap.
+    noindex: true,
+  },
 ];
 
 // Las tarjetas digitales se suman solas: alcanza con dar de alta a la persona

@@ -9,6 +9,10 @@
 /marca         /marca/index.html  200
 /marca/        /marca/index.html  200
 
+# Convocatoria para psiquiatras. Se comparte por link, asi que necesita su
+# HTML propio para que el preview salga bien.
+/sumate        /sumate.html       200
+
 # Tarjetas digitales de las directoras. Una regla por persona, igual que las
 # demas rutas prerenderizadas: el QR que ellas muestran lleva aca, y el link se
 # comparte, asi que el preview tiene que salir bien.
