@@ -59,7 +59,7 @@ export const PERFIL = {
   // justamente ofrece experiencia.
   titulo: 'Nos interesa cómo atendés.',
   intro:
-    'Buscamos profesionales que ejerzan una psiquiatría cercana: con tiempo real para cada paciente, con un vínculo que se sostiene y con ganas de seguir aprendiendo. Lo demás se aprende.',
+    'Buscamos profesionales que ejerzan una psiquiatría cercana: con tiempo real para cada paciente, con un vínculo que se sostiene y con ganas de seguir formándose. Lo demás se aprende.',
   requisitos: [
     'Título de médico/a especialista en Psiquiatría, o certificado de residencia o curso superior a partir del segundo año.',
     'Monotributo vigente.',
