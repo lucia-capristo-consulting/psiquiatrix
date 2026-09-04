@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import CampoTelefono from '../CampoTelefono';
 import CampoMail from '../CampoMail';
-import { inputCls } from '../../lib/formulario';
+import { inputCls, reactivarAlEscribir } from '../../lib/formulario';
 import { MENSAJES_PSICOLOGOS, BOTON } from '../../contenido/mensajes-formulario';
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
@@ -131,6 +131,7 @@ export default function PsicoContacto() {
           data-netlify="true"
           data-netlify-honeypot="bot-field"
           onSubmit={handleSubmit}
+          onInput={reactivarAlEscribir(status, setStatus)}
           className="bg-parchment border border-linen p-8 md:p-10 flex flex-col gap-6"
         >
           {/* Required for Netlify Forms in SPAs */}

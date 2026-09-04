@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
 import { submitNetlifyFormConArchivos } from '../../lib/netlifyForm';
 import { trackEvent } from '../../lib/analytics';
-import { inputCls } from '../../lib/formulario';
+import { inputCls, reactivarAlEscribir } from '../../lib/formulario';
 import CampoMail from '../CampoMail';
 import CampoTelefono from '../CampoTelefono';
 import { POSTULACION, INSTANCIAS } from '../../contenido/sumate';
@@ -87,6 +87,7 @@ export default function SumateForm() {
           data-netlify-honeypot="bot-field"
           encType="multipart/form-data"
           onSubmit={handleSubmit}
+          onInput={reactivarAlEscribir(status, setStatus)}
           className="bg-parchment border border-linen p-8 md:p-10 flex flex-col gap-5"
         >
           <input type="hidden" name="form-name" value={FORM_NAME} />

@@ -6,7 +6,7 @@ import { trackEvent } from '../lib/analytics';
 import { waUrl, WA_MESSAGES } from '../contenido/contacto-whatsapp';
 import CampoTelefono from './CampoTelefono';
 import CampoMail from './CampoMail';
-import { inputCls } from '../lib/formulario';
+import { inputCls, reactivarAlEscribir } from '../lib/formulario';
 import { formatoValido } from '../lib/validarMail';
 import { MENSAJES_PACIENTES, BOTON } from '../contenido/mensajes-formulario';
 
@@ -138,6 +138,7 @@ export default function CTA() {
           data-netlify="true"
           data-netlify-honeypot="bot-field"
           onSubmit={handleSubmit}
+          onInput={reactivarAlEscribir(status, setStatus)}
           className="bg-parchment border border-linen p-8 md:p-10 flex flex-col gap-5"
         >
           {/* Required for Netlify Forms in SPAs */}
