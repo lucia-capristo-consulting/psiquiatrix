@@ -235,6 +235,14 @@ function doPost(e) {
 
     return respuesta_({ ok: true, mail: envio.ok });
   } catch (err) {
+    // Que quede escrito en el Sheet y no solo en el registro de ejecuciones de
+    // Apps Script: si algo falla, lo primero que se mira es la planilla, y un
+    // envio que desaparece sin dejar rastro es imposible de diagnosticar.
+    try {
+      registrarEnvio_('ERROR al procesar el envio', '', { ok: false, detalle: String(err) });
+    } catch (err2) {
+      // Si ni el log anda, no hay nada mas que hacer.
+    }
     return respuesta_({ ok: false, error: String(err) });
   } finally {
     lock.releaseLock();
@@ -271,9 +279,24 @@ function planillaPara_(formName) {
       // Ya no existe o no hay acceso: se cae al alta de abajo.
     }
   }
-  var nueva = SpreadsheetApp.create(aparte.nombre);
-  props.setProperty(aparte.propiedad, nueva.getId());
-  return nueva;
+
+  // Si no se puede crear la planilla aparte --falta de permisos, cuota, lo que
+  // sea-- se usa esta y listo. Antes esto reventaba, y como doPost la pide
+  // ANTES de guardar la fila, un envio se perdia entero: sin fila, sin aviso
+  // al equipo y sin confirmacion a la persona. Tener el dato en la planilla
+  // equivocada es infinitamente mejor que no tenerlo.
+  try {
+    var nueva = SpreadsheetApp.create(aparte.nombre);
+    props.setProperty(aparte.propiedad, nueva.getId());
+    return nueva;
+  } catch (err) {
+    registrarEnvio_(
+      formName + ' (planilla aparte)',
+      aparte.nombre,
+      { ok: false, detalle: 'No se pudo crear: ' + err + '. Se usa la planilla de contactos.' }
+    );
+    return SpreadsheetApp.getActiveSpreadsheet();
+  }
 }
 
 function carpetaCv_() {
