@@ -11,7 +11,11 @@ const PSICO_LINKS = [
   { t: 'Cómo trabajamos', href: '/psicologos#como-trabajamos' },
   { t: 'Quiénes somos', href: '/psicologos#quienes-somos' },
   { t: 'Cómo derivar', href: '/psicologos#como-derivar' },
-  { t: 'Quiero derivar', href: '/psicologos#derivacion' },
+  // Habia tambien un "Quiero derivar" al formulario (#derivacion). Se saco:
+  // el CTA del nav es sticky, asi que el formulario esta a un clic desde
+  // cualquier punto de la pagina, y ademas es la ultima seccion antes del pie
+  // — quien llega hasta aca recien paso por el. Sumado a que se llamaba casi
+  // igual que el de arriba, eran dos links que parecian el mismo.
   { t: 'Trabajá con nosotros', ruta: '/sumate' },
 ];
 
