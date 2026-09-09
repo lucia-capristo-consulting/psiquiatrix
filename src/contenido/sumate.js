@@ -40,7 +40,7 @@ export const DIRECCION = {
   ],
   parrafos: [
     'Claudia Heller y Amanda Villaverde dirigen clínicamente el equipo. Las dos se formaron en hospitales universitarios, enseñaron durante años en la Facultad de Medicina y siguen ejerciendo. Participan de los ateneos, acompañan los casos difíciles y sostienen el criterio clínico con el que trabaja todo el equipo.',
-    'Eso es lo que estás por sumar: un lugar donde se aprende trabajando, con alguien que responde con vos por cada tratamiento. No es una plataforma que te consigue pacientes: es un equipo clínico, y vas a formar parte de él.',
+    'Psiquiatrix es un equipo clínico, no una plataforma que consigue pacientes. Acá se ejerce acompañado: la formación no se interrumpe, sigue en los ateneos y en la discusión de casos, y vas a formar parte de eso.',
   ],
   puntos: [
     'Ateneos semanales, con todo el equipo y las directoras.',
@@ -60,7 +60,7 @@ export const COMIENZO = {
   puntos: [
     'Empezás con pocos pacientes y sumás horas a medida que te vas acomodando. No necesitás dedicación exclusiva: esto convive con la residencia o con tu consultorio.',
     'Los días y los horarios los acordamos con vos, para que entren donde te sirvan: la residencia, el hospital, tu consultorio.',
-    'Tu disponibilidad se planifica mes a mes, para poder darle a cada paciente un turno estable.',
+    'Tu disponibilidad se acuerda mes a mes, para poder agendar los turnos con anticipación.',
   ],
 };
 
@@ -73,7 +73,7 @@ export const TRABAJO = {
   puntos: [
     'Los pacientes te llegan derivados por la institución.',
     'Atendés desde donde estés: la modalidad es enteramente online.',
-    'Tenés herramientas propias para gestionar turnos e historias clínicas.',
+    'Te brindamos las herramientas para gestionar turnos e historias clínicas.',
     'De la facturación y del cobro al paciente se ocupa la institución.',
     'Cobrás por consulta, cada quince días, con actualización por IPC cada cuatro meses.',
   ],
