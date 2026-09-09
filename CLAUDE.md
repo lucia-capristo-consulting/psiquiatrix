@@ -100,7 +100,9 @@ Va **fuera del `Layout`**, con una cabecera propia mínima y el `Footer` del sit
 
 Termina con dos links al resto del sitio (`SumateSitio`), **después del formulario**. La página tiene un solo trabajo, que es producir una postulación, y un link puesto antes es una salida. Los rótulos están escritos desde el lugar del candidato, que no es paciente ni psicólogo: los del nav ("Soy paciente" / "Soy psicólogo/a") lo tratarían como si se hubiera equivocado de página.
 
-El formulario es `contacto-sumate`, con su stub en `index.html` como los otros dos. **El CV no se sube por el formulario**: es un dato personal y terminaría en el mismo Sheet que las consultas de pacientes, así que se pide por mail.
+El formulario es `contacto-sumate`, con su stub en `index.html` como los otros dos, y **sí acepta el CV adjunto**. Va a una planilla aparte de la de pacientes y el archivo se copia a una carpeta del Drive, porque un CV es un dato personal y no puede convivir con las consultas de pacientes ni quedarse en la URL pública de Netlify. Todo eso lo hace el Apps Script; ver `docs/auto-reply-formularios.md`.
+
+**Netlify manda el campo del archivo como un objeto** (`{ url, filename, size, type }`), no como una URL suelta. Es la clase de detalle que falla en silencio: el script trataba el objeto como "no hay adjunto", escribía la fila igual y la celda quedaba con el objeto crudo, así que parecía que había funcionado.
 
 ### Tarjetas digitales
 

@@ -185,6 +185,19 @@ Los archivos se guardan como `Nombre Apellido — CV.pdf`. Sin eso quedan todos 
 
 **Si la copia al Drive falla** —se cayó la red, cambió la URL— la celda queda con el link original de Netlify y la aclaración de que no se pudo copiar. Es preferible tener el CV en un lugar menos ideal que perderlo.
 
+### Cómo leer la celda de CV
+
+La celda tiene que traer **un link de `drive.google.com`**. Cualquier otra cosa significa que el archivo no se copió y sigue solo en Netlify:
+
+| Lo que dice la celda | Qué pasó |
+|---|---|
+| `https://drive.google.com/file/d/…` | Bien. El CV está en la carpeta del Drive. |
+| `https://…netlify… (no se pudo copiar al Drive)` | Falló la copia. Bajarlo a mano desde ese link. Suele ser que falta correr `prepararGuardado()`. |
+| `{size=…, type=file, url=…, filename=…}` | **Bug ya corregido.** El script del Sheet está desactualizado: hay que pegar la versión nueva de `Codigo.gs`. |
+| `(adjunto no reconocido: …)` | Netlify cambió el formato del campo. Hay que mirar qué manda ahora. |
+
+Sobre la tercera fila: Netlify manda el campo del archivo como un **objeto** —`{ url, filename, size, type }`— y no como una URL suelta. El script pedía que el valor empezara con `http`, cosa que un objeto no cumple, así que salía por la rama de "no hay adjunto" sin copiar nada y después escribía la fila igual con el objeto entero adentro. Falla en silencio dos veces: no avisa, y como la celda no queda vacía parece que funcionó.
+
 Para ver dónde quedaron la planilla y la carpeta, correr **`verDondeGuarda()`** desde el editor: deja los dos links en el registro de ejecución.
 
 ### Permisos nuevos: correr `prepararGuardado()` una vez

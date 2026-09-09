@@ -333,25 +333,73 @@ function guardarArchivos_(formName, data) {
 
   var carpeta = null;
   campos.forEach(function (campo) {
-    var url = String(data[campo] || '').trim();
-    if (!/^https?:\/\//.test(url)) return; // no adjunto nada
+    var adjunto = adjuntoDe_(data[campo]);
+    if (!adjunto) {
+      // Si no es un adjunto reconocible pero tampoco esta vacio, dejo algo
+      // legible: un objeto crudo en la celda no le dice nada a nadie.
+      if (data[campo] && typeof data[campo] === 'object') {
+        data[campo] = '(adjunto no reconocido: ' + JSON.stringify(data[campo]) + ')';
+      }
+      return;
+    }
 
     try {
       if (!carpeta) carpeta = carpetaCv_();
-      var blob = UrlFetchApp.fetch(url).getBlob();
+      var blob = UrlFetchApp.fetch(adjunto.url).getBlob();
 
       // Nombre legible: sin esto quedan todos con el nombre que puso la
       // persona, y buscar "cv.pdf" entre treinta no sirve de nada.
       var quien = String(data.nombre || 'Sin nombre').trim();
-      var extension = (url.match(/\.([a-zA-Z0-9]{2,5})(?:\?|$)/) || [, 'pdf'])[1];
-      blob.setName(quien + ' — CV.' + extension.toLowerCase());
+      blob.setName(quien + ' — CV.' + extensionDe_(adjunto));
 
       data[campo] = carpeta.createFile(blob).getUrl();
     } catch (err) {
       // Se deja la URL de Netlify. Queda anotado en el log del envio.
-      data[campo] = url + '  (no se pudo copiar al Drive)';
+      data[campo] = adjunto.url + '  (no se pudo copiar al Drive)';
     }
   });
+}
+
+/**
+ * Normaliza el campo de archivo a { url, filename }, o null si no hay adjunto.
+ *
+ * ACA ESTUVO EL BUG. Netlify NO manda el campo de archivo como una URL suelta:
+ * manda un objeto.
+ *
+ *   { url: 'https://...', filename: 'cv.pdf', size: 141214, type: 'file' }
+ *
+ * El codigo hacia String(data[campo]) y pedia que empezara con "http". Con un
+ * objeto eso da falso, asi que salia por la puerta de "no adjunto nada" sin
+ * copiar nada, y despues la fila se escribia igual con el objeto entero en la
+ * celda —"{size=141214.0, type=file, url=..., filename=...}"—. El CV quedaba
+ * solo en la URL publica de Netlify, que es exactamente lo que esto viene a
+ * evitar, y encima parecia que habia funcionado porque la celda no estaba
+ * vacia. Se aceptan las dos formas por si el formato cambia.
+ */
+function adjuntoDe_(valor) {
+  if (!valor) return null;
+
+  if (typeof valor === 'object') {
+    var url = String(valor.url || '').trim();
+    if (!/^https?:\/\//.test(url)) return null;
+    return { url: url, filename: String(valor.filename || '').trim() };
+  }
+
+  var suelta = String(valor).trim();
+  if (!/^https?:\/\//.test(suelta)) return null;
+  return { url: suelta, filename: '' };
+}
+
+/**
+ * La extension sale del filename y solo si no hay, de la URL: el nombre
+ * original es el dato confiable, la URL puede no terminar en el archivo.
+ */
+function extensionDe_(adjunto) {
+  var de = function (s) {
+    var m = String(s || '').match(/\.([a-zA-Z0-9]{2,5})(?:\?|$)/);
+    return m ? m[1].toLowerCase() : '';
+  };
+  return de(adjunto.filename) || de(adjunto.url) || 'pdf';
 }
 
 /**
