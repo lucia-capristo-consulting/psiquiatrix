@@ -26,7 +26,7 @@ export const HERO = {
     ['la experiencia ', { acento: 'se transmite' }, '.'],
   ],
   bajada:
-    'Buscamos psiquiatras y residentes de psiquiatría desde segundo año para atender pacientes derivados por la institución. Vas a llevar tus propios tratamientos, con ateneos semanales y la dirección clínica de dos psiquiatras con más de treinta años de práctica.',
+    'Buscamos psiquiatras y residentes de psiquiatría desde segundo año para atender pacientes derivados por la institución. Vas a llevar tus propios tratamientos, con ateneos quincenales y la dirección clínica de dos psiquiatras con más de treinta años de práctica.',
 };
 
 export const DIRECCION = {
@@ -39,13 +39,12 @@ export const DIRECCION = {
     ' a la tuya.',
   ],
   parrafos: [
-    'Claudia Heller y Amanda Villaverde dirigen clínicamente el equipo. Las dos se formaron en hospitales universitarios, enseñaron durante años en la Facultad de Medicina y siguen ejerciendo. Participan de los ateneos, acompañan los casos difíciles y sostienen el criterio clínico con el que trabaja todo el equipo.',
+    'Claudia Heller y Amanda Villaverde dirigen clínicamente el equipo. Las dos se formaron en hospitales universitarios, enseñaron durante años en la Facultad de Medicina y siguen ejerciendo. Participan de los ateneos, discuten los casos complejos con el equipo y sostienen el criterio clínico con el que se trabaja.',
     'Psiquiatrix es un equipo clínico, no una plataforma que consigue pacientes. Acá se ejerce acompañado: la formación no se interrumpe, sigue en los ateneos y en la discusión de casos, y vas a formar parte de eso.',
   ],
   puntos: [
-    'Ateneos semanales, con todo el equipo y las directoras.',
-    'Acompañamiento en los casos difíciles, cuando lo necesitás.',
-    'Ninguna decisión difícil se toma en soledad: se discute con el equipo antes.',
+    'Ateneos quincenales, con todo el equipo y las directoras.',
+    'Las decisiones clínicas complejas se analizan y se consensúan en equipo.',
     'Vas a acompañar la continuidad de cada tratamiento y ver cómo evoluciona en el tiempo.',
   ],
   cierre:
@@ -64,7 +63,7 @@ export const COMIENZO = {
     'Los casos se asignan según la experiencia de cada profesional. Nadie recibe un paciente que exceda su formación.',
     'No necesitás dedicación exclusiva: en el equipo hay profesionales que además ejercen en hospitales y en consultorio propio.',
     'Los días y los horarios los acordamos con vos, para que entren donde te sirvan: la residencia, el hospital, tu consultorio.',
-    'Tu disponibilidad se acuerda mes a mes, para poder agendar los turnos con anticipación.',
+    'Los horarios se planifican con varios meses de anticipación: sabés de antemano cuál es tu compromiso y los pacientes pueden agendar sus consultas con tiempo.',
   ],
 };
 

@@ -57,7 +57,7 @@ export const PAGES = [
     // Sin "supervision": se saco del cuerpo de la pagina a pedido de las
     // directoras y habia quedado solo aca, que es el texto que mas circula.
     description:
-      'Buscamos psiquiatras y residentes de psiquiatría desde segundo año para atención online, con ateneos semanales y dirección clínica. Un equipo donde la experiencia se transmite.',
+      'Buscamos psiquiatras y residentes de psiquiatría desde segundo año para atención online, con ateneos quincenales y dirección clínica. Un equipo donde la experiencia se transmite.',
     ogImage: imagenOg({
       archivo: 'og-sumate.jpg',
       width: 1200,

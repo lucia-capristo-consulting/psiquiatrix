@@ -11,7 +11,7 @@ const items = [
     k: '02',
     t: 'Respaldo clínico',
     b: [
-      'Ateneos clínicos semanales y respaldo profesional continuo.',
+      'Ateneos clínicos quincenales y respaldo profesional continuo.',
       'Cada profesional trabaja con autonomía, formando parte de un equipo donde el intercambio clínico, los ateneos y la consulta entre colegas acompañan los casos cuando es necesario.',
     ],
   },

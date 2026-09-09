@@ -3,7 +3,7 @@ import { fadeUp, sectionTransition, inViewProps } from '../motion';
 
 const items = [
   { t: 'Experiencia clínica', i: 'M4 12h16M4 6h16M4 18h16' },
-  { t: 'Ateneo clínico semanal', i: 'M4 7h16M4 12h16M4 17h10' },
+  { t: 'Ateneo clínico quincenal', i: 'M4 7h16M4 12h16M4 17h10' },
   { t: 'Coordinación con tu psicólogo/a', i: 'M5 12h14M12 5v14' },
   { t: 'Continuidad y seguimiento real', i: 'M12 6v6l4 2' },
 ];
