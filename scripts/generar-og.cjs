@@ -81,13 +81,14 @@ const PIEZAS = [
   },
   {
     archivo: 'public/og-sumate.jpg',
+    cuerpo: 46,
     // Con logotipo: quien la recibe en un grupo de residencias tiene que saber
     // en un segundo QUIEN convoca, no solo que hay una busqueda.
     conLogo: true,
     lineas: [
+      [{ texto: 'Buscamos psiquiatras y', estilo: 'serif', color: GRAPHITE }],
       [
-        { texto: 'Buscamos psiquiatras y ', estilo: 'serif', color: GRAPHITE },
-        { texto: 'residentes', estilo: 'serifItalica', color: ACCENT },
+        { texto: 'residentes de psiquiatría', estilo: 'serifItalica', color: ACCENT },
         { texto: '.', estilo: 'serif', color: GRAPHITE },
       ],
     ],
@@ -249,9 +250,11 @@ function anchoUnitario(tramos, fuentes) {
     // Cuerpo de la frase. Con logotipo es fijo; sin logotipo se agranda hasta
     // llenar el ancho util, con un tope para que no quede desmedida.
     const anchoMayor = Math.max(...p.lineas.map((l) => anchoUnitario(l, fuentes)));
-    const cuerpo = p.conLogo
-      ? FRASE_CON_LOGO
-      : Math.min(FRASE_SOLA_TOPE, ANCHO_UTIL / anchoMayor);
+    // Una pieza puede fijar su cuerpo: con logotipo y dos lineas, el cuerpo
+    // por defecto empuja la segunda contra la URL de abajo.
+    const cuerpo =
+      p.cuerpo ||
+      (p.conLogo ? FRASE_CON_LOGO : Math.min(FRASE_SOLA_TOPE, ANCHO_UTIL / anchoMayor));
 
     const cap = alturaMayuscula(fuentes.serif, cuerpo);
     const interlinea = cuerpo * INTERLINEA;
@@ -315,5 +318,8 @@ function anchoUnitario(tramos, fuentes) {
       ' px | linea mas ancha ' + Math.round(anchoMax) + ' de ' + ANCHO_UTIL
     );
     if (anchoMax > ANCHO_UTIL) console.log('   OJO: se pasa del margen seguro.');
+    const ultimaBase = primeraBase + (p.lineas.length - 1) * interlinea;
+    const aire = Math.round(urlBase - ultimaBase);
+    if (aire < 60) console.log('   OJO: la frase queda a ' + aire + ' px de la URL, muy pegada.');
   }
 })();

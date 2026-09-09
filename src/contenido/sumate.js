@@ -18,7 +18,7 @@ export const ESTADO = {
 };
 
 export const HERO = {
-  antetitulo: 'Para psiquiatras y residentes',
+  antetitulo: 'Para psiquiatras y residentes de psiquiatría',
   // Dos líneas, cortadas a propósito: "la experiencia se transmite" tiene que
   // leerse junta. Si se deja al navegador, dónde parte depende del ancho.
   titulo: [
@@ -26,7 +26,7 @@ export const HERO = {
     ['la experiencia ', { acento: 'se transmite' }, '.'],
   ],
   bajada:
-    'Buscamos psiquiatras y residentes desde segundo año para atender pacientes derivados por la institución. Vas a llevar tus propios tratamientos, con supervisión, ateneos y la dirección clínica de dos psiquiatras con más de treinta años de práctica.',
+    'Buscamos psiquiatras y residentes de psiquiatría desde segundo año para atender pacientes derivados por la institución. Vas a llevar tus propios tratamientos, con ateneos semanales y la dirección clínica de dos psiquiatras con más de treinta años de práctica.',
 };
 
 export const DIRECCION = {
@@ -39,14 +39,14 @@ export const DIRECCION = {
     ' a la tuya.',
   ],
   parrafos: [
-    'Claudia Heller y Amanda Villaverde dirigen clínicamente el equipo. Las dos se formaron en hospitales de alta complejidad y siguen ejerciendo. Participan de los ateneos, supervisan los casos difíciles y siguen de cerca cómo trabaja cada profesional del equipo.',
+    'Claudia Heller y Amanda Villaverde dirigen clínicamente el equipo. Las dos se formaron en hospitales universitarios, enseñaron durante años en la Facultad de Medicina y siguen ejerciendo. Participan de los ateneos, acompañan los casos difíciles y sostienen el criterio clínico con el que trabaja todo el equipo.',
     'Eso es lo que estás por sumar: un lugar donde se aprende trabajando, con alguien que responde con vos por cada tratamiento. No es una plataforma que te consigue pacientes: es un equipo clínico, y vas a formar parte de él.',
   ],
   puntos: [
     'Ateneos semanales, con todo el equipo y las directoras.',
-    'Supervisión de los casos difíciles, cuando la necesitás.',
-    'Si algo sale mal, no lo resolvés solo: te ayudamos a reconducirlo con el paciente y con quien lo derivó.',
-    'Los pacientes siguen con vos. Vas a sostener tratamientos durante años y ver qué pasó con lo que indicaste, que es la experiencia que la rotación de una residencia no da.',
+    'Acompañamiento en los casos difíciles, cuando lo necesitás.',
+    'Si algo sale mal, no lo resolvés por tu cuenta: te ayudamos a reconducirlo con el paciente y con quien lo derivó.',
+    'Vas a acompañar la continuidad de cada tratamiento y ver cómo evoluciona en el tiempo.',
   ],
 };
 
@@ -58,9 +58,9 @@ export const COMIENZO = {
   antetitulo: 'Cómo se empieza',
   titulo: 'Nadie arranca con la agenda llena.',
   puntos: [
-    'Empezás con pocos pacientes y sumás horas a medida que te vas acomodando. No hay un mínimo de dedicación ni hace falta que este sea tu único trabajo.',
+    'Empezás con pocos pacientes y sumás horas a medida que te vas acomodando. No necesitás dedicación exclusiva: esto convive con la residencia o con tu consultorio.',
     'Los días y los horarios los acordamos con vos, para que entren donde te sirvan: la residencia, el hospital, tu consultorio.',
-    'Una vez acordados, se sostienen. No es una agenda que cambia cada semana, y es a propósito: tu paciente necesita encontrarte siempre a la misma hora.',
+    'Tu disponibilidad se planifica mes a mes, para poder darle a cada paciente un turno estable.',
   ],
 };
 
@@ -69,13 +69,13 @@ export const TRABAJO = {
   // El título estaba en negativo ("de lo que no te vas a tener que ocupar") y
   // los puntos también. Se enuncian como lo que la persona recibe, que es lo
   // que realmente son: ejercer sin tener que montar un consultorio.
-  titulo: 'Vos atendés. De todo lo demás nos ocupamos nosotras.',
+  titulo: 'Vos atendés. Lo demás ya está resuelto.',
   puntos: [
     'Los pacientes te llegan derivados por la institución.',
     'Atendés desde donde estés: la modalidad es enteramente online.',
-    'Te damos las herramientas para gestionar turnos e historias clínicas.',
-    'Nosotras facturamos y le cobramos al paciente.',
-    'Se cobra por consulta, cada quince días, con ajuste por IPC cada tres o cuatro meses.',
+    'Tenés herramientas propias para gestionar turnos e historias clínicas.',
+    'De la facturación y del cobro al paciente se ocupa la institución.',
+    'Cobrás por consulta, cada quince días, con actualización por IPC cada cuatro meses.',
   ],
 };
 
@@ -88,7 +88,7 @@ export const PERFIL = {
   intro:
     'Buscamos profesionales que ejerzan una psiquiatría cercana: con tiempo real para cada paciente, con un vínculo que se sostiene y con ganas de seguir formándose. Lo demás se aprende.',
   requisitos: [
-    'Título de médico/a especialista en Psiquiatría, o certificado de residencia o curso superior a partir del segundo año.',
+    'Título de médico/a especialista en Psiquiatría, o certificado de residencia en Psiquiatría o curso superior a partir del segundo año.',
     'Monotributo vigente.',
     'Seguro de mala praxis.',
     'Buena conexión a internet.',

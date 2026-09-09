@@ -43,17 +43,20 @@ export default function SumateHero() {
         </motion.p>
 
         <motion.div variants={fadeUp} transition={sectionTransition} className="mt-10">
+          {/* Con busqueda abierta el cartel va lleno, no delineado: es la
+              informacion que mas rapido tiene que llegar de toda la pagina.
+              Cerrada baja a un tono neutro, para informar sin llamar. */}
           <span
-            className={`inline-flex items-center gap-2.5 border px-4 py-2.5 mono-tag uppercase ${
+            className={`inline-flex items-center gap-2.5 px-5 py-3 mono-tag uppercase ${
               BUSQUEDA_ABIERTA
-                ? 'border-accent text-accent'
-                : 'border-linen text-taupe'
+                ? 'bg-accent text-bone shadow-card'
+                : 'border border-linen text-taupe'
             }`}
           >
             <span
               aria-hidden
               className={`w-[7px] h-[7px] rounded-full ${
-                BUSQUEDA_ABIERTA ? 'bg-accent' : 'bg-mute'
+                BUSQUEDA_ABIERTA ? 'bg-bone' : 'bg-mute'
               }`}
             />
             {BUSQUEDA_ABIERTA ? ESTADO.abierta : ESTADO.cerrada}
