@@ -30,6 +30,7 @@ export const HERO = {
 };
 
 export const DIRECCION = {
+  antetitulo: 'La dirección clínica',
   // El título afirma qué ES el respaldo. Antes decía "no es una marca lo que
   // respalda", y abrir por la negación obliga a leer dos frases para entender
   // de qué se trata.

@@ -126,7 +126,7 @@ export function SumateDireccion() {
         className="mx-auto max-w-[1280px] px-6 lg:px-14 py-20 lg:py-24"
       >
         <motion.div variants={fadeUp} transition={sectionTransition}>
-          <span className="eyebrow text-accent">Quiénes acompañan</span>
+          <span className="eyebrow text-accent">{DIRECCION.antetitulo}</span>
           <h2 className="font-serif text-[30px] md:text-[38px] leading-[1.12] tracking-[-0.02em] text-graphite mt-5 m-0 font-normal max-w-[760px]">
             <Frase texto={DIRECCION.titulo} />
           </h2>
