@@ -806,7 +806,10 @@ function probarAutoReply() {
     ? 'El mail va a salir de: ' + alias
     : 'SIN ALIAS: el mail va a salir de ' + yo + '. Ver docs/auto-reply-formularios.md');
 
-  ['contacto-pacientes', 'contacto-psicologos'].forEach(function (form) {
+  // Los TRES formularios. Faltaba contacto-sumate, que se sumo despues: sin
+  // el, la unica forma de probar el mail de postulaciones era mandar una
+  // postulacion de verdad y esperar a ver si llegaba.
+  ['contacto-pacientes', 'contacto-psicologos', 'contacto-sumate'].forEach(function (form) {
     var r = enviarAutoReply_(form, { nombre: 'Prueba Apellido', mail: yo });
     Logger.log(form + ' -> ' + (r.ok ? 'OK' : 'FALLO') + ' (' + r.detalle + ')');
     registrarEnvio_(form + ' (prueba)', yo, r);
