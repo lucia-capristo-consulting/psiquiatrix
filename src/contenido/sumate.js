@@ -45,9 +45,11 @@ export const DIRECCION = {
   puntos: [
     'Ateneos semanales, con todo el equipo y las directoras.',
     'Acompañamiento en los casos difíciles, cuando lo necesitás.',
-    'Si algo sale mal, no lo resolvés por tu cuenta: te ayudamos a reconducirlo con el paciente y con quien lo derivó.',
+    'Ninguna decisión difícil se toma en soledad: se discute con el equipo antes.',
     'Vas a acompañar la continuidad de cada tratamiento y ver cómo evoluciona en el tiempo.',
   ],
+  cierre:
+    'Todos los tratamientos se llevan bajo la dirección clínica de Claudia Heller y Amanda Villaverde.',
 };
 
 // Responde la primera pregunta que se hace un residente al leer esto: si puede
@@ -56,9 +58,11 @@ export const DIRECCION = {
 // necesita la institución: se leía como que piden mucho.
 export const COMIENZO = {
   antetitulo: 'Cómo se empieza',
-  titulo: 'Nadie arranca con la agenda llena.',
+  titulo: 'La incorporación es gradual.',
   puntos: [
-    'Empezás con pocos pacientes y sumás horas a medida que te vas acomodando. No necesitás dedicación exclusiva: esto convive con la residencia o con tu consultorio.',
+    'Empezás con pocos pacientes y sumás horas a medida que te integrás a la forma de trabajo del equipo.',
+    'Los casos se asignan según la experiencia de cada profesional. Nadie recibe un paciente que exceda su formación.',
+    'No necesitás dedicación exclusiva: en el equipo hay profesionales que además ejercen en hospitales y en consultorio propio.',
     'Los días y los horarios los acordamos con vos, para que entren donde te sirvan: la residencia, el hospital, tu consultorio.',
     'Tu disponibilidad se acuerda mes a mes, para poder agendar los turnos con anticipación.',
   ],
@@ -86,9 +90,10 @@ export const PERFIL = {
   // justamente ofrece experiencia.
   titulo: ['Nos interesa ', { acento: 'cómo' }, ' atendés.'],
   intro:
-    'Buscamos profesionales que ejerzan una psiquiatría cercana: con tiempo real para cada paciente, con un vínculo que se sostiene y con ganas de seguir formándose. Lo demás se aprende.',
+    'Buscamos profesionales que ejerzan una psiquiatría cercana: con tiempo real para cada paciente, con un vínculo que se sostiene y con ganas de seguir formándose.',
   requisitos: [
     'Título de médico/a especialista en Psiquiatría, o certificado de residencia en Psiquiatría o curso superior a partir del segundo año.',
+    'Matrícula habilitante vigente, nacional o provincial.',
     'Monotributo vigente.',
     'Seguro de mala praxis.',
     'Buena conexión a internet.',
@@ -98,7 +103,7 @@ export const PERFIL = {
   // profesionales se van cuando consiguen algo mejor pago. Decirlo de entrada
   // no espanta a quien viene a formarse; sí filtra a quien viene de paso.
   cierre:
-    'No pedimos permanencia mínima, pero buscamos vínculos largos. Lo que se aprende acá lleva tiempo, y los pacientes también.',
+    'Buscamos vínculos largos: los tratamientos que se sostienen en el tiempo son los que mejor funcionan.',
 };
 
 export const NO_ES = {

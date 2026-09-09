@@ -147,6 +147,12 @@ export function SumateDireccion() {
               </li>
             ))}
           </ul>
+
+          {DIRECCION.cierre && (
+            <p className="mt-8 text-[15.5px] leading-[1.7] text-graphite m-0 max-w-[620px] font-medium">
+              {DIRECCION.cierre}
+            </p>
+          )}
         </motion.div>
 
         <motion.div
