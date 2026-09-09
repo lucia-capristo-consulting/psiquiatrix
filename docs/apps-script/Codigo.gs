@@ -211,7 +211,7 @@ function doPost(e) {
     var row = headerKeys.map(function (key) {
       if (key === 'id') return submissionId;
       if (key === 'Fecha') return createdAt;
-      return data[key] !== undefined ? data[key] : '';
+      return comoTexto_(data[key] !== undefined ? data[key] : '');
     });
     sheet.appendRow(row);
 
@@ -247,6 +247,25 @@ function doPost(e) {
   } finally {
     lock.releaseLock();
   }
+}
+
+/**
+ * Evita que la planilla lea un dato de contacto como si fuera una formula.
+ *
+ * Los telefonos vienen con codigo de pais: "+54 11 4947-9933". Sheets trata el
+ * "+" inicial igual que un "=", intenta evaluarlo y deja la celda en #ERROR!.
+ * El telefono se guardo bien —esta entero en la celda— pero no se puede leer.
+ *
+ * La comilla simple al principio es la marca de "esto es texto" de Sheets: no
+ * se ve en la celda, no sale al copiar y getValues() devuelve el valor limpio.
+ *
+ * Se aplica SOLO al armar la fila, no a "data": los mails salen del mismo
+ * objeto y ahi la comilla si se veria.
+ */
+function comoTexto_(valor) {
+  if (typeof valor !== 'string' || !valor) return valor;
+  // = + - @ son los cuatro caracteres con los que Sheets abre una formula.
+  return /^[=+\-@]/.test(valor) ? "'" + valor : valor;
 }
 
 function respuesta_(obj) {
