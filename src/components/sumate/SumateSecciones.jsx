@@ -2,7 +2,8 @@ import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../../motion';
 import { directors } from '../../contenido/bios-directoras';
 import BioBody from '../BioBody';
-import { DIRECCION, TRABAJO, COMIENZO, PERFIL, NO_ES } from '../../contenido/sumate';
+import { Link } from 'react-router-dom';
+import { DIRECCION, TRABAJO, COMIENZO, PERFIL, NO_ES, SITIO } from '../../contenido/sumate';
 import Frase from './Frase';
 
 /**
@@ -186,6 +187,57 @@ export function SumateDireccion() {
               <div className="mt-6">
                 <BioBody intro={d.intro} body={d.body} />
               </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.div>
+    </section>
+  );
+}
+
+/**
+ * Cierre institucional: las dos páginas públicas del sitio.
+ *
+ * Va DESPUÉS del formulario a propósito. La página tiene un solo trabajo, que
+ * es producir una postulación, y cualquier link puesto antes es una salida:
+ * quien se va a mirar /psicologos en la mitad puede no volver. Acá funciona
+ * como coda, y quien necesita verlo antes tiene el logo de la cabecera.
+ */
+export function SumateSitio() {
+  return (
+    <section className="bg-bone border-t border-linen">
+      <motion.div
+        {...inViewProps}
+        variants={stagger(0.1)}
+        className="mx-auto max-w-[1280px] px-6 lg:px-14 py-16 lg:py-20"
+      >
+        <motion.div variants={fadeUp} transition={sectionTransition}>
+          <span className="eyebrow text-accent">{SITIO.antetitulo}</span>
+          <h2 className="font-serif text-[26px] md:text-[32px] leading-[1.15] tracking-[-0.02em] text-graphite mt-5 m-0 font-normal max-w-[620px]">
+            {SITIO.titulo}
+          </h2>
+        </motion.div>
+
+        <motion.div
+          variants={stagger(0.08)}
+          className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
+          {SITIO.links.map((l) => (
+            <motion.div key={l.a} variants={fadeUp} transition={sectionTransition}>
+              <Link
+                to={l.a}
+                className="group flex items-center justify-between gap-6 border border-linen bg-parchment px-6 py-5 no-underline hover:border-accent transition-colors"
+              >
+                <span className="text-[15.5px] leading-[1.5] text-graphite">
+                  {l.texto}
+                </span>
+                <span
+                  aria-hidden
+                  className="shrink-0 text-accent text-[18px] leading-none transition-transform group-hover:translate-x-1"
+                >
+                  →
+                </span>
+              </Link>
             </motion.div>
           ))}
         </motion.div>

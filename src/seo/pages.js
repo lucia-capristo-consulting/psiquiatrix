@@ -51,19 +51,19 @@ export const PAGES = [
   {
     path: '/sumate',
     file: 'sumate.html',
-    title: 'Sumate al equipo | PsiquiatriX',
+    // El titulo repite el rotulo del pie: el link y su destino tienen que
+    // decir lo mismo. Ademas lleva las palabras que alguien escribiria.
+    title: 'Trabajá con nosotros: psiquiatras y residentes | PsiquiatriX',
+    // Sin "supervision": se saco del cuerpo de la pagina a pedido de las
+    // directoras y habia quedado solo aca, que es el texto que mas circula.
     description:
-      'Buscamos psiquiatras y residentes de psiquiatría desde segundo año para atención online, con supervisión, ateneos y dirección clínica. Sumate a un equipo donde la experiencia se transmite.',
-    // Se comparte por link con residencias y colegas, asi que necesita
-    // preview; pero no tiene por que competir en los resultados de busqueda.
-    // Para indexarla, se borra esta linea y se suma su <loc> al sitemap.
+      'Buscamos psiquiatras y residentes de psiquiatría desde segundo año para atención online, con ateneos semanales y dirección clínica. Un equipo donde la experiencia se transmite.',
     ogImage: imagenOg({
       archivo: 'og-sumate.jpg',
       width: 1200,
       height: 630,
       alt: 'PsiquiatriX busca psiquiatras y residentes para atención online.',
     }),
-    noindex: true,
   },
 ];
 

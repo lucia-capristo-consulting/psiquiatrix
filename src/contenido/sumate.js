@@ -119,6 +119,22 @@ export const NO_ES = {
   ],
 };
 
+// Los dos links al resto del sitio, al final de la página. No son navegación
+// de cortesía: la página le promete al candidato que "los pacientes te llegan
+// derivados por la institución", y esa es la afirmación de la que más depende
+// que tenga agenda. /psicologos es la prueba de que existe. Los rótulos están
+// escritos desde el lugar del candidato, que no es paciente ni psicólogo: los
+// del menú ("Soy paciente" / "Soy psicólogo/a") lo tratarían como si se
+// hubiera equivocado de página.
+export const SITIO = {
+  antetitulo: 'El resto del sitio',
+  titulo: 'Lo que ve un paciente y lo que ve quien deriva.',
+  links: [
+    { texto: 'Cómo se presenta el equipo a los pacientes', a: '/' },
+    { texto: 'Cómo trabajamos con los psicólogos que derivan', a: '/psicologos' },
+  ],
+};
+
 export const POSTULACION = {
   antetitulo: 'Postulación',
   // Una sola instrucción y una sola acción. Antes convivían cuatro

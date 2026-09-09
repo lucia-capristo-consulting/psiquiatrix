@@ -12,7 +12,11 @@ const PSICO_LINKS = [
   { t: 'Quiénes somos', href: '/psicologos#quienes-somos' },
   { t: 'Cómo derivar', href: '/psicologos#como-derivar' },
   { t: 'Quiero derivar', href: '/psicologos#derivacion' },
+  { t: 'Trabajá con nosotros', ruta: '/sumate' },
 ];
+
+const enlaceCls =
+  'text-[13px] text-graphite font-medium tracking-[-0.005em] hover:text-accent transition-colors w-fit';
 
 export default function Footer() {
   return (
@@ -53,15 +57,19 @@ export default function Footer() {
               Para profesionales
             </div>
             <nav className="flex flex-col gap-3">
-              {PSICO_LINKS.map((l) => (
-                <a
-                  key={l.t}
-                  href={l.href}
-                  className="text-[13px] text-graphite font-medium tracking-[-0.005em] hover:text-accent transition-colors w-fit"
-                >
-                  {l.t}
-                </a>
-              ))}
+              {/* Los de ancla son <a> porque saltan dentro de la página; el
+                  de /sumate es una ruta y va con Link, para no recargar. */}
+              {PSICO_LINKS.map((l) =>
+                l.ruta ? (
+                  <Link key={l.t} to={l.ruta} className={enlaceCls}>
+                    {l.t}
+                  </Link>
+                ) : (
+                  <a key={l.t} href={l.href} className={enlaceCls}>
+                    {l.t}
+                  </a>
+                )
+              )}
             </nav>
           </div>
         </div>

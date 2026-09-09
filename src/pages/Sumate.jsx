@@ -9,6 +9,7 @@ import {
   SumateDireccion,
   SumatePerfil,
   SumateNoEs,
+  SumateSitio,
 } from '../components/sumate/SumateSecciones.jsx';
 import SumateForm from '../components/sumate/SumateForm.jsx';
 
@@ -44,6 +45,7 @@ export default function Sumate() {
         <SumatePerfil />
         <SumateNoEs />
         <SumateForm />
+        <SumateSitio />
       </main>
 
       <Footer />

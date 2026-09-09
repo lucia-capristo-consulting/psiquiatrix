@@ -92,9 +92,13 @@ Página para reclutar psiquiatras, con su texto en `src/contenido/sumate.js`.
 
 **Es permanente, no una búsqueda puntual.** Cuando se cubren los puestos no se despublica: se cambia `BUSQUEDA_ABIERTA` a `false` y el cartel del encabezado pasa a decir que no hay búsquedas abiertas. Así sigue recibiendo candidaturas espontáneas en vez de quedar vieja.
 
-Va **fuera del `Layout`**, con una cabecera propia mínima y el `Footer` del sitio: el nav conmuta por audiencia y sus anclas no existen acá. A propósito **no está enlazada desde el menú** — un "trabajá con nosotros" arriba le cambia el tono a un sitio que le habla a pacientes.
+Va **fuera del `Layout`**, con una cabecera propia mínima y el `Footer` del sitio: el nav conmuta por audiencia y sus anclas no existen acá. A propósito **no está en el menú** — un "trabajá con nosotros" arriba le cambia el tono a un sitio que le habla a pacientes. Sí está en el **pie**, y la diferencia no es de grado: el menú declara para qué sirve el sitio, el pie declara qué tiene la institución. Por eso el rótulo es "Trabajá con nosotros", el más convencional que hay: a un paciente que llega al pie le resbala porque lo vio en todos lados, mientras que "Sumate" es la palabra que lo detendría.
 
-**Va con `noindex`** pero **sí se prerenderiza**: son cosas distintas. Se comparte por link con residencias y colegas, así que el preview de WhatsApp tiene que salir bien; lo que no queremos es que compita en los resultados de búsqueda. Para indexarla: borrar `noindex: true` de su entrada en `pages.js` y sumar su `<loc>` al sitemap.
+**Está indexada.** Estuvo con `noindex` mientras el texto le hablaba solo a un candidato; se le sacó cuando se revisó para que también la pueda leer un paciente. La ganancia no es pelear términos genéricos —"trabajo psiquiatra" lo ganan los agregadores— sino cubrir la búsqueda de marca y la cola larga, y que los links que le manden residencias o cátedras le sirvan al dominio: Google termina tratando como `nofollow` los links de una página que está en `noindex` mucho tiempo.
+
+**El título de la página y el rótulo del pie dicen lo mismo a propósito.** Si se cambia uno, cambiar el otro: un link y su destino que se llaman distinto se leen como un error.
+
+Termina con dos links al resto del sitio (`SumateSitio`), **después del formulario**. La página tiene un solo trabajo, que es producir una postulación, y un link puesto antes es una salida. Los rótulos están escritos desde el lugar del candidato, que no es paciente ni psicólogo: los del nav ("Soy paciente" / "Soy psicólogo/a") lo tratarían como si se hubiera equivocado de página.
 
 El formulario es `contacto-sumate`, con su stub en `index.html` como los otros dos. **El CV no se sube por el formulario**: es un dato personal y terminaría en el mismo Sheet que las consultas de pacientes, así que se pide por mail.
 
