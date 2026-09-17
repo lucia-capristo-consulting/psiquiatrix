@@ -51,7 +51,12 @@ export default function Manifesto() {
           </p>
           <p className="text-[16px] leading-[1.65] text-graphite mt-7 max-w-[560px]">
             Somos una clínica digital con criterio institucional. Cada tratamiento se
-            <br />
+            {/* El corte acorta la medida de 82 a 73 caracteres y deja el último
+                renglón lleno, pero sólo mientras entren esos 73 en la primera
+                línea. La columna es min(ancho − 48, 560); por debajo de 608 px
+                de viewport deja de entrar y el corte pasa a abrir un hueco de
+                19 caracteres en el medio del párrafo. */}
+            <br className="hidden min-[608px]:inline" />
             acompaña con experiencia clínica, respaldo profesional y
             articulación con los profesionales que ya forman parte del proceso
             terapéutico.
