@@ -30,7 +30,7 @@ export default function Sumate() {
         <div className="mx-auto max-w-[1280px] px-6 lg:px-14 h-[72px] flex items-center">
           <Link
             to="/"
-            className="font-serif text-[26px] md:text-[28px] text-graphite tracking-tight leading-none no-underline"
+            className="font-serif text-[28px] md:text-[31px] text-graphite tracking-tight leading-none no-underline"
           >
             Psiquiatri<span className="text-accent italic">x</span>
           </Link>
