@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 import Pacientes from './pages/Pacientes.jsx';
 import Psicologos from './pages/Psicologos.jsx';
 import Sumate from './pages/Sumate.jsx';
@@ -11,6 +12,7 @@ import { TARJETAS } from './contenido/tarjetas.js';
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* Las tarjetas digitales van FUERA del Layout: no llevan el nav ni el
             pie del sitio. Quien llega ahi escaneo un QR y busca una sola cosa;
