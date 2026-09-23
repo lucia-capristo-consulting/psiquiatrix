@@ -36,7 +36,7 @@ export default function BioBody({
             key={i}
             className={
               i === 0
-                ? 'text-[14.5px] leading-[1.65] text-graphite font-medium m-0'
+                ? 'font-editorial text-[18px] md:text-[20px] leading-[1.32] tracking-[-0.005em] text-graphite font-normal m-0 [text-wrap:pretty]'
                 : 'text-[14px] leading-[1.7] text-graphite font-normal m-0'
             }
           >

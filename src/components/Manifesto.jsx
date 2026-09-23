@@ -43,7 +43,7 @@ export default function Manifesto() {
             <br />
             requiere <span className="italic text-accent">tiempo</span>.
           </h2>
-          <p className="font-serif text-[22px] md:text-[26px] leading-[1.3] tracking-[-0.012em] text-graphite mt-8 max-w-[560px] font-normal">
+          <p className="font-editorial text-[22px] md:text-[24px] leading-[1.25] tracking-[-0.005em] text-graphite mt-8 max-w-[560px] font-normal [text-wrap:pretty]">
             Existimos porque demasiados pacientes encuentran una psiquiatría
             rápida, impersonal y fragmentada.
             <br />

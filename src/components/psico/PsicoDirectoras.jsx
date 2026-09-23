@@ -91,7 +91,7 @@ export default function PsicoDirectoras() {
                 transition={sectionTransition}
                 className={`m-0 ${
                   i === 0
-                    ? 'font-serif font-normal text-[24px] md:text-[28px] leading-[1.3] tracking-[-0.012em] text-graphite'
+                    ? 'font-editorial font-normal text-[22px] md:text-[24px] leading-[1.25] tracking-[-0.005em] text-graphite [text-wrap:pretty]'
                     : 'text-[15px] md:text-[15.5px] leading-[1.7] text-graphite font-normal'
                 }`}
               >

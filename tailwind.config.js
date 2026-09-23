@@ -17,6 +17,9 @@ export default {
         serif: ['"Instrument Serif"', 'serif'],
         sans: ['"Inter Tight"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
+        // Textos que se leen y envuelven solos (bajadas, ejes, resumen de
+        // las bios). Convive con `serif`, no la reemplaza.
+        editorial: ['Newsreader', 'Georgia', 'serif'],
       },
       boxShadow: {
         card: '0 6px 18px rgba(20,18,14,0.06)',

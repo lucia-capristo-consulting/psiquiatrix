@@ -1,6 +1,6 @@
 # Las fuentes propias no cambian nunca, así que conviene cachearlas fuerte:
 # sin esto Netlify sirve lo de public/ con `max-age=0, must-revalidate` y el
-# navegador revalida las cuatro en cada visita. Google Fonts las servía con
+# navegador revalida todas en cada visita. Google Fonts las servía con
 # caché de un año, así que sin esta regla alojarlas nosotros sería un
 # retroceso para quien vuelve al sitio.
 #

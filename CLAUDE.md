@@ -100,7 +100,7 @@ Va **fuera del `Layout`**, con una cabecera propia mínima y el `Footer` del sit
 
 Termina con dos links al resto del sitio (`SumateSitio`), **después del formulario**. La página tiene un solo trabajo, que es producir una postulación, y un link puesto antes es una salida. Los rótulos están escritos desde el lugar del candidato, que no es paciente ni psicólogo: los del nav ("Soy paciente" / "Soy psicólogo/a") lo tratarían como si se hubiera equivocado de página.
 
-El formulario es `contacto-sumate`, con su stub en `index.html` como los otros dos, y **sí acepta el CV adjunto**. Va a una planilla aparte de la de pacientes y el archivo se copia a una carpeta del Drive, porque un CV es un dato personal y no puede convivir con las consultas de pacientes ni quedarse en la URL pública de Netlify. Todo eso lo hace el Apps Script; ver `docs/auto-reply-formularios.md`.
+El formulario es `contacto-sumate`, con su stub en `index.html` como los otros dos, y **sí acepta el CV adjunto**. Va a **la misma planilla que el resto de los contactos web**, en su propia pestaña: los tres formularios comparten el Sheet y cada uno tiene la suya. El CV no queda en la planilla: el Apps Script lo copia a una carpeta del Drive (*PsiquiatriX — CV de postulaciones*) y deja el link en la celda, porque es un dato personal y no puede quedarse en la URL pública de Netlify. Ver `docs/auto-reply-formularios.md`.
 
 **Netlify manda el campo del archivo como un objeto** (`{ url, filename, size, type }`), no como una URL suelta. Es la clase de detalle que falla en silencio: el script trataba el objeto como "no hay adjunto", escribía la fila igual y la celda quedaba con el objeto crudo, así que parecía que había funcionado.
 
@@ -137,7 +137,7 @@ En el de pacientes el mensaje de éxito tiene **dos versiones** (`conMail` / `si
 
 **Ese archivo promete un plazo** ("a la brevedad") y el auto-reply promete lo mismo con otras palabras. La persona lee los dos con minutos de diferencia, así que si se cambia el plazo hay que cambiarlo también en la pestaña `plantillas-mail` del Sheet (ver `docs/auto-reply-formularios.md`).
 
-El estilo de los campos vive en `src/lib/formulario.js` (`inputCls`), compartido por los dos formularios. No bajar de 16px: Safari en iPhone hace zoom automático al enfocar un campo con letra más chica.
+El estilo de los campos vive en `src/lib/formulario.js` (`inputCls`), compartido por los tres formularios. No bajar de 16px: Safari en iPhone hace zoom automático al enfocar un campo con letra más chica.
 
 ### Netlify Forms (importante)
 
@@ -146,7 +146,7 @@ Patrón SPA + Netlify Forms con dos partes que **deben mantenerse sincronizadas*
 1. **Stub estático en `index.html`** con `data-netlify="true"` y todos los `name` de los campos. El bot de Netlify lee este HTML al hacer deploy para registrar el formulario y sus campos. Sin el stub, el form no existe en Netlify aunque el React funcione.
 2. **Form interactivo en React** que envía vía `submitNetlifyForm(formName, data)` desde `src/lib/netlifyForm.js`. Hace `POST /` con `application/x-www-form-urlencoded` e incluye `form-name` en el payload.
 
-Forms actuales: `contacto-pacientes` y `contacto-psicologos`. Para agregar uno nuevo: stub en `index.html` con todos los campos + usar el helper desde el componente con el mismo `form-name`.
+Forms actuales: `contacto-pacientes`, `contacto-psicologos` y `contacto-sumate`. Para agregar uno nuevo: stub en `index.html` con todos los campos + usar el helper desde el componente con el mismo `form-name`.
 
 Para registrar los envíos en un Google Sheet (vía outgoing webhook de Netlify, sin backend ni cambios de código), ver `docs/contactos-google-sheets.md`. Ahí también queda documentado por qué se descartó migrar a Vercel/Next.js.
 
@@ -160,12 +160,14 @@ El mismo webhook dispara el **auto-reply**: el mail de confirmación que recibe 
 
 ### Tailwind: paleta y tipografías
 
-`tailwind.config.js` extiende el theme con la paleta de marca (`ink`, `graphite`, `taupe`, `mute`, `bone`, `parchment`, `linen`, `accent`) y tres familias: `font-serif` (Instrument Serif), `font-sans` (Inter Tight), `font-mono` (JetBrains Mono).
+`tailwind.config.js` extiende el theme con la paleta de marca (`ink`, `graphite`, `taupe`, `mute`, `bone`, `parchment`, `linen`, `accent`) y cuatro familias: `font-serif` (Instrument Serif), `font-editorial` (Newsreader), `font-sans` (Inter Tight), `font-mono` (JetBrains Mono).
+
+**Instrument Serif donde se mira, Newsreader donde se lee.** Instrument Serif es una tipografía de titular: angosta, de trazo muy contrastado y con un solo peso. Va en títulos, nombres y numerales. `font-editorial` va en los textos de lectura que acompañan a esos títulos: las bajadas (`Manifesto.jsx`, `PsicoDirectoras.jsx`), los ejes de la equis (`SectionX.jsx`) y el resumen de las bios (`BioBody.jsx`). El criterio para decidir un caso nuevo no es el tamaño sino quién pone los cortes de renglón. Las dos bajadas llevan la misma configuración a propósito: si se cambia una, cambiar la otra. Newsreader tiene la altura de las minúsculas más baja que Instrument Serif (0,43 contra 0,51), así que a igual tamaño en píxeles se ve bastante más chica.
 
 **Las fuentes se sirven desde el propio sitio**, no desde Google Fonts: los `.woff2` (subconjunto `latin`) están en `public/fonts/` y las reglas `@font-face` al principio de `src/index.css`. Pedirlas a Google armaba una cadena serializada (documento → CSS en `fonts.googleapis.com` → woff2 en `fonts.gstatic.com`) que bloqueaba el render ~1,5 s, y además implicaba un pedido a servidores de Google en cada visita. Tres detalles que hay que respetar:
 
-- Inter Tight y JetBrains Mono son **fuentes variables**: un archivo cubre todos los pesos, por eso el `@font-face` declara `font-weight: <min> <max>`. Con un peso suelto, los demás saldrían simulados.
-- `index.html` **precarga** las dos que aparecen de entrada. El atributo `crossorigin` es obligatorio aunque sean del mismo dominio — sin él la precarga se descarta y el archivo se baja dos veces.
+- Inter Tight, JetBrains Mono y Newsreader son **fuentes variables**: un archivo cubre todos los pesos, por eso el `@font-face` declara `font-weight: <min> <max>`. Con un peso suelto, los demás saldrían simulados. Newsreader tiene además su archivo itálico propio: sin él, el cierre en itálica de las bajadas saldría con la romana inclinada por el navegador.
+- `index.html` **precarga** las dos que aparecen de entrada. Newsreader no se precarga a propósito: ninguno de sus textos está en la primera pantalla. El atributo `crossorigin` es obligatorio aunque sean del mismo dominio — sin él la precarga se descarta y el archivo se baja dos veces.
 - `public/_headers` las cachea como `immutable` por un año. Si se reemplaza una fuente hay que **cambiarle el nombre al archivo**, no pisarlo.
 
 Sombras de marca: `shadow-card`, `shadow-cardHover`, `shadow-cta`.

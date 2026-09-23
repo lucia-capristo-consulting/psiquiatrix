@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../motion';
 
+// Los cortes de renglón están puestos a mano. Newsreader es más ancha que
+// Instrument Serif y "de cada decisión." quedaba partida sola: con el corte
+// extra los dos ejes quedan en 4 renglones, en escritorio y en celular.
 const ejes = [
   {
     label: 'Eje clínico',
@@ -10,7 +13,9 @@ const ejes = [
         <br />
         respaldo y experiencia.
         <br />
-        La solidez clínica como base de cada decisión.
+        La solidez clínica como base
+        <br />
+        de cada decisión.
       </>
     ),
   },
@@ -52,7 +57,18 @@ export default function SectionX() {
           variants={stagger(0.15)}
           className="relative mt-24 max-w-[1000px] mx-auto"
         >
-          {/* Background X — centered to the eje grid */}
+          {/* Background X — centrada entre los dos textos, no en la grilla.
+              Lo que se mide es el trazo de la letra (su caja de tinta), no la
+              caja tipográfica. Los dos ejes van centrados en sus columnas,
+              pero el más ancho es el de la derecha, así que el punto medio
+              entre los dos textos cae unos píxeles a la izquierda del centro
+              de la grilla: de ahí el -0.008em.
+              Medido con Newsreader (23/09): desde 1280px de ancho los dos
+              textos quedan a ~100px del centro de la x, con 1px de diferencia
+              como mucho. En tablet (768–1023px) los ejes se parten solos en
+              renglones más cortos y la x queda ~20px corrida hacia el texto
+              de la izquierda; en celular es una sola columna.
+              Si cambia el texto de un eje, hay que volver a medirlo. */}
           <motion.div
             aria-hidden
             initial={{ opacity: 0, scale: 0.92 }}
@@ -65,7 +81,7 @@ export default function SectionX() {
               className="font-serif italic text-accent leading-[0.8] inline-block"
               style={{
                 fontSize: 'clamp(260px, 42vw, 560px)',
-                transform: 'translateX(-0.06em)',
+                transform: 'translateX(-0.008em)',
               }}
             >
               x
@@ -83,7 +99,7 @@ export default function SectionX() {
                 <div className="eyebrow text-accent mb-5 !font-bold !text-[12px] tracking-[0.28em]">
                   {e.label}
                 </div>
-                <div className="font-serif font-normal text-[22px] md:text-[24px] leading-[1.4] tracking-[-0.012em] text-graphite">
+                <div className="font-editorial font-normal text-[22px] md:text-[24px] leading-[1.25] tracking-[-0.005em] text-graphite">
                   {e.body}
                 </div>
               </motion.div>

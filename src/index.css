@@ -10,9 +10,19 @@
  * Subconjunto `latin`, que es el único que descargaba el navegador: cubre
  * acentos, ñ, ¿ ¡ y la raya (—).
  *
- * Inter Tight y JetBrains Mono son fuentes VARIABLES: un archivo cubre todo
- * el rango de pesos, por eso se declara `font-weight: <min> <max>` y no un
- * valor suelto. Si se declarara uno solo, los demás pesos saldrían simulados.
+ * Inter Tight, JetBrains Mono y Newsreader son fuentes VARIABLES: un archivo
+ * cubre todo el rango de pesos, por eso se declara `font-weight: <min> <max>`
+ * y no un valor suelto. Si se declarara uno solo, los demás pesos saldrían
+ * simulados.
+ *
+ * Newsreader (`font-editorial`) es la de los textos que se LEEN y envuelven
+ * solos: las bajadas, los ejes de la equis y el resumen de las bios. Instrument
+ * Serif sigue en todo lo que se MIRA (títulos, nombres, numerales). Tiene
+ * además eje óptico: a cuerpo chico engorda los trazos finos sola, porque
+ * `font-optical-sizing` vale `auto` por defecto. Va con su archivo itálico
+ * propio: sin él el cierre en terracota de las bajadas saldría con itálica
+ * falsa (la romana inclinada por el navegador). No se precarga: ninguno de
+ * esos textos está en la primera pantalla.
  *
  * Para actualizar una fuente: bajar el .woff2 del subconjunto latin desde
  * Google Fonts y guardarlo con un nombre NUEVO, actualizando la ruta acá y el
@@ -52,6 +62,22 @@
   src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2');
 }
 
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/newsreader-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Newsreader';
+  font-style: italic;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/newsreader-italic-latin.woff2') format('woff2');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -74,14 +100,14 @@
 
 @layer utilities {
   .eyebrow {
-    font-family: '"Inter Tight"', sans-serif;
+    font-family: 'Inter Tight', sans-serif;
     font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     font-weight: 500;
   }
   .mono-tag {
-    font-family: '"JetBrains Mono"', monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     letter-spacing: 0.18em;
   }
