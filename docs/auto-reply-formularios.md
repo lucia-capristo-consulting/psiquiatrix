@@ -173,11 +173,11 @@ ocupar la bandeja.
 Para apagarla: Netlify → Forms → Settings & usage → Form notifications →
 Options → Delete, en las dos notificaciones por mail.
 
-## Postulaciones: planilla aparte y CV en el Drive
+## Postulaciones: pestaña propia y CV en el Drive
 
-El formulario de `/sumate` no se comporta como los otros dos, por dos razones que valen para cualquier formulario que reciba archivos.
+El formulario de `/sumate` se comporta como los otros dos en un punto y se aparta en otro, y el que se aparta vale para cualquier formulario que reciba archivos.
 
-**Va a su propia planilla.** No es prolijidad: es para poder compartir la de contactos con el equipo sin dar acceso a las postulaciones, y al revés. La planilla se llama *PsiquiatriX — Postulaciones* y **se crea sola** la primera vez que entra una; su id queda guardado en las propiedades del script, así que no hay nada que configurar a mano.
+**Va a la misma planilla que el resto de los contactos web**, en su propia pestaña. Los tres formularios comparten el Sheet y cada uno tiene la suya; la pestaña se crea sola la primera vez que entra un envío, así que no hay nada que configurar a mano. Hubo una versión anterior que mandaba las postulaciones a una planilla separada (*PsiquiatriX — Postulaciones*): quedó descartada, todo va a un solo archivo.
 
 **El CV no se queda en Netlify.** Netlify guarda el archivo en una URL larga y difícil de adivinar, pero **sin contraseña**: quien tenga el link entra. Un CV trae teléfono, a veces domicilio, y la trayectoria laboral completa de una persona. El script lo baja y lo copia a una carpeta del Drive llamada *PsiquiatriX — CV de postulaciones*, y en la planilla queda el link de Drive. Ahí el archivo tiene los permisos que ustedes le pongan.
 
@@ -202,9 +202,9 @@ Para ver dónde quedaron la planilla y la carpeta, correr **`verDondeGuarda()`**
 
 ### Permisos nuevos: correr `prepararGuardado()` una vez
 
-Guardar en Drive y descargar un archivo son permisos **distintos** de los que el script ya tenía. Crear una planilla usa uno que ya estaba; crear una carpeta no.
+Guardar en Drive y descargar un archivo son permisos **distintos** de los que el script ya tenía. Escribir en el Sheet y crear una pestaña usan uno que ya estaba; crear una carpeta en el Drive, no.
 
-Después de pegar esta versión: elegir **`prepararGuardado`** en el editor, tocar Ejecutar y aceptar los permisos. Crea la planilla y la carpeta, se descarga un archivo chico para comprobar que la salida a internet quedó habilitada, y deja los links en el registro.
+Después de pegar esta versión: elegir **`prepararGuardado`** en el editor, tocar Ejecutar y aceptar los permisos. Crea la carpeta de CV, se descarga un archivo chico para comprobar que la salida a internet quedó habilitada, y deja los links en el registro.
 
 **No alcanza con `verDondeGuarda()`**, aunque lo parezca: como todavía no hay nada creado, esa función no llega a tocar Drive, no dispara la autorización, y la primera postulación real se encuentra sin permisos. Pasó en la puesta en marcha: el CV quedó en la URL pública de Netlify en vez de copiarse, y la celda del Sheet lo avisa con un "no se pudo copiar al Drive".
 

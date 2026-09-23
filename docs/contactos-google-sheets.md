@@ -1,8 +1,8 @@
 # Registrar contactos de los formularios en Google Sheets
 
-Guía para volcar los envíos de **Netlify Forms** (`contacto-pacientes` y
-`contacto-psicologos`) a una planilla de Google, sin escribir backend y sin
-tocar el código del sitio.
+Guía para volcar los envíos de **Netlify Forms** (`contacto-pacientes`,
+`contacto-psicologos` y `contacto-sumate`) a **una sola planilla** de Google,
+sin escribir backend y sin tocar el código del sitio.
 
 ## Por qué esta vía
 
@@ -22,8 +22,9 @@ tocar el código del sitio.
 Netlify Forms permite *outgoing webhooks*: por cada envío, hace un `POST` con el
 payload JSON a una URL. Esa URL es un Google Apps Script publicado como web app
 que agrega una fila al Sheet, en **una pestaña por formulario**
-(`contacto-pacientes`, `contacto-psicologos`), usando los nombres de campo como
-encabezados. El mismo script le manda después el mail de confirmación a quien
+(`contacto-pacientes`, `contacto-psicologos`, `contacto-sumate`), usando los
+nombres de campo como encabezados. **Los tres van a la misma planilla**: lo que
+los separa es la pestaña, no el archivo. El mismo script le manda después el mail de confirmación a quien
 escribió (ver [auto-reply-formularios.md](auto-reply-formularios.md)).
 
 Payload relevante de Netlify: `{ form_name, created_at, data: { ...campos } }`.
@@ -44,8 +45,8 @@ Payload relevante de Netlify: `{ form_name, created_at, data: { ...campos } }`.
    notification → Outgoing webhook**:
    - *Event to listen for:* **New form submission**
    - *URL to notify:* la URL `/exec` del paso 3
-   - **Save**. (Un solo webhook recibe ambos formularios; el script los separa
-     por pestaña.)
+   - **Save**. (Un solo webhook recibe los tres formularios; el script los
+     separa por pestaña.)
 
 5. **Probá**: enviá una consulta de prueba en cada formulario del sitio
    publicado y verificá que aparezcan las filas en el Sheet.
@@ -82,8 +83,12 @@ Los campos están definidos en los stubs de `index.html`:
 
 - **contacto-pacientes**: `nombre`, `telefono`, `mail`, `destinatario`,
   `conocimiento`, `mensaje`
-- **contacto-psicologos**: `nombre`, `profesion`, `telefono`, `mail`,
+- **contacto-psicologos**: `nombre`, `profesion`, `enfoque`, `telefono`, `mail`,
   `conocimiento`, `intencion`, `mensaje`
+- **contacto-sumate**: `nombre`, `instancia`, `mail`, `telefono`, `cv`,
+  `mensaje`. El `cv` es un adjunto: Netlify lo manda como objeto y en la celda
+  termina quedando el link del Drive, no el archivo (ver
+  [auto-reply-formularios.md](auto-reply-formularios.md)).
 
 Si se agrega un campo en `index.html` y en el form React, el script le abre una
 columna nueva al final la primera vez que llega un envío con ese dato (los
