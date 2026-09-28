@@ -31,7 +31,7 @@ export const PAGES = [
     file: 'index.html',
     title: 'PsiquiatriX | Psiquiatría online en Argentina con mirada humana',
     description:
-      'Atención psiquiátrica online para adultos en Argentina. Criterio clínico, mirada humana y seguimiento real. Solicitá contacto con PsiquiatriX.',
+      'Atención psiquiátrica online para adultos, desde Argentina a todo el mundo. Criterio clínico, mirada humana y seguimiento real.',
     jsonLd: medicalClinicSchema,
   },
   {

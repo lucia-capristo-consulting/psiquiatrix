@@ -1,20 +1,22 @@
 import { SITE_URL, LOGO, OG_IMAGE } from './site.js';
 
+// La atención es online y se atiende desde Argentina a pacientes de cualquier
+// país (lo mismo que dice ImportantInfo.jsx). "Argentina" queda en los textos
+// porque es lo que busca la mayoría, pero el área de atención no se limita.
+const AREA_ATENCION = 'Worldwide';
+
 export const medicalClinicSchema = {
   '@context': 'https://schema.org',
   '@type': 'MedicalClinic',
   name: 'PsiquiatriX',
   alternateName: 'Psiquiatrix',
   description:
-    'Centro de psiquiatría online para adultos en Argentina, con criterio clínico, seguimiento personalizado y mirada humana.',
+    'Centro de psiquiatría online para adultos, desde Argentina a todo el mundo, con criterio clínico, seguimiento personalizado y mirada humana.',
   url: SITE_URL,
   logo: LOGO.url,
   image: OG_IMAGE.url,
   medicalSpecialty: 'Psychiatric',
-  areaServed: {
-    '@type': 'Country',
-    name: 'Argentina',
-  },
+  areaServed: AREA_ATENCION,
   availableService: [
     {
       '@type': 'MedicalTherapy',
@@ -32,7 +34,7 @@ export const medicalClinicSchema = {
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'patient intake',
-    areaServed: 'AR',
+    areaServed: AREA_ATENCION,
     availableLanguage: 'Spanish',
   },
   member: [
@@ -71,7 +73,7 @@ export function physicianSchema({ nombre, titulo, rol, matricula, url, foto, pre
       name: 'PsiquiatriX',
       url: SITE_URL,
     },
-    areaServed: { '@type': 'Country', name: 'Argentina' },
+    areaServed: AREA_ATENCION,
   };
 }
 
@@ -86,7 +88,7 @@ export const psicologosServiceSchema = {
     name: 'PsiquiatriX',
     url: SITE_URL,
   },
-  areaServed: 'Argentina',
+  areaServed: AREA_ATENCION,
   serviceType: 'Derivación y atención psiquiátrica online',
   audience: {
     '@type': 'Audience',
