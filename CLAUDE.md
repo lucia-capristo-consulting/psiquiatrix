@@ -148,9 +148,11 @@ Patrón SPA + Netlify Forms con dos partes que **deben mantenerse sincronizadas*
 
 Forms actuales: `contacto-pacientes`, `contacto-psicologos` y `contacto-sumate`. Para agregar uno nuevo: stub en `index.html` con todos los campos + usar el helper desde el componente con el mismo `form-name`.
 
-Para registrar los envíos en un Google Sheet (vía outgoing webhook de Netlify, sin backend ni cambios de código), ver `docs/contactos-google-sheets.md`. Ahí también queda documentado por qué se descartó migrar a Vercel/Next.js.
+Para registrar los envíos en un Google Sheet, ver `docs/contactos-google-sheets.md`. Ahí también queda documentado por qué se descartó migrar a Vercel/Next.js.
 
-El mismo webhook dispara el **auto-reply**: el mail de confirmación que recibe quien completa un formulario. Ver `docs/auto-reply-formularios.md`. Dos cosas que conviene no romper: el mail **no repite lo que la persona escribió** (puede traer información de salud) y el de pacientes lleva el aviso de urgencias.
+**Los envíos llegan al Apps Script por una función de Netlify, no por un webhook.** `netlify/functions/submission-created.js` se ejecuta sola con cada envío (el nombre del archivo es el que la engancha al evento) y le manda los datos a la URL de la variable de entorno `APPS_SCRIPT_URL`. Antes era un *outgoing webhook*, y Netlify lo deshabilitaba solo: Apps Script contesta con un 302 y el webhook lo contaba como fallo. **No volver a crear webhooks** hacia el Apps Script: cada envío llegaría dos veces. Si se redespliega el Apps Script como implementación nueva, la URL cambia y hay que actualizar la variable.
+
+La misma función dispara el **auto-reply**: el mail de confirmación que recibe quien completa un formulario. Ver `docs/auto-reply-formularios.md`. Dos cosas que conviene no romper: el mail **no repite lo que la persona escribió** (puede traer información de salud) y el de pacientes lleva el aviso de urgencias.
 
 **El script de Apps Script tiene su copia de referencia en `docs/apps-script/Codigo.gs`.** No se ejecuta desde el repo — vive dentro del Google Sheet — pero está versionado ahí para poder revisar los cambios. Si se edita en Google, hay que traer el cambio al archivo, y al revés. El **texto** de los mails no está en el código sino en una pestaña del Sheet (`plantillas-mail`), justamente para poder cambiarlo sin volver a desplegar el script.
 

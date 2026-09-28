@@ -2,26 +2,47 @@
 
 Guía para volcar los envíos de **Netlify Forms** (`contacto-pacientes`,
 `contacto-psicologos` y `contacto-sumate`) a **una sola planilla** de Google,
-sin escribir backend y sin tocar el código del sitio.
+sin backend propio.
 
 ## Por qué esta vía
 
 - **Gratis e ilimitado**: no depende de Zapier/Make (plan gratis con tope de
   100 tareas/mes) ni de una cuenta de terceros.
-- **Instantáneo**: Netlify pega el webhook apenas se envía el formulario.
-- **Cero mantenimiento en el repo**: es todo configuración de Netlify + Google.
-  El código de la SPA no se modifica.
+- **Instantáneo**: Netlify ejecuta la función apenas se envía el formulario.
+- **Casi todo es configuración**: una función de 60 líneas en el repo
+  (`netlify/functions/submission-created.js`) y el Apps Script en Google.
+
+## Por qué una función y no un webhook
+
+Hasta el 28/09/2026 esto andaba con los *outgoing webhooks* de Netlify, y se
+rompía cada tanto: Netlify **deshabilitaba la notificación sola** y los envíos
+dejaban de llegar a la planilla.
+
+La causa, medida: Apps Script no contesta un POST con un "OK", sino con un
+**302** que redirige a otra dirección, donde queda el resultado. El webhook lo
+contaba como fallo y **reintentaba cada envío cuatro veces** (se ve en
+Apps Script → Ejecuciones: cinco `doPost` por envío, cada vez más espaciados).
+El script descartaba los repetidos por `id`, así que en la planilla no se
+notaba nada; pero Netlify iba sumando fallos hasta deshabilitar la
+notificación. Seguir la redirección tampoco sirve: repetida como POST da 411,
+y como GET tardó 26 s y dio 404.
+
+La función toma el 302 como éxito, porque llega **después** de que `doPost`
+terminó, y no sigue la redirección. Como no es un webhook, Netlify no tiene
+nada que deshabilitar.
 
 > Contexto: se evaluó migrar a Vercel/Next.js para usar Server Actions, pero se
 > descartó. Server Actions son de Next.js (este proyecto es Vite + React SPA), y
 > Vercel **no** tiene manejo de formularios propio — es Netlify el que lo trae de
-> fábrica. Para "contactos → base/CRM" alcanza con este webhook, sin migrar.
+> fábrica. Para "contactos → base/CRM" alcanza con esto, sin migrar.
 
 ## Cómo funciona
 
-Netlify Forms permite *outgoing webhooks*: por cada envío, hace un `POST` con el
-payload JSON a una URL. Esa URL es un Google Apps Script publicado como web app
-que agrega una fila al Sheet, en **una pestaña por formulario**
+Con cada envío verificado, Netlify ejecuta sola la función
+`netlify/functions/submission-created.js` (el nombre del archivo es lo que la
+engancha al evento). La función hace un `POST` con el envío en JSON a la URL
+guardada en la variable de entorno `APPS_SCRIPT_URL`. Esa URL es un Google Apps
+Script publicado como web app que agrega una fila al Sheet, en **una pestaña por formulario**
 (`contacto-pacientes`, `contacto-psicologos`, `contacto-sumate`), usando los
 nombres de campo como encabezados. **Los tres van a la misma planilla**: lo que
 los separa es la pestaña, no el archivo. El mismo script le manda después el mail de confirmación a quien
@@ -41,15 +62,27 @@ Payload relevante de Netlify: `{ form_name, created_at, data: { ...campos } }`.
    - *Quién tiene acceso:* **Cualquier usuario** (para que Netlify pueda pegarle)
    - **Implementar** → autorizá los permisos → **copiá la URL** (termina en `/exec`).
 
-4. **Netlify → sitio → Forms → Settings & usage → Form notifications → Add
-   notification → Outgoing webhook**:
-   - *Event to listen for:* **New form submission**
-   - *URL to notify:* la URL `/exec` del paso 3
-   - **Save**. (Un solo webhook recibe los tres formularios; el script los
-     separa por pestaña.)
+4. **Netlify → sitio → Site configuration → Environment variables → Add a
+   variable**:
+   - *Key:* `APPS_SCRIPT_URL`
+   - *Value:* la URL `/exec` del paso 3
+   - Tiene que estar **antes** del deploy: la función la lee al ejecutarse, y
+     un cambio de variable recién se aplica en el deploy siguiente.
 
-5. **Probá**: enviá una consulta de prueba en cada formulario del sitio
-   publicado y verificá que aparezcan las filas en el Sheet.
+5. **No crear webhooks** en Forms → Form notifications. Si hay alguno viejo
+   apuntando al Apps Script, borrarlo: con la función andando, cada envío
+   llegaría dos veces.
+
+6. **Probá**: enviá una consulta de prueba en cada formulario del sitio
+   publicado y verificá que aparezcan las filas en el Sheet. En Apps Script →
+   **Ejecuciones** tiene que aparecer **un solo** `doPost` por envío; si hay
+   varios, es que quedó un webhook activo. Si no aparece ninguno, mirar el
+   registro de la función en Netlify → Logs → Functions →
+   `submission-created`: ahí queda escrito qué pasó.
+
+**Si se redespliega el Apps Script como implementación nueva, la URL cambia**
+y hay que actualizar `APPS_SCRIPT_URL` y volver a desplegar el sitio. Publicar
+una versión nueva sobre la implementación existente mantiene la URL.
 
 ## Script (Google Apps Script)
 

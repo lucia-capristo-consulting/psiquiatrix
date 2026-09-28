@@ -123,7 +123,8 @@ Partiendo del script que ya está andando:
    implementaciones → editar (el lápiz) → *Versión: Nueva* → Implementar. **La
    URL `/exec` no cambia**, así que no hay que tocar nada en Netlify.
 
-   Sin este paso, el webhook sigue ejecutando el código viejo y no manda nada.
+   Sin este paso, la función de Netlify sigue llamando al código viejo y no
+   manda nada.
 
 5. **Probá de punta a punta**: completá cada formulario en el sitio publicado,
    con una dirección tuya, y confirmá que llegan el mail y la fila del Sheet.
@@ -162,9 +163,10 @@ varias direcciones. Si se deja vacío, no se manda ningún aviso.
 ### Qué hacer con la notificación de Netlify
 
 Conviene **dejarla prendida unas semanas** y recién después apagarla, por una
-razón concreta: el aviso del script viaja por el webhook, así que si el webhook
-se cae —ya pasó una vez— dejás de enterarte de las consultas. El de Netlify es
-independiente y llega igual.
+razón concreta: el aviso del script depende de que el envío llegue al Apps
+Script, así que si ese camino se cae —con el webhook de antes pasó varias veces—
+dejás de enterarte de las consultas. El de Netlify es independiente y llega
+igual.
 
 Mientras convivan, si molesta verlos duplicados, se puede armar un filtro en
 Gmail que archive los de Netlify bajo una etiqueta: quedan como respaldo sin
@@ -233,7 +235,7 @@ registra "no enviado" en el log en vez de romper.
 | --- | --- |
 | No llega ningún mail | Falta el paso 4: la implementación sigue en la versión vieja. |
 | No llega y el log dice "no enviado" | Mirá la columna Detalle: casi siempre es cuota agotada o dirección inválida. |
-| No llega y el log está vacío | El webhook no llegó. Es un problema del Sheet, no del mail: revisá la otra guía. |
+| No llega y el log está vacío | El envío no llegó al Apps Script. Es un problema del Sheet, no del mail: revisá la otra guía y el registro de la función en Netlify (Logs → Functions). |
 | Llega desde otra dirección | El alias no está cargado. Ver *La dirección del remitente*. |
 | Llega dos veces | El dedup por `id` no está funcionando: revisá que la columna ID exista en la pestaña del formulario. |
 | Cae en spam | Falta reputación de la dirección. Es esperable al principio; se corrige solo con el uso. |
