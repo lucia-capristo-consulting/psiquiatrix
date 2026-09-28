@@ -93,9 +93,18 @@ cambios y no depende de que alguien recuerde qué había escrito en Google.
 El repo no puede ejecutarlo — es una copia de referencia. **Si se edita el
 script dentro de Google, hay que traer el cambio a ese archivo, y al revés.**
 
-Ese mismo script hace dos cosas por cada envío: agrega la fila al Sheet y manda
-el mail de confirmación a quien escribió. La parte del mail está explicada en
-[auto-reply-formularios.md](auto-reply-formularios.md).
+Ese mismo script procesa cada envío **en dos tiempos**:
+
+1. **`doPost`**, al recibir el envío: agrega la fila con `Estado Proceso` en
+   `PENDIENTE` y contesta enseguida. Deja pedida una corrida en segundo plano.
+2. **`procesarPendientes`**, un rato después: recorre las tres pestañas, y a
+   cada fila en `PENDIENTE` le copia el CV al Drive (sólo Sumate), manda el
+   aviso al equipo y el mail de confirmación, y la marca `PROCESADO`.
+
+La corrida en segundo plano se pide "dentro de 1 segundo", pero Google la
+ejecuta cuando tiene lugar: medido el 28/09, arrancó **dos minutos** después
+del envío. Por eso los mails no llegan al instante. La parte del mail está
+explicada en [auto-reply-formularios.md](auto-reply-formularios.md).
 
 > **Cómo cambiar los títulos de las columnas**: editá el texto **a la derecha**
 > en `ETIQUETAS` (ej. `nombre: 'Nombre y apellido'`). NO cambies la clave de la
@@ -112,7 +121,10 @@ el mail de confirmación a quien escribió. La parte del mail está explicada en
 
 ## Columnas por formulario
 
-Los campos están definidos en los stubs de `index.html`:
+Cada pestaña empieza con **`Fecha`**, **`Hora`** y **`Estado Proceso`**, y
+termina con **`ID`** (el id del envío en Netlify, que es el que usa el dedup).
+En el medio van los campos del formulario, definidos en los stubs de
+`index.html`:
 
 - **contacto-pacientes**: `nombre`, `telefono`, `mail`, `destinatario`,
   `conocimiento`, `mensaje`
@@ -124,8 +136,12 @@ Los campos están definidos en los stubs de `index.html`:
   [auto-reply-formularios.md](auto-reply-formularios.md)).
 
 Si se agrega un campo en `index.html` y en el form React, el script le abre una
-columna nueva al final la primera vez que llega un envío con ese dato (los
-envíos viejos quedan con esa celda vacía).
+columna nueva justo antes de `ID` la primera vez que llega un envío con ese
+dato (los envíos viejos quedan con esa celda vacía).
+
+El teléfono se guarda con una comilla adelante cuando empieza con `+`
+(`'+54 11 …`): sin ella, Sheets lo toma como una fórmula y muestra `#ERROR!`.
+La comilla no se ve en la celda.
 
 **Cuidado al renombrar un campo**: para el script es un campo distinto, así que
 abre otra columna y la vieja queda ahí con los datos históricos.

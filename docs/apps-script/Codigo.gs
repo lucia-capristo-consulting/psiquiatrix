@@ -1,106 +1,58 @@
 /**
- * Netlify Forms -> Google Sheets + auto-reply
- *
- * Este archivo es la COPIA DE REFERENCIA del script que vive dentro del Google
- * Sheet de contactos (Extensiones -> Apps Script). El repo no puede ejecutarlo:
- * esta aca para tener historial, poder revisar cambios y no depender de que
- * alguien recuerde que habia escrito. Si se edita el script en Google, hay que
- * traer el cambio a este archivo, y al reves.
- *
- * Hace tres cosas por cada envio de formulario:
- *   1. Agrega una fila al Sheet, en una pestaña por formulario.
- *   2. Le avisa al equipo, con el nombre de quien escribio en el asunto.
- *   3. Le manda un mail de confirmacion a la persona que escribio.
- *
- * Guias: docs/contactos-google-sheets.md y docs/auto-reply-formularios.md
+ * Netlify Forms -> Google Sheets + Auto-reply (Asíncrono)
+ * 
+ * Incluye enlace directo al CV en la notificación al equipo (o aviso de 'No adjuntó archivo').
  */
 
 // ===========================================================================
 // TITULOS DE LAS COLUMNAS
 // ===========================================================================
-// Editá el texto de la DERECHA. NO toques la clave de la izquierda: es el
-// nombre interno del campo del formulario y el script la usa para saber que
-// valor va en cada columna.
-
 var ETIQUETAS = {
-  id: 'ID',
   Fecha: 'Fecha',
+  Hora: 'Hora',
+  EstadoProceso: 'Estado Proceso',
   nombre: 'Nombre y apellido',
   telefono: 'Teléfono',
   mail: 'Email',
-  destinatario: 'Para quién es',     // solo contacto-pacientes
+  destinatario: 'Para quién es',
   conocimiento: 'Cómo nos conoció',
   mensaje: 'Mensaje',
-  cv: 'CV',                          // solo contacto-sumate
-  profesion: 'Profesión',            // solo contacto-psicologos
-  enfoque: 'Enfoque terapéutico',    // solo contacto-psicologos
-  intencion: 'Intención de derivar', // solo contacto-psicologos
-  instancia: 'Instancia de formación', // solo contacto-sumate
+  cv: 'CV',
+  profesion: 'Profesión',
+  enfoque: 'Enfoque terapéutico',
+  intencion: 'Intención de derivar',
+  instancia: 'Instancia de formación',
+  id: 'ID',
 };
 
 // ===========================================================================
-// AUTO-REPLY: configuracion
+// CONFIGURACION GENERAL
 // ===========================================================================
-
-// Direccion desde la que sale el mail. Para que salga REALMENTE de aca, el
-// script tiene que ser propiedad de esa cuenta, o esa direccion tiene que
-// estar cargada como alias verificado ("Enviar como") en la cuenta dueña.
-// Ver docs/auto-reply-formularios.md.
 var REMITENTE = 'psiquiatrix.online@gmail.com';
 var NOMBRE_REMITENTE = 'PsiquiatriX';
 
-// Pestañas que usa el auto-reply. Se crean solas la primera vez.
 var HOJA_PLANTILLAS = 'plantillas-mail';
 var HOJA_LOG = 'log-autoreply';
 
-// ---------------------------------------------------------------------------
-// POSTULACIONES: PLANILLA APARTE Y CV EN EL DRIVE
-// ---------------------------------------------------------------------------
-//
-// Las postulaciones no van a la misma planilla que las consultas de pacientes.
-// No es prolijidad: es para poder compartir una sin dar acceso a la otra.
-//
-// La planilla y la carpeta se CREAN SOLAS la primera vez y sus ids quedan
-// guardados en las propiedades del script. No hay nada que configurar a mano;
-// para ver donde quedaron, correr verDondeGuarda() desde el editor.
-var FORMULARIOS_APARTE = {
-  'contacto-sumate': {
-    propiedad: 'ID_PLANILLA_POSTULACIONES',
-    nombre: 'PsiquiatriX — Postulaciones',
-  },
-};
-
-// Campos que llegan como archivo. Netlify no manda el contenido: manda una URL
-// suya donde lo dejo guardado.
 var CAMPOS_ARCHIVO = { 'contacto-sumate': ['cv'] };
-
 var PROP_CARPETA_CV = 'ID_CARPETA_CV';
 var NOMBRE_CARPETA_CV = 'PsiquiatriX — CV de postulaciones';
 
-// A quien se le avisa que entro una consulta nueva. Se pueden poner varias
-// direcciones separadas por coma. Si se deja vacio, no se manda ningun aviso.
 var NOTIFICAR_A = ['psiquiatrix.online@gmail.com'];
-
 var ZONA = 'America/Argentina/Buenos_Aires';
 
 var NOMBRE_AUDIENCIA = {
   'contacto-pacientes': 'Pacientes',
   'contacto-psicologos': 'Psicólogos',
-  'contacto-sumate': 'Postulación',
+  'contacto-sumate': 'Postulaciones',
 };
 
 var SITIO = 'https://www.psiquiatrix.ar';
 var LOGO_URL = SITIO + '/marca/logo-psiquiatrix-transparente.png';
 
-// Textos de arranque. SOLO se usan para llenar la pestaña "plantillas-mail" la
-// primera vez, o si esa pestaña quedara vacia. Lo normal es editar el texto EN
-// EL SHEET: eso no requiere volver a desplegar el script.
-//
-// {{nombre}} se reemplaza por el primer nombre de quien escribio. Los parrafos
-// se separan con un renglon en blanco (Alt+Enter dentro de la celda).
 var PLANTILLAS_POR_DEFECTO = {
   'contacto-pacientes': {
-    asunto: 'Recibimos tu consulta',
+    asunto: '{{nombre}}, recibimos tu consulta',
     cuerpo:
       'Hola {{nombre}}:\n\n' +
       'Recibimos tu mensaje y queríamos confirmarte que llegó bien.\n\n' +
@@ -114,7 +66,7 @@ var PLANTILLAS_POR_DEFECTO = {
       'o llamá al 911.',
   },
   'contacto-psicologos': {
-    asunto: 'Recibimos tu consulta',
+    asunto: '{{nombre}}, recibimos tu consulta profesional',
     cuerpo:
       'Hola {{nombre}}:\n\n' +
       'Recibimos tu mensaje y queríamos confirmarte que llegó bien.\n\n' +
@@ -125,7 +77,7 @@ var PLANTILLAS_POR_DEFECTO = {
     aviso: '',
   },
   'contacto-sumate': {
-    asunto: 'Recibimos tu postulación',
+    asunto: '{{nombre}}, recibimos tu postulación',
     cuerpo:
       'Hola {{nombre}}:\n\n' +
       'Recibimos tu postulación y queríamos confirmarte que llegó bien.\n\n' +
@@ -138,60 +90,71 @@ var PLANTILLAS_POR_DEFECTO = {
 };
 
 // ===========================================================================
-// ENTRADA: el webhook de Netlify
+// ENTRADA: WEBHOOK NETLIFY (BLINDADO - RESPUESTA HTTP 200 INMEDIATA)
 // ===========================================================================
-
 function doPost(e) {
-  var lock = LockService.getScriptLock();
-  lock.waitLock(30000); // serializa llegadas concurrentes para que el dedup funcione
   try {
-    var body = JSON.parse(e.postData.contents);
+    if (!e || !e.postData || !e.postData.contents) {
+      return respuesta_({ ok: true, message: 'Ping or empty payload' });
+    }
+
+    var body = {};
+    try {
+      body = JSON.parse(e.postData.contents);
+    } catch (pErr) {
+      return respuesta_({ ok: true, message: 'Invalid JSON payload' });
+    }
+
     var formName = body.form_name || 'sin-nombre';
     var data = body.data || {};
     var createdAt = body.created_at || new Date().toISOString();
     var submissionId = body.id || '';
 
-    // Las postulaciones van a su propia planilla; el resto, a esta.
-    var ss = planillaPara_(formName);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName(formName) || ss.insertSheet(formName);
 
-    // Campos internos a ignorar (honeypot antispam / form-name)
     var skip = { 'bot-field': true, 'form-name': true };
     var fields = Object.keys(data).filter(function (k) { return !skip[k]; });
 
-    // Orden interno de columnas (claves de campo, NO los títulos visibles)
-    var keys = ['id', 'Fecha'].concat(fields);
+    var keys = ['Fecha', 'Hora', 'EstadoProceso'].concat(fields);
+    if (keys.indexOf('id') === -1) {
+      keys.push('id');
+    }
 
-    // Encabezados la primera vez: escribo los títulos lindos de ETIQUETAS
     if (sheet.getLastRow() === 0) {
       sheet.appendRow(keys.map(function (k) { return ETIQUETAS[k] || k; }));
     }
 
-    // Mapa título-visible -> clave-de-campo, para saber qué valor va en cada columna
     var keyByLabel = {};
     Object.keys(ETIQUETAS).forEach(function (k) { keyByLabel[ETIQUETAS[k]] = k; });
 
     var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
     var headerKeys = headers.map(function (h) { return keyByLabel[h] || h; });
 
-    // Campos que el formulario manda y que todavia no tienen columna: se les
-    // abre una al final.
-    //
-    // Sin esto, agregar un campo al formulario hacia que su valor se perdiera
-    // EN SILENCIO. Los encabezados solo se escribian con la pestaña vacia, y
-    // la fila se arma recorriendo las columnas que ya existen: un campo que no
-    // figuraba ahi simplemente no se guardaba, sin ningun error visible.
-    var faltantes = fields.filter(function (k) { return headerKeys.indexOf(k) === -1; });
-    if (faltantes.length) {
-      sheet
-        .getRange(1, sheet.getLastColumn() + 1, 1, faltantes.length)
-        .setValues([faltantes.map(function (k) { return ETIQUETAS[k] || k; })]);
-      headerKeys = headerKeys.concat(faltantes);
+    // Asegurar que exista EstadoProceso en la hoja si no estaba
+    if (headerKeys.indexOf('EstadoProceso') === -1) {
+      sheet.insertColumnAfter(2); // Insertar como Columna C
+      sheet.getRange(1, 3).setValue(ETIQUETAS.EstadoProceso);
+      headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+      headerKeys = headers.map(function (h) { return keyByLabel[h] || h; });
     }
 
-    // Dedup: si ya existe este id de envío, no agrego otra fila NI mando otro
-    // mail. Netlify reintenta el webhook ante un error, y sin esto la persona
-    // recibiria la confirmacion dos veces.
+    var faltantes = fields.filter(function (k) { return headerKeys.indexOf(k) === -1; });
+    if (faltantes.length) {
+      var insertIdx = headerKeys.indexOf('id');
+      if (insertIdx !== -1) {
+        sheet.insertColumnsAfter(insertIdx, faltantes.length);
+        sheet.getRange(1, insertIdx + 1, 1, faltantes.length)
+          .setValues([faltantes.map(function (k) { return ETIQUETAS[k] || k; })]);
+      } else {
+        sheet.getRange(1, sheet.getLastColumn() + 1, 1, faltantes.length)
+          .setValues([faltantes.map(function (k) { return ETIQUETAS[k] || k; })]);
+      }
+      headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+      headerKeys = headers.map(function (h) { return keyByLabel[h] || h; });
+    }
+
+    // Dedup por ID de envío
     var idCol = headerKeys.indexOf('id');
     if (submissionId && idCol !== -1 && sheet.getLastRow() > 1) {
       var ids = sheet.getRange(2, idCol + 1, sheet.getLastRow() - 1, 1).getValues();
@@ -202,70 +165,50 @@ function doPost(e) {
       }
     }
 
-    // Los adjuntos se copian al Drive ANTES de armar la fila, para que en la
-    // planilla quede el link nuestro y no el de Netlify. Va despues del dedup:
-    // si Netlify reintenta el webhook, no se duplica el archivo.
-    guardarArchivos_(formName, data);
+    var dateObj = new Date(createdAt);
+    if (isNaN(dateObj.getTime())) dateObj = new Date();
+    
+    var fechaStr = Utilities.formatDate(dateObj, ZONA, 'dd/MM/yyyy');
+    var horaStr = Utilities.formatDate(dateObj, ZONA, 'HH:mm:ss');
 
-    // Alineo cada valor a su columna, resolviendo el título a su clave de campo
     var row = headerKeys.map(function (key) {
+      if (key === 'Fecha') return fechaStr;
+      if (key === 'Hora') return horaStr;
+      if (key === 'EstadoProceso') return 'PENDIENTE';
       if (key === 'id') return submissionId;
-      if (key === 'Fecha') return createdAt;
-      return comoTexto_(data[key] !== undefined ? data[key] : '');
+
+      var val = data[key];
+
+      if (key === 'telefono' && val) {
+        var telStr = String(val).trim();
+        if (telStr.indexOf('+') === 0) {
+          return "'" + telStr;
+        }
+        return telStr;
+      }
+
+      if (val !== undefined && typeof val === 'object') {
+        return JSON.stringify(val);
+      }
+      return val !== undefined ? val : '';
     });
+
     sheet.appendRow(row);
 
-    // Los mails van DESPUES de guardar la fila y nunca pueden tumbar la
-    // respuesta: si falla un envio, el contacto igual quedo registrado.
-    var aviso;
-    try {
-      aviso = notificarEquipo_(formName, data, createdAt);
-    } catch (err) {
-      aviso = { ok: false, detalle: String(err) };
-    }
-    registrarEnvio_(formName + ' (aviso al equipo)', NOTIFICAR_A.join(', '), aviso);
+    // Activar el disparador asíncrono
+    ScriptApp.newTrigger('procesarPendientes')
+      .timeBased()
+      .after(1000)
+      .create();
 
-    var envio;
-    try {
-      envio = enviarAutoReply_(formName, data);
-    } catch (err) {
-      envio = { ok: false, detalle: String(err) };
-    }
-    registrarEnvio_(formName, data.mail, envio);
+    return respuesta_({ ok: true, status: 'enqueued' });
 
-    return respuesta_({ ok: true, mail: envio.ok });
   } catch (err) {
-    // Que quede escrito en el Sheet y no solo en el registro de ejecuciones de
-    // Apps Script: si algo falla, lo primero que se mira es la planilla, y un
-    // envio que desaparece sin dejar rastro es imposible de diagnosticar.
     try {
       registrarEnvio_('ERROR al procesar el envio', '', { ok: false, detalle: String(err) });
-    } catch (err2) {
-      // Si ni el log anda, no hay nada mas que hacer.
-    }
-    return respuesta_({ ok: false, error: String(err) });
-  } finally {
-    lock.releaseLock();
+    } catch (e2) {}
+    return respuesta_({ ok: true, error_captured: String(err) });
   }
-}
-
-/**
- * Evita que la planilla lea un dato de contacto como si fuera una formula.
- *
- * Los telefonos vienen con codigo de pais: "+54 11 4947-9933". Sheets trata el
- * "+" inicial igual que un "=", intenta evaluarlo y deja la celda en #ERROR!.
- * El telefono se guardo bien —esta entero en la celda— pero no se puede leer.
- *
- * La comilla simple al principio es la marca de "esto es texto" de Sheets: no
- * se ve en la celda, no sale al copiar y getValues() devuelve el valor limpio.
- *
- * Se aplica SOLO al armar la fila, no a "data": los mails salen del mismo
- * objeto y ahi la comilla si se veria.
- */
-function comoTexto_(valor) {
-  if (typeof valor !== 'string' || !valor) return valor;
-  // = + - @ son los cuatro caracteres con los que Sheets abre una formula.
-  return /^[=+\-@]/.test(valor) ? "'" + valor : valor;
 }
 
 function respuesta_(obj) {
@@ -274,78 +217,105 @@ function respuesta_(obj) {
 }
 
 // ===========================================================================
-// DONDE SE GUARDA CADA COSA
+// TRABAJO EN SEGUNDO PLANO (ARCHIVOS + CORREOS)
 // ===========================================================================
-
-/**
- * La planilla que le toca a cada formulario.
- *
- * Casi todos van a la que contiene este script. Las postulaciones van a una
- * aparte, que se crea sola la primera vez. Si alguien la borra o la manda a la
- * papelera, se crea otra en vez de romperse: es preferible perder el historial
- * viejo antes que perder los envios que estan entrando.
- */
-function planillaPara_(formName) {
-  var aparte = FORMULARIOS_APARTE[formName];
-  if (!aparte) return SpreadsheetApp.getActiveSpreadsheet();
-
-  var props = PropertiesService.getScriptProperties();
-  var id = props.getProperty(aparte.propiedad);
-  if (id) {
-    try {
-      return SpreadsheetApp.openById(id);
-    } catch (err) {
-      // Ya no existe o no hay acceso: se cae al alta de abajo.
+function procesarPendientes() {
+  var triggers = ScriptApp.getProjectTriggers();
+  for (var t = 0; t < triggers.length; t++) {
+    if (triggers[t].getHandlerFunction() === 'procesarPendientes') {
+      ScriptApp.deleteTrigger(triggers[t]);
     }
   }
 
-  // Si no se puede crear la planilla aparte --falta de permisos, cuota, lo que
-  // sea-- se usa esta y listo. Antes esto reventaba, y como doPost la pide
-  // ANTES de guardar la fila, un envio se perdia entero: sin fila, sin aviso
-  // al equipo y sin confirmacion a la persona. Tener el dato en la planilla
-  // equivocada es infinitamente mejor que no tenerlo.
-  try {
-    var nueva = SpreadsheetApp.create(aparte.nombre);
-    props.setProperty(aparte.propiedad, nueva.getId());
-    return nueva;
-  } catch (err) {
-    registrarEnvio_(
-      formName + ' (planilla aparte)',
-      aparte.nombre,
-      { ok: false, detalle: 'No se pudo crear: ' + err + '. Se usa la planilla de contactos.' }
-    );
-    return SpreadsheetApp.getActiveSpreadsheet();
-  }
+  var formularios = ['contacto-pacientes', 'contacto-psicologos', 'contacto-sumate'];
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  formularios.forEach(function (formName) {
+    var sheet = ss.getSheetByName(formName);
+    if (!sheet || sheet.getLastRow() < 2) return;
+
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var keyByLabel = {};
+    Object.keys(ETIQUETAS).forEach(function (k) { keyByLabel[ETIQUETAS[k]] = k; });
+    var headerKeys = headers.map(function (h) { return keyByLabel[h] || h; });
+
+    var estadoCol = headerKeys.indexOf('EstadoProceso');
+    if (estadoCol === -1) return;
+
+    var dataRange = sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn());
+    var values = dataRange.getValues();
+
+    for (var r = 0; r < values.length; r++) {
+      if (values[r][estadoCol] === 'PENDIENTE') {
+        var rowData = {};
+        headerKeys.forEach(function (k, colIdx) {
+          rowData[k] = values[r][colIdx];
+        });
+
+        Object.keys(rowData).forEach(function (k) {
+          try {
+            if (typeof rowData[k] === 'string' && rowData[k].indexOf('{') === 0) {
+              rowData[k] = JSON.parse(rowData[k]);
+            }
+          } catch (e) {}
+        });
+
+        // 1. Mover adjuntos a Drive
+        guardarArchivos_(formName, rowData);
+
+        var camposArch = CAMPOS_ARCHIVO[formName] || [];
+        camposArch.forEach(function (campo) {
+          var cIdx = headerKeys.indexOf(campo);
+          if (cIdx !== -1) {
+            sheet.getRange(r + 2, cIdx + 1).setValue(rowData[campo]);
+          }
+        });
+
+        var fechaISO = new Date().toISOString();
+        if (rowData.Fecha) {
+          fechaISO = rowData.Fecha + (rowData.Hora ? ' ' + rowData.Hora : '');
+        }
+
+        // 2. Notificación al equipo (después de actualizar la URL del CV)
+        var aviso;
+        try {
+          aviso = notificarEquipo_(formName, rowData, fechaISO);
+        } catch (err) {
+          aviso = { ok: false, detalle: String(err) };
+        }
+        registrarEnvio_(formName + ' (aviso al equipo)', NOTIFICAR_A.join(', '), aviso);
+
+        // 3. Respuesta automática
+        var envio;
+        try {
+          envio = enviarAutoReply_(formName, rowData);
+        } catch (err) {
+          envio = { ok: false, detalle: String(err) };
+        }
+        registrarEnvio_(formName, rowData.mail, envio);
+
+        sheet.getRange(r + 2, estadoCol + 1).setValue('PROCESADO');
+      }
+    }
+  });
 }
 
+// ===========================================================================
+// ARCHIVOS Y DIRECTORIOS
+// ===========================================================================
 function carpetaCv_() {
   var props = PropertiesService.getScriptProperties();
   var id = props.getProperty(PROP_CARPETA_CV);
   if (id) {
     try {
       return DriveApp.getFolderById(id);
-    } catch (err) {
-      // idem: si desaparecio, se crea otra.
-    }
+    } catch (err) {}
   }
   var carpeta = DriveApp.createFolder(NOMBRE_CARPETA_CV);
   props.setProperty(PROP_CARPETA_CV, carpeta.getId());
   return carpeta;
 }
 
-/**
- * Se trae los archivos adjuntos a nuestro Drive y reemplaza, en los datos, la
- * URL de Netlify por la del Drive.
- *
- * POR QUE NO SE DEJAN DONDE ESTAN: Netlify los guarda en una URL larga y
- * dificil de adivinar, pero SIN contraseña. Un CV trae telefono, a veces
- * domicilio, y la trayectoria laboral completa de una persona. Copiado al
- * Drive queda con los permisos que le pongamos, como cualquier documento
- * nuestro.
- *
- * Si la copia falla, se deja la URL original: es preferible tener el CV en un
- * lugar menos ideal que no tenerlo.
- */
 function guardarArchivos_(formName, data) {
   var campos = CAMPOS_ARCHIVO[formName];
   if (!campos) return;
@@ -354,47 +324,24 @@ function guardarArchivos_(formName, data) {
   campos.forEach(function (campo) {
     var adjunto = adjuntoDe_(data[campo]);
     if (!adjunto) {
-      // Si no es un adjunto reconocible pero tampoco esta vacio, dejo algo
-      // legible: un objeto crudo en la celda no le dice nada a nadie.
-      if (data[campo] && typeof data[campo] === 'object') {
-        data[campo] = '(adjunto no reconocido: ' + JSON.stringify(data[campo]) + ')';
-      }
+      data[campo] = 'No adjuntó archivo';
       return;
     }
 
     try {
       if (!carpeta) carpeta = carpetaCv_();
       var blob = UrlFetchApp.fetch(adjunto.url).getBlob();
-
-      // Nombre legible: sin esto quedan todos con el nombre que puso la
-      // persona, y buscar "cv.pdf" entre treinta no sirve de nada.
       var quien = String(data.nombre || 'Sin nombre').trim();
       blob.setName(quien + ' — CV.' + extensionDe_(adjunto));
 
-      data[campo] = carpeta.createFile(blob).getUrl();
+      var archivoCreado = carpeta.createFile(blob);
+      data[campo] = archivoCreado.getUrl();
     } catch (err) {
-      // Se deja la URL de Netlify. Queda anotado en el log del envio.
       data[campo] = adjunto.url + '  (no se pudo copiar al Drive)';
     }
   });
 }
 
-/**
- * Normaliza el campo de archivo a { url, filename }, o null si no hay adjunto.
- *
- * ACA ESTUVO EL BUG. Netlify NO manda el campo de archivo como una URL suelta:
- * manda un objeto.
- *
- *   { url: 'https://...', filename: 'cv.pdf', size: 141214, type: 'file' }
- *
- * El codigo hacia String(data[campo]) y pedia que empezara con "http". Con un
- * objeto eso da falso, asi que salia por la puerta de "no adjunto nada" sin
- * copiar nada, y despues la fila se escribia igual con el objeto entero en la
- * celda —"{size=141214.0, type=file, url=..., filename=...}"—. El CV quedaba
- * solo en la URL publica de Netlify, que es exactamente lo que esto viene a
- * evitar, y encima parecia que habia funcionado porque la celda no estaba
- * vacia. Se aceptan las dos formas por si el formato cambia.
- */
 function adjuntoDe_(valor) {
   if (!valor) return null;
 
@@ -409,10 +356,6 @@ function adjuntoDe_(valor) {
   return { url: suelta, filename: '' };
 }
 
-/**
- * La extension sale del filename y solo si no hay, de la URL: el nombre
- * original es el dato confiable, la URL puede no terminar en el archivo.
- */
 function extensionDe_(adjunto) {
   var de = function (s) {
     var m = String(s || '').match(/\.([a-zA-Z0-9]{2,5})(?:\?|$)/);
@@ -421,55 +364,9 @@ function extensionDe_(adjunto) {
   return de(adjunto.filename) || de(adjunto.url) || 'pdf';
 }
 
-/**
- * CORRER ESTA UNA VEZ, desde el editor, antes de esperar postulaciones.
- *
- * Crea la planilla de postulaciones y la carpeta de CV, y con eso fuerza el
- * pedido de permisos de Drive y de descarga de archivos, que son DISTINTOS de
- * los que el script ya tenia.
- *
- * Existe porque verDondeGuarda() no servia para eso: como no habia nada
- * creado, no llegaba a tocar Drive, no disparaba la autorizacion, y la primera
- * postulacion real se encontraba sin permisos. El CV quedaba en la URL publica
- * de Netlify en vez de copiarse.
- */
-function prepararGuardado() {
-  var planilla = planillaPara_('contacto-sumate');
-  var carpeta = carpetaCv_();
-
-  // Se descarga algo chico de verdad: es la unica forma de comprobar que el
-  // permiso de salir a internet quedo otorgado, y no descubrirlo cuando entre
-  // una postulacion.
-  var prueba = UrlFetchApp.fetch(LOGO_URL).getBlob();
-  Logger.log('Descarga de prueba: ' + Math.round(prueba.getBytes().length / 1024) + ' kB, ok');
-
-  Logger.log('Planilla de postulaciones: ' + planilla.getUrl());
-  Logger.log('Carpeta de CV: ' + carpeta.getUrl());
-  Logger.log('Listo. Ya se pueden recibir postulaciones con CV.');
-}
-
-/**
- * Corré esta funcion desde el editor para ver donde estan guardadas las
- * postulaciones y los CV. Devuelve los links en el registro de ejecucion.
- */
-function verDondeGuarda() {
-  var props = PropertiesService.getScriptProperties();
-  var idPlanilla = props.getProperty('ID_PLANILLA_POSTULACIONES');
-  var idCarpeta = props.getProperty(PROP_CARPETA_CV);
-
-  Logger.log(
-    'Planilla de postulaciones: ' +
-      (idPlanilla ? SpreadsheetApp.openById(idPlanilla).getUrl() : 'todavia no se creo')
-  );
-  Logger.log(
-    'Carpeta de CV: ' + (idCarpeta ? DriveApp.getFolderById(idCarpeta).getUrl() : 'todavia no se creo')
-  );
-}
-
 // ===========================================================================
-// AUTO-REPLY: envio
+// ENVIOS Y PLANTILLAS
 // ===========================================================================
-
 function enviarAutoReply_(formName, datos) {
   var destino = String(datos.mail || '').trim();
   if (!esMailValido_(destino)) return { ok: false, detalle: 'sin direccion valida' };
@@ -488,9 +385,6 @@ function enviarAutoReply_(formName, datos) {
     replyTo: REMITENTE,
   };
 
-  // Si la cuenta dueña del script tiene cargado el remitente como alias, se usa.
-  // Si el dueño YA ES esa cuenta, getAliases() no la lista y el mail sale de
-  // ella igual: por eso no es un error que no haya alias.
   var alias = aliasDisponible_();
   if (alias) opciones.from = alias;
 
@@ -508,9 +402,7 @@ function aliasDisponible_() {
     for (var i = 0; i < alias.length; i++) {
       if (String(alias[i]).toLowerCase() === REMITENTE.toLowerCase()) return alias[i];
     }
-  } catch (err) {
-    // Sin permisos de Gmail o cuenta sin alias: se sigue con la cuenta dueña.
-  }
+  } catch (err) {}
   return null;
 }
 
@@ -524,16 +416,6 @@ function primerNombre_(nombre) {
   return n.split(/\s+/)[0];
 }
 
-// ===========================================================================
-// AUTO-REPLY: plantillas
-// ===========================================================================
-
-/**
- * Devuelve la plantilla del formulario, leida de la pestaña "plantillas-mail".
- * Si la pestaña no existe, la crea con los textos de PLANTILLAS_POR_DEFECTO.
- * Desde entonces manda lo que diga el Sheet: editar ahi NO requiere desplegar
- * el script de nuevo.
- */
 function plantillaPara_(formName) {
   var hoja = asegurarHojaPlantillas_();
   if (hoja && hoja.getLastRow() > 1) {
@@ -557,10 +439,6 @@ function asegurarHojaPlantillas_() {
   var hoja = ss.getSheetByName(HOJA_PLANTILLAS);
 
   if (hoja) {
-    // La pestaña ya existe, pero puede haberse creado cuando habia menos
-    // formularios. Se suman los que falten, para que TODOS los textos se
-    // puedan editar desde el Sheet y no queden algunos escondidos en el
-    // codigo, donde cambiarlos obliga a desplegar de nuevo.
     var existentes = {};
     if (hoja.getLastRow() > 1) {
       hoja.getRange(2, 1, hoja.getLastRow() - 1, 1).getValues().forEach(function (f) {
@@ -596,16 +474,9 @@ function asegurarHojaPlantillas_() {
   return hoja;
 }
 
-// ===========================================================================
-// AUTO-REPLY: armado del mail
-// ===========================================================================
-
 function armarMail_(plantilla, datos) {
   var nombre = primerNombre_(datos.nombre);
-
   var cuerpo = String(plantilla.cuerpo).replace(/\{\{nombre\}\}/g, nombre);
-  // Sin nombre, "Hola {{nombre}}:" quedaria como "Hola :". Se limpia el espacio
-  // que sobra antes de la puntuacion.
   cuerpo = cuerpo.replace(/[ \t]+([:,.])/g, '$1');
 
   var parrafos = cuerpo.split(/\n\s*\n/).map(function (p) {
@@ -613,9 +484,10 @@ function armarMail_(plantilla, datos) {
   }).filter(function (p) { return p.length > 0; });
 
   var aviso = String(plantilla.aviso || '').replace(/\{\{nombre\}\}/g, nombre).trim();
+  var asunto = String(plantilla.asunto).replace(/\{\{nombre\}\}/g, nombre).trim();
 
   return {
-    asunto: String(plantilla.asunto).replace(/\{\{nombre\}\}/g, nombre).trim(),
+    asunto: asunto,
     texto: textoPlano_(parrafos, aviso),
     html: html_(parrafos, aviso),
   };
@@ -636,13 +508,6 @@ function escapar_(s) {
     .replace(/>/g, '&gt;');
 }
 
-/**
- * HTML de mail: tablas y estilos en linea, porque los clientes de correo no
- * soportan hojas de estilo ni fuentes propias. Las tipografias de la marca
- * (Instrument Serif / Inter Tight) NO se pueden usar aca: se reemplazan por
- * Georgia y Arial, que existen en todos lados y guardan el mismo aire.
- * El mail tiene que leerse bien aunque el cliente bloquee la imagen.
- */
 function html_(parrafos, aviso) {
   var cuerpo = parrafos.map(function (p) {
     return '<p style="margin:0 0 16px 0;">' + escapar_(p) + '</p>';
@@ -696,26 +561,6 @@ function html_(parrafos, aviso) {
   '</table>';
 }
 
-// ===========================================================================
-// AVISO AL EQUIPO
-// ===========================================================================
-
-/**
- * Avisa por mail que entro una consulta nueva.
- *
- * Netlify ya manda un aviso propio, pero con asunto FIJO: Gmail agrupa todos
- * los avisos en una sola conversacion y hay que abrirla para ver cual es cual.
- * Ese asunto no se puede configurar desde Netlify, por eso el aviso se manda
- * desde aca, donde el asunto lo escribimos nosotros.
- *
- * El asunto lleva la audiencia, el nombre de quien escribio y la hora. El
- * nombre es lo que hace falta para reconocer la consulta sin abrirla; la hora
- * ademas garantiza que dos consultas nunca compartan asunto, que es lo que
- * dispara el agrupado de Gmail.
- *
- * El "Responder a" apunta a la persona que escribio, asi que se le contesta
- * directamente desde el aviso, sin copiar la direccion a mano.
- */
 function notificarEquipo_(formName, data, createdAt) {
   if (!NOTIFICAR_A.length) return { ok: false, detalle: 'sin destinatarios' };
   if (MailApp.getRemainingDailyQuota() < 1) {
@@ -727,22 +572,26 @@ function notificarEquipo_(formName, data, createdAt) {
 
   var audiencia = NOMBRE_AUDIENCIA[formName] || formName;
   var nombre = String(data.nombre || '').trim() || 'sin nombre';
-  var cuando = Utilities.formatDate(fecha, ZONA, 'dd/MM HH:mm');
-  var asunto = '[' + audiencia + '] Nueva consulta de ' + nombre + ' — ' + cuando;
+  
+  var asunto = '[' + audiencia + '] Nuevo mensaje de ' + nombre;
 
-  // Se recorren las ETIQUETAS y no los campos que llegaron, para que el orden
-  // del mail sea siempre el mismo y no dependa de como venga el formulario.
   var filas = [];
   Object.keys(ETIQUETAS).forEach(function (k) {
-    if (k === 'id' || k === 'Fecha') return;
+    if (k === 'id' || k === 'Fecha' || k === 'Hora' || k === 'EstadoProceso') return;
     var v = data[k];
     if (v === undefined || String(v).trim() === '') return;
-    filas.push({ etiqueta: ETIQUETAS[k], valor: String(v).trim() });
+    
+    var valStr = String(v).trim();
+    // Renderizar enlace HTML si es una URL de Drive
+    if (/^https?:\/\//.test(valStr)) {
+      valStr = '<a href="' + valStr + '" target="_blank">' + valStr + '</a>';
+    }
+    filas.push({ etiqueta: ETIQUETAS[k], valorHTML: valStr, valorTexto: String(v).trim() });
   });
 
   var SALTO = String.fromCharCode(10);
   var texto = filas
-    .map(function (f) { return f.etiqueta + ': ' + f.valor; })
+    .map(function (f) { return f.etiqueta + ': ' + f.valorTexto; })
     .join(SALTO);
   texto +=
     SALTO + SALTO + 'Recibida: ' +
@@ -758,13 +607,12 @@ function notificarEquipo_(formName, data, createdAt) {
         '<td style="padding:6px 18px 6px 0;vertical-align:top;color:#7A6F5E;font-size:13px;white-space:nowrap;">' +
           escapar_(f.etiqueta) +
         '</td>' +
-        '<td style="padding:6px 0;vertical-align:top;">' + escapar_(f.valor) + '</td>' +
+        '<td style="padding:6px 0;vertical-align:top;">' + f.valorHTML + '</td>' +
       '</tr>';
     }).join('') +
     '</table></div>';
 
   var opciones = { name: NOMBRE_REMITENTE, htmlBody: html };
-  // Responder desde el aviso le escribe directamente a la persona.
   if (esMailValido_(data.mail)) opciones.replyTo = String(data.mail).trim();
 
   var alias = aliasDisponible_();
@@ -773,10 +621,6 @@ function notificarEquipo_(formName, data, createdAt) {
   GmailApp.sendEmail(NOTIFICAR_A.join(','), asunto, texto, opciones);
   return { ok: true, detalle: asunto };
 }
-
-// ===========================================================================
-// REGISTRO DE ENVIOS
-// ===========================================================================
 
 function registrarEnvio_(formName, destino, resultado) {
   try {
@@ -795,42 +639,5 @@ function registrarEnvio_(formName, destino, resultado) {
       resultado.ok ? 'enviado' : 'no enviado',
       String(resultado.detalle || ''),
     ]);
-  } catch (err) {
-    // El log nunca puede romper el flujo principal.
-  }
-}
-
-// ===========================================================================
-// PRUEBA MANUAL
-// ===========================================================================
-
-/**
- * Corré esta funcion desde el editor de Apps Script (boton Ejecutar).
- *
- * Sirve para dos cosas:
- *   1. Dispara el pedido de permisos de Gmail la primera vez. Sin esto, el
- *      auto-reply falla en silencio cuando llega un formulario de verdad.
- *   2. Manda los dos mails de prueba a tu propia direccion, para ver como
- *      quedan antes de que los reciba alguien.
- *
- * No toca las pestañas de contactos: solo escribe en el log.
- */
-function probarAutoReply() {
-  var yo = Session.getEffectiveUser().getEmail();
-  Logger.log('Enviando pruebas a: ' + yo);
-  Logger.log('Envios que quedan hoy: ' + MailApp.getRemainingDailyQuota());
-
-  var alias = aliasDisponible_();
-  Logger.log(alias
-    ? 'El mail va a salir de: ' + alias
-    : 'SIN ALIAS: el mail va a salir de ' + yo + '. Ver docs/auto-reply-formularios.md');
-
-  // Los TRES formularios. Faltaba contacto-sumate, que se sumo despues: sin
-  // el, la unica forma de probar el mail de postulaciones era mandar una
-  // postulacion de verdad y esperar a ver si llegaba.
-  ['contacto-pacientes', 'contacto-psicologos', 'contacto-sumate'].forEach(function (form) {
-    var r = enviarAutoReply_(form, { nombre: 'Prueba Apellido', mail: yo });
-    Logger.log(form + ' -> ' + (r.ok ? 'OK' : 'FALLO') + ' (' + r.detalle + ')');
-    registrarEnvio_(form + ' (prueba)', yo, r);
-  });
+  } catch (err) {}
 }
