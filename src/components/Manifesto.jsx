@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition, inViewProps } from '../motion';
 
-const IMG =
-  'https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=1200&q=80';
+// Foto de Unsplash, servida desde el propio sitio: antes se le pedía a
+// images.unsplash.com en cada visita. Original en originales/home/.
+const IMG = '/home/manifiesto-1200.jpg';
+const IMG_SRCSET = '/home/manifiesto-800.jpg 800w, /home/manifiesto-1200.jpg 1200w';
 
 export default function Manifesto() {
   return (
@@ -20,6 +22,8 @@ export default function Manifesto() {
           <div className="overflow-hidden">
             <img
               src={IMG}
+              srcSet={IMG_SRCSET}
+              sizes="(min-width: 1024px) 500px, 100vw"
               alt="Espacio sereno para atención psiquiátrica online — luz natural y silencio"
               width="1200"
               height="800"

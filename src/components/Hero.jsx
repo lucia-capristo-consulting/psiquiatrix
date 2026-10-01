@@ -1,8 +1,13 @@
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, sectionTransition } from '../motion';
 
-const HERO_IMG =
-  'https://images.unsplash.com/photo-1517842645767-c639042777db?w=1600&q=80';
+// Foto de Unsplash, servida desde el propio sitio: antes se le pedía a
+// images.unsplash.com en cada visita. Original en originales/home/.
+// En celular va la de 1200: casi toda queda tapada por el velo claro del
+// degradé, así que una más grande no se nota y pesa el doble.
+const HERO_IMG = '/home/hero-1600.jpg';
+const HERO_SRCSET =
+  '/home/hero-800.jpg 800w, /home/hero-1200.jpg 1200w, /home/hero-1600.jpg 1600w';
 
 function CtaCard({ title, sub, primary, href }) {
   return (
@@ -45,6 +50,8 @@ export default function Hero() {
       <div className="absolute inset-0 -z-0">
         <img
           src={HERO_IMG}
+          srcSet={HERO_SRCSET}
+          sizes="100vw"
           alt="Consulta psiquiátrica online — escritorio clínico con luz cálida"
           width="1600"
           height="1067"

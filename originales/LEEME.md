@@ -69,3 +69,27 @@ Las dos fotos originales miden 1023×1537 y parecen de la misma sesión.
 El encuadre de Claudia se eligió midiendo el de Amanda, para que las dos lean
 como pareja cuando se ven juntas: la cabeza ocupa cerca del 43 % del alto y
 queda alrededor de un 9 % de aire arriba.
+
+## Fotos de la home (hero y Manifiesto)
+
+Son de Unsplash, no de una sesión propia. Hasta el 01/10/2026 se le pedían a
+`images.unsplash.com` en cada visita; ahora se sirven desde `public/home/`. Dos
+razones: si Unsplash cambiaba o borraba la foto, la home quedaba sin imagen, y
+era el último pedido a un tercero que le quedaba al sitio.
+
+| Original | Unsplash | Publicadas |
+| --- | --- | --- |
+| `home/hero-unsplash-1517842645767.jpg` | `photo-1517842645767-c639042777db` | `hero-800/1200/1600.jpg` |
+| `home/manifiesto-unsplash-1519682337058.jpg` | `photo-1519682337058-a94d519337bc` | `manifiesto-800/1200.jpg` |
+
+Los originales se bajaron a 2400 px de ancho. Las versiones publicadas salen de
+ahí con `sharp` (JPEG mozjpeg, calidad 76, progresivo):
+
+```js
+await sharp(original).resize({ width: 1600 })
+  .jpeg({ quality: 76, mozjpeg: true, progressive: true })
+  .toFile('public/home/hero-1600.jpg');
+```
+
+El navegador elige la medida según la pantalla (`srcSet` en `Hero.jsx` y
+`Manifesto.jsx`). Si se reemplaza una foto, hay que regenerar todas sus medidas.
