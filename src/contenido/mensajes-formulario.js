@@ -18,6 +18,10 @@
 //
 // En el de PSICÓLOGOS el mail es obligatorio, así que hay un solo texto.
 //
+// No se promete QUIÉN hace el primer contacto ("una profesional del equipo",
+// "una directora"): muchas veces lo hace la secretaría. Se dice "te vamos a
+// contactar". Es una regla del manual de marca.
+//
 // OJO: acá se promete un plazo ("a la brevedad"). El mail automático promete
 // lo mismo con otras palabras, y la persona lee los dos con minutos de
 // diferencia. Si cambiás el plazo acá, cambialo también en la pestaña
@@ -27,9 +31,9 @@
 export const MENSAJES_PACIENTES = {
   exito: {
     conMail:
-      'Recibimos tu mensaje y te enviamos una confirmación por correo. Una profesional del equipo te va a contactar a la brevedad.',
+      'Recibimos tu mensaje y te enviamos una confirmación por correo. Te vamos a contactar a la brevedad.',
     sinMail:
-      'Recibimos tu mensaje. Una profesional del equipo te va a contactar a la brevedad.',
+      'Recibimos tu mensaje. Te vamos a contactar a la brevedad.',
   },
   error: 'No pudimos enviar tu mensaje. Probá de nuevo o escribinos por WhatsApp.',
 };

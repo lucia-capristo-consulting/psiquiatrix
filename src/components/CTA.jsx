@@ -104,9 +104,8 @@ export default function CTA() {
             <span className="italic text-accent">primer paso.</span>
           </h2>
           <p className="text-[16px] leading-[1.65] text-graphite max-w-[460px]">
-            Completá tus datos. Una profesional del equipo te va a contactar
-            para evaluar si nuestro servicio es el indicado y coordinar los
-            próximos pasos.
+            Completá tus datos. Te vamos a contactar para evaluar si nuestro
+            servicio es el indicado y coordinar los próximos pasos.
           </p>
 
           <a
