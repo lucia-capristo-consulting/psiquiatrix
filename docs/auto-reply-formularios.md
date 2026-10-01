@@ -180,18 +180,20 @@ varias direcciones. Si se deja vacío, no se manda ningún aviso.
 
 ### Qué hacer con la notificación de Netlify
 
-Conviene **dejarla prendida unas semanas** y recién después apagarla, por una
-razón concreta: el aviso del script depende de que el envío llegue al Apps
-Script, así que si ese camino se cae —con el webhook de antes pasó varias veces—
-dejás de enterarte de las consultas. El de Netlify es independiente y llega
-igual.
+**Queda prendida a propósito. No apagarla.** Cumple dos funciones:
 
-Mientras convivan, si molesta verlos duplicados, se puede armar un filtro en
+- **Es la copia que recibe Lucía** de cada consulta. El aviso del script va
+  sólo a la dirección de `NOTIFICAR_A`.
+- **Es el respaldo.** El aviso del script depende de que el envío llegue al Apps
+  Script; si ese camino se cae —con el webhook de antes pasó varias veces—,
+  el de Netlify llega igual, porque no pasa por ahí.
+
+Si alguna vez se quisiera apagar, antes hay que sumar a quien recibe la copia en
+`NOTIFICAR_A`. Si no, deja de enterarse de las consultas sin que nada avise.
+
+Si molesta ver los dos avisos en una misma casilla, se puede armar un filtro en
 Gmail que archive los de Netlify bajo una etiqueta: quedan como respaldo sin
 ocupar la bandeja.
-
-Para apagarla: Netlify → Forms → Settings & usage → Form notifications →
-Options → Delete, en las dos notificaciones por mail.
 
 ## Postulaciones: pestaña propia y CV en el Drive
 
