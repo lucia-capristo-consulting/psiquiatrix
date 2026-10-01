@@ -18,6 +18,8 @@ const DIR = 'dist/marca';
 const LABELS = {
   'logo-psiquiatrix': 'Logotipo principal',
   'logo-psiquiatrix-transparente': 'Logotipo sin fondo',
+  'logo-psiquiatrix-negativo': 'Logotipo en negativo',
+  'logo-psiquiatrix-negativo-transparente': 'Logotipo en negativo, sin fondo',
   'logo-psiquiatrix-mini': 'Isotipo para foto de perfil',
   'qr-psiquiatrix': 'Código QR para pantalla',
   'qr-psiquiatrix-impresion': 'Código QR para imprimir',

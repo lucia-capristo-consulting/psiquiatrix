@@ -47,6 +47,7 @@ Las secciones se navegan por `id` HTML (no por rutas). El hook `src/hooks/useAct
 - **El dominio primario es `www.psiquiatrix.ar`, con `www`.** El apex (`psiquiatrix.ar`) también resuelve, pero redirige con 301 al `www`. Es una decisión de marca: al ser `.ar` una extensión poco común, el `www` deja claro que es un sitio web y no una red social, y se usa así en tarjetas y material impreso. Por eso los canonical y `og:url` deben llevar `www`: tienen que coincidir con la URL final, no con la que redirige.
 
 - Los archivos de marca (logotipo en SVG y PNG, con fondo y sin fondo) viven en `public/marca/`. El texto está convertido a curvas, así que no dependen de tener instalada Instrument Serif — es lo que permite mandárselos a una imprenta. El campo `logo` del JSON-LD apunta a la versión transparente.
+- Las versiones en **negativo** (todo en Hueso, también la x; con fondo Terracota y sin fondo) las genera **`scripts/generar-logo-negativo.cjs`** a partir del SVG transparente. Es manual como los demás generadores: hay que volver a correrlo si cambia el logotipo.
 
 #### Códigos QR
 
