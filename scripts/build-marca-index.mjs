@@ -15,6 +15,7 @@ import { join } from 'node:path';
 
 const DIR = 'dist/marca';
 
+// El orden de este mapa es el orden en que aparecen en la página.
 const LABELS = {
   'logo-psiquiatrix': 'Logotipo principal',
   'logo-psiquiatrix-transparente': 'Logotipo sin fondo',
@@ -26,6 +27,12 @@ const LABELS = {
   'qr-psicologos': 'Código QR de psicólogos',
   'qr-psicologos-impresion': 'Código QR de psicólogos para imprimir',
 };
+
+// El manual de marca NO se publica acá: tiene partes internas (estrategia,
+// decisiones pendientes) y /marca/ la abre cualquiera con el link. Vive en
+// Google Drive, compartido sólo con quien se invite; desde acá se enlaza.
+// Si se deja vacío, el bloque no aparece.
+const MANUAL_URL = 'https://drive.google.com/file/d/1lxgTph4JrHAKlYjtle4Z7HKnRfEwRZx3/view';
 
 const TIPOS = {
   '.svg': {
@@ -112,9 +119,20 @@ for (const file of readdirSync(DIR).sort()) {
   grupos.get(base).push({ file, ext, bytes: buf.length, dim });
 }
 
+// El orden es el de LABELS (de lo más usado a lo más específico), no el
+// alfabético: alfabéticamente el isotipo y el negativo quedaban antes que el
+// logotipo principal. Lo que no esté en LABELS va al final.
+const orden = (base) => {
+  const i = Object.keys(LABELS).indexOf(base);
+  return i === -1 ? Infinity : i;
+};
+
 const cards = [...grupos.entries()]
+  .sort(([a], [b]) => orden(a) - orden(b) || a.localeCompare(b))
   .map(([base, archivos]) => {
     const transparente = /transparente|sin-fondo/i.test(base);
+    // El negativo sin fondo es todo color hueso: sobre el damero claro no se vería.
+    const oscuro = transparente && /negativo/i.test(base);
     // Para la vista previa preferimos el SVG, que se ve nitido a cualquier tamaño.
     const preview = (archivos.find((a) => a.ext === '.svg') || archivos[0]).file;
     const titulo = LABELS[base] || prettify(base);
@@ -143,7 +161,7 @@ const cards = [...grupos.entries()]
 
     return [
       '<article class="card">',
-      '  <div class="preview' + (transparente ? ' preview-alpha' : '') + '">',
+      '  <div class="preview' + (oscuro ? ' preview-alpha-oscuro' : transparente ? ' preview-alpha' : '') + '">',
       '    <img src="./' + esc(preview) + '" alt="' + esc(titulo) + '" loading="lazy" />',
       '  </div>',
       '  <div class="card-cuerpo">',
@@ -158,6 +176,20 @@ const cards = [...grupos.entries()]
   })
   .join('\n');
 
+const manual = MANUAL_URL
+  ? `
+    <section class="bloque">
+      <a class="manual" href="${esc(MANUAL_URL)}" target="_blank" rel="noopener">
+        <span class="rotulo">Acceso restringido</span>
+        <h2 class="seccion-titulo">Manual de marca</h2>
+        <p class="texto">Estrategia, voz, identidad visual y uso de los archivos. Está en
+        Google Drive y se comparte con quien lo necesita: si al abrirlo te pide
+        acceso, solicitalo desde ahí o escribinos a psiquiatrix.online@gmail.com.</p>
+        <span class="manual-ir">Abrir en Google Drive →</span>
+      </a>
+    </section>`
+  : '';
+
 const total = [...grupos.values()].flat().length;
 const versiones = grupos.size;
 
@@ -167,7 +199,7 @@ const html = `<!doctype html>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex, nofollow" />
-<title>Archivos de marca · PsiquiatriX</title>
+<title>Identidad de marca · PsiquiatriX</title>
 <style>
   @font-face { font-family:'Inter Tight'; font-weight:300 700; font-display:swap; src:url('/fonts/inter-tight-latin.woff2') format('woff2'); }
   @font-face { font-family:'Instrument Serif'; font-weight:400; font-display:swap; src:url('/fonts/instrument-serif-latin.woff2') format('woff2'); }
@@ -180,15 +212,19 @@ const html = `<!doctype html>
 
   .eyebrow { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); font-weight:600; }
   h1 { font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(38px,6vw,56px); line-height:1.05; letter-spacing:-.025em; margin:18px 0 0; }
-  .bajada { font-size:15.5px; line-height:1.7; max-width:60ch; margin:20px 0 0; }
-
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:1px; background:var(--linen); border:1px solid var(--linen); margin-top:56px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:1px; background:var(--linen); border:1px solid var(--linen); margin-top:28px; }
   .card { background:var(--bone); display:flex; flex-direction:column; }
-  .preview { display:flex; align-items:center; justify-content:center; padding:40px 32px; background:var(--parchment); border-bottom:1px solid var(--linen); min-height:180px; }
-  .preview img { max-width:100%; height:auto; max-height:120px; }
+  /* Altura fija: así las tarjetas de una misma fila arrancan el texto a la
+     misma altura, sea la pieza apaisada (logotipo), cuadrada (isotipo) o
+     vertical (QR). La imagen se achica hasta entrar, sin deformarse. */
+  .preview { display:flex; align-items:center; justify-content:center; height:224px; padding:36px 32px; background:var(--parchment); border-bottom:1px solid var(--linen); }
+  .preview img { display:block; max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; }
   /* Damero, para que se lea que el fondo es transparente y no blanco. */
   .preview-alpha { background-color:#fff;
     background-image:linear-gradient(45deg,#e6e0d4 25%,transparent 25%),linear-gradient(-45deg,#e6e0d4 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e6e0d4 75%),linear-gradient(-45deg,transparent 75%,#e6e0d4 75%);
+    background-size:16px 16px; background-position:0 0,0 8px,8px -8px,-8px 0; }
+  .preview-alpha-oscuro { background-color:#3C3833;
+    background-image:linear-gradient(45deg,#4a453f 25%,transparent 25%),linear-gradient(-45deg,#4a453f 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#4a453f 75%),linear-gradient(-45deg,transparent 75%,#4a453f 75%);
     background-size:16px 16px; background-position:0 0,0 8px,8px -8px,-8px 0; }
   .card-cuerpo { padding:28px 28px 32px; }
   .card h2 { font-family:'Instrument Serif',serif; font-weight:400; font-size:26px; line-height:1.15; letter-spacing:-.015em; margin:0; }
@@ -205,25 +241,40 @@ const html = `<!doctype html>
   .btn-ghost { background:transparent; color:var(--graphite); }
   .btn-ghost:hover { background:transparent; color:var(--accent); }
 
-  .pie { margin-top:56px; padding-top:32px; border-top:1px solid var(--linen); font-size:14px; line-height:1.75; color:var(--taupe); max-width:65ch; }
+  .pie { margin-top:56px; padding-top:32px; border-top:1px solid var(--linen); font-size:14px; line-height:1.75; color:var(--taupe); }
   .pie strong { color:var(--graphite); font-weight:600; }
   .pie a { color:var(--accent); }
+  /* Dos bloques del mismo nivel: el manual y los archivos. Mismo rótulo y
+     mismo título, para que se lean como pares. */
+  .bloque { margin-top:56px; }
+  .rotulo { display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--taupe); }
+  .seccion-titulo { font-family:'Instrument Serif',serif; font-weight:400; font-size:34px; line-height:1.1; letter-spacing:-.015em; margin:10px 0 0; }
+  .texto { font-size:15px; line-height:1.7; margin:12px 0 0; }
+  .manual { display:block; padding:28px 28px 30px; border:1px solid var(--linen); background:var(--parchment); text-decoration:none; color:var(--graphite); transition:border-color .25s; }
+  .manual:hover { border-color:var(--accent); }
+  .manual-ir { display:inline-block; font-size:13px; font-weight:600; color:var(--accent); margin-top:16px; }
   .conteo { font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--taupe); margin-top:40px; }
 </style>
 </head>
 <body>
   <div class="wrap">
-    <span class="eyebrow">PsiquiatriX · Archivos de marca</span>
-    <h1>Logotipo</h1>
-    <p class="bajada">
-      Archivos oficiales para uso en piezas impresas y digitales. El texto está
-      convertido a curvas, así que no hace falta tener instalada la tipografía
-      Instrument Serif para abrirlos ni para imprimirlos.
-    </p>
+    <span class="eyebrow">PsiquiatriX · Recursos de marca</span>
+    <h1>Identidad de marca</h1>
+${manual}
 
-    <div class="grid">
+    <section class="bloque">
+      <span class="rotulo">Descarga libre</span>
+      <h2 class="seccion-titulo">Archivos oficiales</h2>
+      <p class="texto">
+        Para uso en piezas impresas y digitales. El texto está convertido a
+        curvas, así que no hace falta tener instalada la tipografía Instrument
+        Serif para abrirlos ni para imprimirlos.
+      </p>
+
+      <div class="grid">
 ${cards}
-    </div>
+      </div>
+    </section>
 
     <div class="pie">
       <p><strong>¿Cuál mando a la imprenta?</strong> El SVG. Es vectorial: se amplía
@@ -231,8 +282,11 @@ ${cards}
       gigantografía. El PNG conviene reservarlo para pantalla.</p>
       <p><strong>¿Con fondo o sin fondo?</strong> La versión con fondo trae el color
       de marca integrado. La transparente sirve para apoyar el logo sobre una foto o
-      sobre un color propio; conviene usarla sobre fondos claros, para que el texto
-      en gris oscuro mantenga contraste.</p>
+      sobre un color propio, siempre claro, para que el texto en gris oscuro
+      mantenga contraste.</p>
+      <p><strong>¿Y sobre un fondo oscuro?</strong> El negativo, todo en color hueso.
+      Con fondo, ya trae el terracota de la marca; sin fondo, se apoya sobre un color
+      oscuro o una foto de tono parejo.</p>
       <p style="margin-top:24px"><a href="/">← Volver a psiquiatrix.ar</a></p>
       <p class="conteo">${total} archivo${total === 1 ? '' : 's'} · ${versiones} versi${versiones === 1 ? 'ón' : 'ones'}</p>
     </div>

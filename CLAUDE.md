@@ -63,7 +63,9 @@ La bajada ("PARA PROFESIONALES") se convierte a curvas leyendo el `.woff2` real 
 
 Netlify no genera listados de carpeta. Para que `www.psiquiatrix.ar/marca/` muestre los archivos sin tener que saber cada nombre, **`scripts/build-marca-index.mjs`** genera `dist/marca/index.html` después del build (encadenado en el script `build`, igual que el prerender).
 
-Lee la carpeta en cada build, así que **para sumar un logo alcanza con dejarlo en `public/marca/`**: aparece solo, con su formato, medidas y peso. Los títulos lindos salen del mapa `LABELS` del script; un archivo que no esté ahí igual se lista, con el nombre prettificado.
+Lee la carpeta en cada build, así que **para sumar un logo alcanza con dejarlo en `public/marca/`**: aparece solo, con su formato, medidas y peso. Los títulos lindos salen del mapa `LABELS` del script, y **el orden de ese mapa es el orden de la página**; un archivo que no esté ahí igual se lista al final, con el nombre prettificado.
+
+**El manual de marca no se publica en `/marca/`**: tiene partes internas y esa página la abre cualquiera con el link. Vive en Google Drive con acceso restringido, y la página sólo lo enlaza (constante `MANUAL_URL` del script). Si se cambia el archivo en Drive por otro, hay que actualizar esa URL.
 
 La página va con `noindex`: es accesible por link pero no compite en los resultados de búsqueda. Por eso **no** hay que bloquearla en `robots.txt` — si se bloqueara, Google no podría leer el `noindex`.
 
