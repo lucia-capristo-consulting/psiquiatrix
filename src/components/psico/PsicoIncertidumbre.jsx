@@ -49,16 +49,19 @@ export default function PsicoIncertidumbre() {
           className="font-serif text-[40px] md:text-[52px] lg:text-[60px] leading-[1.05] tracking-[-0.025em] text-graphite m-0 font-normal max-w-[1000px]"
         >
           Derivar no debería ser{' '}
-          <span className="italic text-accent">una incertidumbre.</span>
+          {/* Lo negativo va en Taupe y recto: la itálica terracota queda para
+              lo que Psiquiatrix es u ofrece (manual de marca, regla 4). */}
+          <span className="text-taupe">una incertidumbre.</span>
         </motion.h2>
 
         <motion.p
           variants={fadeUp}
           transition={sectionTransition}
-          className="mt-6 max-w-[640px] text-[15.5px] leading-[1.65] text-graphite font-normal"
+          className="font-editorial text-[22px] md:text-[24px] leading-[1.25] tracking-[-0.005em] text-graphite mt-8 max-w-[560px] font-normal [text-wrap:pretty]"
         >
           Muchas derivaciones fallan no por falta de capacidad clínica, sino por
-          comunicación, continuidad o criterio.{' '}
+          comunicación, continuidad o criterio.
+          <br />
           <span className="italic text-accent">
             Psiquiatrix trabaja distinto.
           </span>
@@ -83,7 +86,7 @@ export default function PsicoIncertidumbre() {
                 }`}
               >
                 <Check />
-                <span className="font-serif text-[18px] md:text-[20px] leading-[1.3] tracking-[-0.01em] text-graphite">
+                <span className="text-[16px] md:text-[17px] leading-[1.55] text-graphite">
                   {it}
                 </span>
               </motion.li>
