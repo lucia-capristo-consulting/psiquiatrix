@@ -40,7 +40,8 @@ const ENFOQUE_OPTIONS = [
 ];
 
 const REFERRAL_OPTIONS = [
-  'Redes sociales',
+  'Instagram',
+  'LinkedIn',
   'Recomendación',
   'Búsqueda en Google',
   'Eventos y congresos',

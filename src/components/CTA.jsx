@@ -13,7 +13,8 @@ import { MENSAJES_PACIENTES, BOTON } from '../contenido/mensajes-formulario';
 const FORM_NAME = 'contacto-pacientes';
 
 const REFERRAL_OPTIONS = [
-  'Redes sociales',
+  'Instagram',
+  'LinkedIn',
   'Recomendación',
   'Búsqueda en Google',
   'Eventos y congresos',
